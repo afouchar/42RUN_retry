@@ -18,11 +18,15 @@ private:
 
 public:
     RenderPipeline(const GLfloat model[], Shader shader);
+    RenderPipeline(const GLfloat model[]);
     ~RenderPipeline();
 
     void SetVBO();
     void ClearVBO();
+    void UseProgram();
     void Draw();
+
+    void SetShader(Shader shader);
 };
 
 #endif

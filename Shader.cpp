@@ -14,36 +14,40 @@ Shader::Shader(const char * vertexFilePath,const char * fragmentFilePath){
     string vertexShaderCode = LoadShaderCode(this->_vertexFilePath);
     string fragmentShaderCode = LoadShaderCode(this->_fragmentFilePath);
 
-    if (!vertexShaderCode.empty()){
+    if (vertexShaderCode.empty() || fragmentShaderCode.empty()) {
+        std::cerr << "Shader can't be created." << std::endl;
+        delete this;
+        //throw exception to exit OR use a default magenta shader instead of destroying instance !!!
+    }
+    else {
         std::cout << "Compiling shader : " << this->_vertexFilePath << std::endl;
         CompileShader(vertexShaderCode, this->_vertexShaderID);
-    }
 
-    if (!fragmentShaderCode.empty()){
         std::cout << "Compiling shader : " << fragmentFilePath << std::endl;
         CompileShader(fragmentShaderCode, this->_fragmentShaderID);
+
+        std::cout << "Linking program..." << std::endl;
+        this->_programID = LinkShaderProgram(this->_vertexShaderID, this->_fragmentShaderID);
+        std::cout << "Program ID : " << this->_programID << std::endl;
+
+        glDetachShader(this->_programID, this->_vertexShaderID);
+        glDetachShader(this->_programID, this->_fragmentShaderID);
+
+        glDeleteShader(this->_vertexShaderID);
+        glDeleteShader(this->_fragmentShaderID);
     }
-    std::cout << "Linking program..." << std::endl;
-    this->_programID = LinkShaderProgram(this->_vertexShaderID, this->_fragmentShaderID);
-
-    glDetachShader(this->_programID, this->_vertexShaderID);
-    glDetachShader(this->_programID, this->_fragmentShaderID);
-
-    glDeleteShader(this->_vertexShaderID);
-    glDeleteShader(this->_fragmentShaderID);
 }
-
 string Shader::LoadShaderCode(const char *shaderFilePath){
 
-	std::string vertexShaderCode;
-	std::ifstream vertexShaderStream(shaderFilePath, std::ios::in);
+	std::string shaderCode;
+	std::ifstream shaderStream(shaderFilePath, std::ios::in);
 
-    if(vertexShaderStream.is_open()){
+    if(shaderStream.is_open()){
         std::stringstream sstr;
-        sstr << vertexShaderStream.rdbuf();
-        vertexShaderCode = sstr.str();
-        vertexShaderStream.close();
-        return vertexShaderCode;
+        sstr << shaderStream.rdbuf();
+        shaderCode = sstr.str();
+        shaderStream.close();
+        return shaderCode;
     }else{
         std::cerr << "Cannot open file \"" << shaderFilePath << "\"" << std::endl;
         getchar();
@@ -57,17 +61,17 @@ void Shader::CompileShader(string shaderCode, GLuint shaderID){
     int InfoLogLength;
 
     // Compile Vertex Shader
-    char const * VertexSourcePointer = shaderCode.c_str();
-    glShaderSource(shaderID, 1, &VertexSourcePointer , NULL);
+    char const * sourcePointer = shaderCode.c_str();
+    glShaderSource(shaderID, 1, &sourcePointer , NULL);
     glCompileShader(shaderID);
 
-    // Check Vertex Shader
+    // Check sShader
     glGetShaderiv(shaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
     if ( InfoLogLength > 0 ){
-        std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
-        glGetShaderInfoLog(shaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-        std::cerr << VertexShaderErrorMessage[0] << std::endl;
+        std::vector<char> shaderErrorMessage(InfoLogLength+1);
+        glGetShaderInfoLog(shaderID, InfoLogLength, NULL, &shaderErrorMessage[0]);
+        std::cerr << shaderErrorMessage[0] << std::endl;
     }
 }
 

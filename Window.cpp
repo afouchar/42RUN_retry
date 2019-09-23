@@ -6,7 +6,7 @@ Window::~Window(){}
 Window::Window(const char* title, vec2 size){
 
     // this->_clearColor = vec4(0.5, 0.5, 0.5, 1);
-    CreateWindow(title, size, vec4(0.5, 0.5, 0.5, 1.0));
+    CreateWindow(title, size, vec4(0.32, 0.32, 0.32, 0.0));
 }
 
 Window::Window(const char* title, vec2 size, vec4 clearColor){
@@ -28,14 +28,14 @@ void Window::CreateWindow(const char* title, vec2 size, vec4 clearColor){
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+	
 	// Open a window and create its OpenGL context
     this->_title = title;
     this->_size = size;
     this->_clearColor = clearColor;
 	this->_window = glfwCreateWindow( this->_size.x, this->_size.y, this->_title.c_str(), NULL, NULL);
 	if( this->_window == NULL ){
-		std::cerr << "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials." << std::endl;
+		std::cerr << "Failed to open GLFW window" << std::endl;
 		getchar();
 		glfwTerminate();
 		exit(-1);
@@ -43,6 +43,7 @@ void Window::CreateWindow(const char* title, vec2 size, vec4 clearColor){
 	glfwMakeContextCurrent(this->_window);
 
 	// Initialize GLEW
+	glewExperimental = true; // Needed for core profile
 	if (glewInit() != GLEW_OK) {
 		std::cerr << "Failed to initialize GLEW" << std::endl;
 		getchar();
@@ -59,7 +60,7 @@ string Window::GetTitle(){
 
 void Window::SetTitle(const char* title){
     this->_title = title;
-    //update window title
+	glfwSetWindowTitle(this->_window, this->_title.c_str());
 }
 
 vec2 Window::GetSize(){
@@ -72,7 +73,7 @@ vec4 Window::GetClearColor(){
 
 void Window::SetClearColor(vec4 clearColor){
     this->_clearColor = clearColor;
-    //udpate window
+	glClearColor(this->_clearColor.x, this->_clearColor.y, this->_clearColor.z, this->_clearColor.w);
 }
 
 GLFWwindow *Window::GetWindow(){

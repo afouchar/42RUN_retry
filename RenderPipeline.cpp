@@ -2,7 +2,7 @@
 
 RenderPipeline::~RenderPipeline(){}
 
-RenderPipeline::RenderPipeline(const GLfloat model[], Shader shader){
+RenderPipeline::RenderPipeline(const GLfloat model[]){
 
 	glGenVertexArrays(1, &this->_vertexArrayID);
 	glBindVertexArray(this->_vertexArrayID);
@@ -14,10 +14,20 @@ RenderPipeline::RenderPipeline(const GLfloat model[], Shader shader){
 	glBufferData(GL_ARRAY_BUFFER, sizeof(this->_vertexBufferData), this->_vertexBufferData, GL_STATIC_DRAW);
 }
 
-void RenderPipeline::SetVBO(){
+RenderPipeline::RenderPipeline(const GLfloat model[], Shader shader){
 
-    // Use our shader
-    glUseProgram(this->_shader.GetProgramID());
+    this->_shader = shader;
+	glGenVertexArrays(1, &this->_vertexArrayID);
+	glBindVertexArray(this->_vertexArrayID);
+
+    this->_vertexBufferData = model;
+
+	glGenBuffers(1, &this->_vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, this->_vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(this->_vertexBufferData), this->_vertexBufferData, GL_STATIC_DRAW);
+}
+
+void RenderPipeline::SetVBO(){
 
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(0);
@@ -40,9 +50,19 @@ void RenderPipeline::ClearVBO(){
     glDeleteProgram(this->_shader.GetProgramID());
 }
 
+void RenderPipeline::UseProgram(){
+
+    // Use our shader
+    glUseProgram(this->_shader.GetProgramID());
+}
+
 void RenderPipeline::Draw(){
 
     // Draw the triangle !
     glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
     glDisableVertexAttribArray(0);
+}
+
+void RenderPipeline::SetShader(Shader shader){
+    this->_shader = shader;
 }
