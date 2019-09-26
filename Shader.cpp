@@ -100,3 +100,7 @@ GLuint Shader::LinkShaderProgram(GLuint vertexShaderID, GLuint fragmentShaderID)
 GLuint Shader::GetProgramID(){
     return this->_programID;
 }
+    
+GLuint Shader::GetUniformLocation(const char * variableName){
+	return glGetUniformLocation(this->_programID, variableName);
+}

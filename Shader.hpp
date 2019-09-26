@@ -36,6 +36,7 @@ public:
     GLuint LinkShaderProgram(GLuint vertexShaderID, GLuint fragmentShaderID);
 
     GLuint GetProgramID();
+    GLuint GetUniformLocation(const char * variableName);
 };
 
 
