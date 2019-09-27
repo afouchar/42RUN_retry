@@ -20,23 +20,26 @@ using namespace std;
 class Shader {
 
 private:
-    GLuint _programID;
-    GLuint _vertexShaderID;
-    GLuint _fragmentShaderID;
-    const char *_vertexFilePath;
-    const char *_fragmentFilePath;
+    Shader();
+
+    GLuint      _programID;
+    GLuint      _vertexShaderID;
+    GLuint      _fragmentShaderID;
+    GLuint      _mvpID;
+    const char  *_vertexFilePath;
+    const char  *_fragmentFilePath;
 
 public:
     Shader(const char *vertexFilePath,const char *fragmentFilePath);
-    Shader();
     ~Shader();
 
-    string LoadShaderCode(const char *shaderFilePath);
-    void CompileShader(string shaderCode, GLuint shaderID);
-    GLuint LinkShaderProgram(GLuint vertexShaderID, GLuint fragmentShaderID);
+    GLuint      GetProgramID();
+    GLuint      GetmvpID();
+    GLuint      GetUniformLocation(const char * variableName);
 
-    GLuint GetProgramID();
-    GLuint GetUniformLocation(const char * variableName);
+    string      LoadShaderCode(const char *shaderFilePath);
+    void        CompileShader(string shaderCode, GLuint shaderID);
+    GLuint      LinkShaderProgram(GLuint vertexShaderID, GLuint fragmentShaderID);
 };
 
 

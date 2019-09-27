@@ -35,8 +35,11 @@ Shader::Shader(const char * vertexFilePath,const char * fragmentFilePath){
 
         glDeleteShader(this->_vertexShaderID);
         glDeleteShader(this->_fragmentShaderID);
+
+        this->_mvpID = glGetUniformLocation(this->_programID, "MVP");
     }
 }
+
 string Shader::LoadShaderCode(const char *shaderFilePath){
 
 	std::string shaderCode;
@@ -60,12 +63,12 @@ void Shader::CompileShader(string shaderCode, GLuint shaderID){
     GLint Result = GL_FALSE;
     int InfoLogLength;
 
-    // Compile Vertex Shader
+    // Compile Shader
     char const * sourcePointer = shaderCode.c_str();
     glShaderSource(shaderID, 1, &sourcePointer , NULL);
     glCompileShader(shaderID);
 
-    // Check sShader
+    // Check Shader
     glGetShaderiv(shaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
     if ( InfoLogLength > 0 ){
@@ -80,13 +83,13 @@ GLuint Shader::LinkShaderProgram(GLuint vertexShaderID, GLuint fragmentShaderID)
     GLint Result = GL_FALSE;
     int InfoLogLength;
 
-    // Link the program
+    // Link program
     GLuint programID = glCreateProgram();
     glAttachShader(programID, vertexShaderID);
     glAttachShader(programID, fragmentShaderID);
     glLinkProgram(programID);
 
-    // Check the program
+    // Check program
     glGetProgramiv(programID, GL_LINK_STATUS, &Result);
     glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &InfoLogLength);
     if ( InfoLogLength > 0 ){
@@ -100,7 +103,11 @@ GLuint Shader::LinkShaderProgram(GLuint vertexShaderID, GLuint fragmentShaderID)
 GLuint Shader::GetProgramID(){
     return this->_programID;
 }
-    
+
+ GLuint Shader::GetmvpID(){
+    return this->_mvpID;
+}
+
 GLuint Shader::GetUniformLocation(const char * variableName){
 	return glGetUniformLocation(this->_programID, variableName);
 }

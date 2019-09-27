@@ -5,7 +5,6 @@ Window::~Window(){}
 
 Window::Window(const char* title, vec2 size){
 
-    // this->_clearColor = vec4(0.5, 0.5, 0.5, 1);
     CreateWindow(title, size, vec4(0.32, 0.32, 0.32, 0.0));
 }
 
@@ -16,7 +15,7 @@ Window::Window(const char* title, vec2 size, vec4 clearColor){
 
 void Window::CreateWindow(const char* title, vec2 size, vec4 clearColor){
 
-	// Initialise GLFW
+	// Init GLFW
 	if(!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW" << std::endl;
 		getchar();
@@ -26,10 +25,10 @@ void Window::CreateWindow(const char* title, vec2 size, vec4 clearColor){
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
-	// Open a window and create its OpenGL context
+	// Create OpenGL context
     this->_title = title;
     this->_size = size;
     this->_clearColor = clearColor;
@@ -42,19 +41,17 @@ void Window::CreateWindow(const char* title, vec2 size, vec4 clearColor){
 	}
 	glfwMakeContextCurrent(this->_window);
 
-	// Initialize GLEW
-	glewExperimental = true; // Needed for core profile
+	// Init GLEW
+	glewExperimental = true;
 	if (glewInit() != GLEW_OK) {
 		std::cerr << "Failed to initialize GLEW" << std::endl;
 		getchar();
 		glfwTerminate();
 		exit(-1);
 	}
-	glClearColor(this->_clearColor.x, this->_clearColor.y, this->_clearColor.z, this->_clearColor.w);
 
-	// Enable depth test
+	glClearColor(this->_clearColor.x, this->_clearColor.y, this->_clearColor.z, this->_clearColor.w);
 	glEnable(GL_DEPTH_TEST);
-	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS); 
 }
 
@@ -85,9 +82,7 @@ GLFWwindow *Window::GetWindow(){
 }
 
 void Window::ClearWindow(){
-	glClearColor(this->_clearColor.x, this->_clearColor.y, this->_clearColor.z, this->_clearColor.w);
-	glClear(GL_COLOR_BUFFER_BIT);
-	// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::SwapBufferWindow(){

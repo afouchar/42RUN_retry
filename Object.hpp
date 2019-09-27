@@ -15,26 +15,23 @@ using namespace glm;
 class Object {
 
 private:
+    Object();
 
-    mat4 _modelMatrix;
+    mat4            _modelMatrix;
 
 public:
-    Object();
     Object(Shader *shader);
     ~Object();
 
-    Shader *shader;
+    Shader          *shader;
+    GLuint          vertexBufferID;
+    GLuint          colorBufferID;
+    vector<vec3>    vertices;
+    vector<vec3>    colors;
 
-    GLuint vertexBufferID;
-    GLuint colorBufferID;
-
-    vector<vec3> vertices;
-    vector<vec3> colors;
-
-    void SetObjTemp();
-
-    void SetShader(Shader *shader);
-    mat4 GetModelMatrix();
+    void            SetObjTemp(); //replace with objloader
+    void            SetShader(Shader *shader);
+    mat4            GetModelMatrix();
 };
 
 #endif

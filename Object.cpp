@@ -3,6 +3,8 @@
 Object::~Object(){}
 
 Object::Object(){
+
+    this->_modelMatrix = mat4(1.0f);
     SetObjTemp();
 }
 

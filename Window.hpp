@@ -15,12 +15,12 @@ using namespace glm;
 class Window {
 
 private:
-    string _title;
-    vec2 _size;
-    vec4 _clearColor;
+    string      _title;
+    vec2        _size;
+    vec4        _clearColor;
     GLFWwindow* _window;
 
-    void CreateWindow(const char* title, vec2 size, vec4 clearColor);
+    void        CreateWindow(const char* title, vec2 size, vec4 clearColor);
 
 
 public:
@@ -28,18 +28,15 @@ public:
     Window(const char* title, vec2 size, vec4 clearColor);
     ~Window();
 
-    string GetTitle();
-    void SetTitle(const char* title);
+    string      GetTitle();
+    void        SetTitle(const char* title);
+    vec2        GetSize();
+    vec4        GetClearColor();
+    void        SetClearColor(vec4 clearColor);
+    GLFWwindow  *GetWindow();
 
-    vec2 GetSize();
-
-    vec4 GetClearColor();
-    void SetClearColor(vec4 clearColor);
-
-    GLFWwindow *GetWindow();
-
-    void ClearWindow();
-    void SwapBufferWindow();
+    void        ClearWindow();
+    void        SwapBufferWindow();
 
 };
 
