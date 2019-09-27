@@ -52,7 +52,8 @@ void Window::CreateWindow(const char* title, vec2 size, vec4 clearColor){
 
 	glClearColor(this->_clearColor.x, this->_clearColor.y, this->_clearColor.z, this->_clearColor.w);
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS); 
+	glDepthFunc(GL_LESS);
+	glEnable(GL_CULL_FACE);
 }
 
 string Window::GetTitle(){
@@ -81,10 +82,18 @@ GLFWwindow *Window::GetWindow(){
     return this->_window;
 }
 
-void Window::ClearWindow(){
+void Window::Clear(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Window::SwapBufferWindow(){
+void Window::SwapBuffer(){
 	glfwSwapBuffers(this->_window);
+}
+
+void Window::Terminate(){
+	glfwTerminate();
+}
+
+bool Window::IsClosed(){
+	return glfwWindowShouldClose(this->_window) == 0 ? false : true;
 }

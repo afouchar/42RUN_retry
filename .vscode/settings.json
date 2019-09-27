@@ -2,6 +2,7 @@
     "files.associations": {
         "fstream": "cpp",
         "__config": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "ios": "cpp"
     }
 }

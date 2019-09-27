@@ -35,8 +35,10 @@ public:
     void        SetClearColor(vec4 clearColor);
     GLFWwindow  *GetWindow();
 
-    void        ClearWindow();
-    void        SwapBufferWindow();
+    void        Clear();
+    void        SwapBuffer();
+    void        Terminate();
+    bool        IsClosed();
 
 };
 
