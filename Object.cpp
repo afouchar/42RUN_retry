@@ -8,12 +8,12 @@ Object::Object(){
     SetObjTemp();
 }
 
-Object::Object(Shader *shader){
+Object::Object(Shader *shader, const char *objFile){
 
     this->shader = shader;
     this->_modelMatrix = mat4(1.0f);
     SetObjTemp();
-	LoadModel("models/spaceships/AK5/AK5.obj");
+	LoadModel(objFile);
 }
 
 void Object::SetObjTemp(){

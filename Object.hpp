@@ -30,7 +30,7 @@ private:
     GLint           LoadTexture(const char *path, string directory);
 
 public:
-    Object(Shader *shader);
+    Object(Shader *shader, const char *objFile);
     ~Object();
 
     Shader          *shader;

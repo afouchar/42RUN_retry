@@ -24,10 +24,15 @@ int main(int argc, char **argv) {
 	camera->transform.position = vec3(4, 3, -3);
 	camera->LookAt(vec3_zero); // not useful
 
-	Object *object = new Object(shader);
+	string objFile = "models/spaceships/AK5/AK5.obj";
+	if (argc > 1)
+		objFile = argv[1];
+
+	Object *object = new Object(shader, objFile.c_str());
 	
 	renderPipeline->SetMVP(camera, object); // not useful
 	renderPipeline->GenBuffers(object);
+	// renderPipeline->GenBuffers(object_A);
 
 	while(!input.GetKeyPressed(GLFW_KEY_ESCAPE) && !window.IsClosed()){
 
@@ -60,6 +65,12 @@ int main(int argc, char **argv) {
 		renderPipeline->BindBuffers(object);
 
 		renderPipeline->Draw(object);
+
+		// renderPipeline->UseProgram(object_A);
+		// renderPipeline->SetMVP(camera, object_A);
+		// renderPipeline->BindBuffers(object_A);
+		// renderPipeline->Draw(object_A);
+
 
 		window.SwapBuffer();
 		input.PollEvents();
