@@ -37,8 +37,8 @@ public:
     mat4        LookAt(vec3 target, vec3 up);
     void        UpdateDirection(vec2 mouseDirection);
     vec3        GetDirection();
-    vec3        GetUp();
-    vec3        GetRight();
+    vec3        Up();
+    vec3        Right();
 };
 
 #endif

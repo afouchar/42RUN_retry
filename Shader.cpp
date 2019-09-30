@@ -111,3 +111,28 @@ GLuint Shader::GetProgramID(){
 GLuint Shader::GetUniformLocation(const char * variableName){
 	return glGetUniformLocation(this->_programID, variableName);
 }
+
+void	Shader::SetInt(GLint id, int newValue) {
+	
+	glUniform1i(id, newValue);
+}
+
+void	Shader::SetFloat(GLint id, GLfloat newValue) {
+	
+	glUniform1f(id, newValue);
+}
+
+void	Shader::SetFloat2(GLint id, GLfloat v0, GLfloat v1) {
+	
+	glUniform2f(id, v0, v1);
+}
+
+void	Shader::SetFloat3(GLint id, GLfloat v0, GLfloat v1, GLfloat v2) {
+	
+	glUniform3f(id, v0, v1, v2);
+}
+
+void	Shader::SetFloat4(GLint id, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) {
+	
+	glUniform4f(id, v0, v1, v2, v3);
+}

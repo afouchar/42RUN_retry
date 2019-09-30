@@ -13,6 +13,7 @@ private:
     Input();
 
     GLFWwindow      *_window;
+    double          _lastTime;
 
 
 public:
@@ -22,10 +23,12 @@ public:
     float       speed;
     float       mouseSpeed;
 
+    void        PollEvents();
     bool        GetKeyPressed(int key);
     vec2        GetMousePosition();
     vec2        GetMouseDirection();
     void        ResetMousePosition();
+    float       DeltaTime();
 };
 
 #endif

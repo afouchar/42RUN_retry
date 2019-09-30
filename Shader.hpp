@@ -36,6 +36,11 @@ public:
     GLuint      GetProgramID();
     GLuint      GetmvpID();
     GLuint      GetUniformLocation(const char * variableName);
+    void        SetInt(GLint id, int newValue);
+    void        SetFloat(GLint id, GLfloat newValue);
+    void        SetFloat2(GLint id, GLfloat v0, GLfloat v1);
+    void        SetFloat3(GLint id, GLfloat v0, GLfloat v1, GLfloat v2);
+    void        SetFloat4(GLint id, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
 
     string      LoadShaderCode(const char *shaderFilePath);
     void        CompileShader(string shaderCode, GLuint shaderID);

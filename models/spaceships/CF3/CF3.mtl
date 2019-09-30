@@ -1,0 +1,16 @@
+# Blender MTL File: 'Corvette-F3.blend'
+# Material Count: 1
+
+newmtl SF_Corvette_F3
+Ns 19.607843
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.260000 1.260000 1.260000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd CF3_Diffuse.jpg
+map_Bump CF3_Normal.jpg
+map_Ka CF3_Diffuse.jpg
+map_Ke CF3_Emission.jpg

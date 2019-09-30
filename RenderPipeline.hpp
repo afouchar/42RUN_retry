@@ -31,6 +31,7 @@ public:
     void        ClearBuffers(Object *object);
     void        UseProgram(Object *object);
     void        Draw(Object *object);
+    void        DrawObjectMeshes(Object *object, Mesh *mesh);
 };
 
 #endif

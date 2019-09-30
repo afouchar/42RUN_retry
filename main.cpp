@@ -17,15 +17,16 @@ int main(int argc, char **argv) {
 
 	RenderPipeline *renderPipeline = new RenderPipeline();
 
-	Shader *shader = new Shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.frag");
+	// Shader *shader = new Shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.frag");
+	Shader *shader = new Shader("Shaders/TexturedVertexShader.vert", "Shaders/TexturedFragmentShader.frag");
 
 	Camera *camera = new Camera(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 	camera->transform.position = vec3(4, 3, -3);
-	camera->LookAt(vec3_zero);
+	camera->LookAt(vec3_zero); // not useful
 
 	Object *object = new Object(shader);
 	
-	renderPipeline->SetMVP(camera, object);
+	renderPipeline->SetMVP(camera, object); // not useful
 	renderPipeline->GenBuffers(object);
 
 	while(!input.GetKeyPressed(GLFW_KEY_ESCAPE) && !window.IsClosed()){
@@ -34,53 +35,34 @@ int main(int argc, char **argv) {
 
 		renderPipeline->UseProgram(object);
 
-		//GET INPUT AND SET MVP//
-//_____________________________________________//
-	// glfwGetTime is called only once, the first time this function is called
-	static double lastTime = glfwGetTime();
+		float deltaTime = input.DeltaTime();
 
-	// Compute time difference between current and last frame
-	double currentTime = glfwGetTime();
-	float deltaTime = float(currentTime - lastTime);
+		camera->transform.UpdateDirection(input.GetMouseDirection());
+		input.ResetMousePosition();
 
-	// Compute new orientation
-	camera->transform.UpdateDirection(input.GetMouseDirection());
-	input.ResetMousePosition();
+		if (input.GetKeyPressed(GLFW_KEY_UP)){
+			camera->transform.position += camera->transform.GetDirection() * deltaTime * input.speed;
+		}
+		if (input.GetKeyPressed(GLFW_KEY_DOWN)){
+			camera->transform.position -= camera->transform.GetDirection() * deltaTime * input.speed;
+		}
+		if (input.GetKeyPressed(GLFW_KEY_RIGHT)){
+			camera->transform.position += camera->transform.Right() * deltaTime * input.speed;
+		}
+		if (input.GetKeyPressed(GLFW_KEY_LEFT)){
+			camera->transform.position -= camera->transform.Right() * deltaTime * input.speed;
+		}
 
-	// Move forward
-	if (glfwGetKey(window.GetWindow(), GLFW_KEY_UP ) == GLFW_PRESS){
-		camera->transform.position += camera->transform.GetDirection() * deltaTime * input.speed;
-	}
-	// Move backward
-	if (glfwGetKey(window.GetWindow(), GLFW_KEY_DOWN ) == GLFW_PRESS){
-		camera->transform.position -= camera->transform.GetDirection() * deltaTime * input.speed;
-	}
-	// Strafe right
-	if (glfwGetKey(window.GetWindow(), GLFW_KEY_RIGHT ) == GLFW_PRESS){
-		camera->transform.position += camera->transform.GetRight() * deltaTime * input.speed;
-	}
-	// Strafe left
-	if (glfwGetKey(window.GetWindow(), GLFW_KEY_LEFT ) == GLFW_PRESS){
-		camera->transform.position -= camera->transform.GetRight() * deltaTime * input.speed;
-	}
-
-//_____________________________________________//
-
-		camera->LookAt(camera->transform.position + camera->transform.GetDirection(), camera->transform.GetUp());
-		// camera->LookAt(vec3_zero, camera->transform.GetUp());
+		camera->LookAt(camera->transform.position + camera->transform.GetDirection(), camera->transform.Up());
+		// camera->LookAt(vec3_zero, camera->transform.Up());
 		renderPipeline->SetMVP(camera, object);
-
-//_____________________________________________//
-
-	lastTime = currentTime;
-//_____________________________________________//
 
 		renderPipeline->BindBuffers(object);
 
 		renderPipeline->Draw(object);
 
 		window.SwapBuffer();
-		glfwPollEvents();
+		input.PollEvents();
 	}
 
 	renderPipeline->ClearBuffers(object);

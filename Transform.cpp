@@ -41,10 +41,10 @@ vec3 Transform::GetDirection(){
     return this->_direction;
 }
 
-vec3 Transform::GetUp(){
+vec3 Transform::Up(){
     return this->_up;
 }
 
-vec3 Transform::GetRight(){
+vec3 Transform::Right(){
     return this->_right;
 }

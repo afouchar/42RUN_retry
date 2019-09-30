@@ -1,3 +1,3 @@
 # 42RUN_retry
 
-clang++ *.cpp -I *.hpp -I /Users/afouchar/.brew/Cellar/glfw/3.3/include/GLFW/ -I /Users/afouchar/.brew/Cellar/glm/0.9.9.5/include/glm/ -I /Users/afouchar/.brew/Cellar/glew/2.1.0/include/GL/ /Users/afouchar/.brew/lib/libglfw.3.3.dylib /Users/afouchar/.brew/Cellar/glew/2.1.0/lib/libGLEW.2.1.0.dylib -framework OpenGL
+clang++ -std=c++11 *.cpp -I *.hpp -I /Users/afouchar/.brew/Cellar/glfw/3.3/include/GLFW/ -I /Users/afouchar/.brew/Cellar/glm/0.9.9.5/include/glm/ -I /Users/afouchar/.brew/Cellar/glew/2.1.0/include/GL/ -I /Users/afouchar/.brew/Cellar/devil/1.8.0_1/include/ -I /Users/afouchar/.brew/Cellar/assimp/4.1.0/include/ /Users/afouchar/.brew/lib/libglfw.3.3.dylib /Users/afouchar/.brew/Cellar/glew/2.1.0/lib/libGLEW.2.1.0.dylib /Users/afouchar/.brew/Cellar/assimp/4.1.0/lib/libassimp.4.1.0.dylib /Users/afouchar/.brew/Cellar/devil/1.8.0_1/lib/libI*.dylib -framework OpenGL
