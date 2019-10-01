@@ -4,13 +4,22 @@ RenderPipeline::~RenderPipeline(){}
 
 RenderPipeline::RenderPipeline(){
 
-    glGenVertexArrays(1, &this->_vertexArrayID);
-    glBindVertexArray(this->_vertexArrayID);
+    // glGenVertexArrays(1, &this->_vertexArrayID);
+    // glBindVertexArray(this->_vertexArrayID);
 }
 
 void RenderPipeline::SetMVP(Camera *camera, Object *object){
 
-	this->_MVP = camera->GetProjectionMatrix() * camera->GetViewMatrix() * object->GetModelMatrix();
+	// this->_MVP = camera->GetProjectionMatrix() * camera->GetViewMatrix() * object->GetModelMatrix();
+	object->MVP = camera->GetProjectionMatrix() * camera->GetViewMatrix() * object->GetModelMatrix();
+}
+
+void RenderPipeline::GenVAO(Object *object){
+
+    for (int i = 0; i < object->meshes.size(); i++) {
+        glGenVertexArrays(1, &object->meshes[i].vertexArrayID);
+        glBindVertexArray(object->meshes[i].vertexArrayID);
+    }
 }
 
 void RenderPipeline::GenBuffers(Object *object){
@@ -51,7 +60,8 @@ GLuint RenderPipeline::AddBuffer(vector<vec3> *data){
 
 void RenderPipeline::BindBuffers(Object *object){
 
-    glUniformMatrix4fv(object->shader->GetmvpID(), 1, GL_FALSE, &this->_MVP[0][0]);
+    // glUniformMatrix4fv(object->shader->GetmvpID(), 1, GL_FALSE, &this->_MVP[0][0]);
+    glUniformMatrix4fv(object->shader->GetmvpID(), 1, GL_FALSE, &object->MVP[0][0]);
 
     // BindBuffer(object->vertexBufferID, 0);
     // BindBuffer(object->colorBufferID, 1);
@@ -74,10 +84,12 @@ void RenderPipeline::BindBuffer(GLuint bufferID, int layoutLocation){
 
 void RenderPipeline::ClearBuffers(Object *object){
 
-    glDeleteBuffers(1, &object->vertexBufferID);
-    glDeleteBuffers(1, &object->colorBufferID);
+    // glDeleteBuffers(1, &object->vertexBufferID);
+    // glDeleteBuffers(1, &object->colorBufferID);
     glDeleteProgram(object->shader->GetProgramID());
-    glDeleteVertexArrays(1, &this->_vertexArrayID);
+    for (int i = 0; i < object->meshes.size(); i++){
+        glDeleteVertexArrays(1, &object->meshes[i].vertexArrayID);
+    }
 }
 
 void RenderPipeline::UseProgram(Object *object){
@@ -126,7 +138,8 @@ void	RenderPipeline::DrawObjectMeshes(Object *object, Mesh *mesh) {
 
 	object->shader->SetFloat(object->shader->GetUniformLocation("material.shininess"), 16.0f);
 
-	glBindVertexArray(this->_vertexArrayID);
+	// glBindVertexArray(this->_vertexArrayID);
+	glBindVertexArray(mesh->vertexArrayID);
 	glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 

@@ -25,7 +25,7 @@ public:
     ~RenderPipeline();
 
     void        SetMVP(Camera *camera, Object *object);
-
+    void        GenVAO(Object *object);
     void        GenBuffers(Object *object);
     void        BindBuffers(Object *object);
     void        ClearBuffers(Object *object);

@@ -37,6 +37,7 @@ public:
     Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures);
     ~Mesh();
 
+    GLuint          vertexArrayID;
     GLuint          vertexBufferID;
     GLuint          elementBufferID;
 

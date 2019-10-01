@@ -11,6 +11,7 @@ Input::Input(GLFWwindow *window){
     this->_lastTime = -1;
 	glfwSetInputMode(this->_window, GLFW_STICKY_KEYS, GL_TRUE);
     glfwSetInputMode(this->_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    ResetMousePosition();
 }
 
 void Input::PollEvents(){

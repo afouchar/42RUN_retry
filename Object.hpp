@@ -40,6 +40,8 @@ public:
     vector<vec3>    colors;
     vector<Mesh>    meshes;
 
+    mat4            MVP;
+
     void            SetObjTemp(); //replace with objloader
     void            SetShader(Shader *shader);
     mat4            GetModelMatrix();
