@@ -5,6 +5,7 @@ Transform::~Transform(){}
 
 Transform::Transform(){
 
+    this->modelMatrix = mat4(1.0f);
     this->position = vec3(0.0f, 0.0f, 0.0f);
     this->_horizontalAngle = PI;
     this->_verticalAngle = 0.0f;
@@ -12,6 +13,7 @@ Transform::Transform(){
 
 Transform::Transform(vec3 pos){
 
+    this->modelMatrix = mat4(1.0f);
     this->position = pos;
     this->_horizontalAngle = PI;
     this->_verticalAngle = 0.0f;
@@ -40,6 +42,17 @@ void Transform::UpdateDirection(vec2 mouseDirection){
 vec3 Transform::GetDirection(){
     return this->_direction;
 }
+
+// void Transform::Rotate(vec3 rotation, bool localOrientation){
+
+//     mat4 rotationMatrix = rotate(rotation.x, vec3(1,0,0));
+//     rotationMatrix *= rotate(rotation.y, vec3(0,1,0));
+//     rotationMatrix *= rotate(rotation.z, vec3(0,0,1));
+//     if(localOrientation)
+//         this->T = this->T * rotationMatrix;
+//     else
+//         this->T = rotationMatrix * this->T;
+// }
 
 vec3 Transform::Up(){
     return this->_up;

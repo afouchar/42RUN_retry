@@ -22,7 +22,7 @@ class Object {
 private:
     Object();
 
-    mat4            _modelMatrix;
+    // mat4            _modelMatrix;
 
     void            LoadNodes(aiNode *node, const aiScene *scene, string directory);
     Mesh            LoadMesh(aiMesh *mesh, const aiScene *scene, string directory);
@@ -34,6 +34,7 @@ public:
     ~Object();
 
     Shader          *shader;
+    Transform       transform;
     GLuint          vertexBufferID;
     GLuint          colorBufferID;
     vector<vec3>    vertices;

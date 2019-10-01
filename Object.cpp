@@ -4,14 +4,14 @@ Object::~Object(){}
 
 Object::Object(){
 
-    this->_modelMatrix = mat4(1.0f);
+    // this->_modelMatrix = mat4(1.0f);
     SetObjTemp();
 }
 
 Object::Object(Shader *shader, const char *objFile){
 
     this->shader = shader;
-    this->_modelMatrix = mat4(1.0f);
+    // this->_modelMatrix = mat4(1.0f);
     SetObjTemp();
 	LoadModel(objFile);
 }
@@ -113,7 +113,8 @@ void Object::SetShader(Shader *shader){
 }
 
 mat4 Object::GetModelMatrix(){
-    return this->_modelMatrix;
+    // return this->_modelMatrix;
+    return this->transform.modelMatrix;// * this->transform.rotation;
 }
 
 void Object::LoadModel(string path){

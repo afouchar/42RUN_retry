@@ -8,6 +8,7 @@
 #include "RenderPipeline.hpp"
 #include "Object.hpp"
 #include "Input.hpp"
+#include "Light.hpp"
 
 
 int main(int argc, char **argv) {
@@ -18,10 +19,13 @@ int main(int argc, char **argv) {
 	RenderPipeline *renderPipeline = new RenderPipeline();
 
 	// Shader *shader = new Shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.frag");
-	Shader *shader = new Shader("Shaders/TexturedVertexShader.vert", "Shaders/TexturedFragmentShader.frag");
+	// Shader *shader = new Shader("Shaders/TexturedVertexShader.vert", "Shaders/TexturedFragmentShader.frag");
+	Shader *shader = new Shader("Shaders/TexLightVertexShader.vert", "Shaders/TexLightFragmentShader.frag");
 
 	Camera *camera = new Camera(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 	camera->transform.position = vec3(4, 3, -3);
+
+	Light *light = new Light(vec3(4, 4, 4));
 
 	string objFile = "models/spaceships/AK5/AK5.obj";
 	if (argc > 1)
@@ -70,12 +74,12 @@ int main(int argc, char **argv) {
 
 		camera->LookAt(camera->transform.position + camera->transform.GetDirection(), camera->transform.Up());
 		renderPipeline->SetMVP(camera, object);
-		renderPipeline->BindBuffers(object);
+		renderPipeline->BindBuffers(object, camera, light);
 		renderPipeline->Draw(object);
 
 		renderPipeline->UseProgram(object_A);
 		renderPipeline->SetMVP(camera, object_A);
-		renderPipeline->BindBuffers(object_A);
+		renderPipeline->BindBuffers(object_A, camera, light);
 		renderPipeline->Draw(object_A);
 
 

@@ -4,6 +4,7 @@
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
+// #include <gtc/quaternion.hpp>
 
 #define vec3_zero       vec3(0, 0, 0)
 #define vec3_one        vec3(1, 1, 1)
@@ -34,9 +35,13 @@ public:
 
     vec3        position;
 
+    vec3        rotation;
+    mat4        modelMatrix;
+
     mat4        LookAt(vec3 target, vec3 up);
     void        UpdateDirection(vec2 mouseDirection);
     vec3        GetDirection();
+    void        Rotate(vec3 rotation, bool localOrientation);
     vec3        Up();
     vec3        Right();
 };

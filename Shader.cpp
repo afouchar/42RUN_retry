@@ -36,7 +36,14 @@ Shader::Shader(const char * vertexFilePath,const char * fragmentFilePath){
         glDeleteShader(this->_vertexShaderID);
         glDeleteShader(this->_fragmentShaderID);
 
-        this->_mvpID = glGetUniformLocation(this->_programID, "MVP");
+        // this->_mvpID = glGetUniformLocation(this->_programID, "MVP");
+        this->_mvpID = GetUniformLocation("MVP");
+
+        this->_modelMatrixID = GetUniformLocation("M");
+        this->_viewMatrixID = GetUniformLocation("V");
+        this->_projectionMatrixID = GetUniformLocation("P");
+
+        this->_lightID = GetUniformLocation("LightPosition_worldspace");
     }
 }
 
@@ -74,7 +81,7 @@ void Shader::CompileShader(string shaderCode, GLuint shaderID){
     if ( InfoLogLength > 0 ){
         std::vector<char> shaderErrorMessage(InfoLogLength+1);
         glGetShaderInfoLog(shaderID, InfoLogLength, NULL, &shaderErrorMessage[0]);
-        std::cerr << shaderErrorMessage[0] << std::endl;
+        std::cerr << &shaderErrorMessage[0] << std::endl;
     }
 }
 
@@ -95,7 +102,7 @@ GLuint Shader::LinkShaderProgram(GLuint vertexShaderID, GLuint fragmentShaderID)
     if ( InfoLogLength > 0 ){
         std::vector<char> ProgramErrorMessage(InfoLogLength+1);
         glGetProgramInfoLog(programID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-        std::cerr << ProgramErrorMessage[0] << std::endl;
+        std::cerr << &ProgramErrorMessage[0] << std::endl;
     }
     return programID;
 }
@@ -104,8 +111,24 @@ GLuint Shader::GetProgramID(){
     return this->_programID;
 }
 
- GLuint Shader::GetmvpID(){
+GLuint Shader::GetModelMatrixID(){
+    return this->_modelMatrixID;
+}
+
+GLuint Shader::GetViewMatrixID(){
+    return this->_viewMatrixID;
+}
+
+GLuint Shader::GetProjectionMatrixID(){
+    return this->_projectionMatrixID;
+}
+
+GLuint Shader::GetmvpID(){
     return this->_mvpID;
+}
+
+GLuint Shader::GetLightID(){
+    return this->_lightID;
 }
 
 GLuint Shader::GetUniformLocation(const char * variableName){
@@ -127,12 +150,32 @@ void	Shader::SetFloat2(GLint id, GLfloat v0, GLfloat v1) {
 	glUniform2f(id, v0, v1);
 }
 
+void	Shader::SetFloat2(GLint id, vec2 newValues) {
+	
+	glUniform2f(id, newValues.x, newValues.y);
+}
+
 void	Shader::SetFloat3(GLint id, GLfloat v0, GLfloat v1, GLfloat v2) {
 	
 	glUniform3f(id, v0, v1, v2);
 }
 
+void	Shader::SetFloat3(GLint id, vec3 newValues) {
+	
+	glUniform3f(id, newValues.x, newValues.y, newValues.z);
+}
+
 void	Shader::SetFloat4(GLint id, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) {
 	
 	glUniform4f(id, v0, v1, v2, v3);
+}
+
+void	Shader::SetFloat4(GLint id, vec4 newValues) {
+	
+	glUniform4f(id, newValues.x, newValues.y, newValues.z, newValues.w);
+}
+
+void    Shader::SetMatrix4fv(GLint id, const GLfloat *newValue){
+
+    glUniformMatrix4fv(id, 1, GL_FALSE, newValue);
 }

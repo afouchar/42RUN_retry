@@ -58,10 +58,13 @@ GLuint RenderPipeline::AddBuffer(vector<vec3> *data){
     return bufferID;
 }
 
-void RenderPipeline::BindBuffers(Object *object){
+void RenderPipeline::BindBuffers(Object *object, Camera *camera, Light *light){
 
-    // glUniformMatrix4fv(object->shader->GetmvpID(), 1, GL_FALSE, &this->_MVP[0][0]);
-    glUniformMatrix4fv(object->shader->GetmvpID(), 1, GL_FALSE, &object->MVP[0][0]);
+    object->shader->SetMatrix4fv(object->shader->GetmvpID(), &object->MVP[0][0]);
+    object->shader->SetMatrix4fv(object->shader->GetModelMatrixID(), &object->GetModelMatrix()[0][0]);
+    object->shader->SetMatrix4fv(object->shader->GetViewMatrixID(), &camera->GetViewMatrix()[0][0]);
+    object->shader->SetMatrix4fv(object->shader->GetProjectionMatrixID(), &camera->GetProjectionMatrix()[0][0]);
+    object->shader->SetFloat3(object->shader->GetLightID(), light->transform.position);
 
     // BindBuffer(object->vertexBufferID, 0);
     // BindBuffer(object->colorBufferID, 1);

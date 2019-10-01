@@ -8,14 +8,12 @@
 #include "Shader.hpp"
 #include "Camera.hpp"
 #include "Object.hpp"
+#include "Light.hpp"
 
 
 class RenderPipeline {
 
 private:
-
-    mat4        _MVP;
-    GLuint      _vertexArrayID;
 
     GLuint      AddBuffer(vector<vec3> *data);
     void        BindBuffer(GLuint bufferID, int layoutLocation);
@@ -27,7 +25,7 @@ public:
     void        SetMVP(Camera *camera, Object *object);
     void        GenVAO(Object *object);
     void        GenBuffers(Object *object);
-    void        BindBuffers(Object *object);
+    void        BindBuffers(Object *object, Camera *camera, Light *light);
     void        ClearBuffers(Object *object);
     void        UseProgram(Object *object);
     void        Draw(Object *object);
