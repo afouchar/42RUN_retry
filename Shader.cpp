@@ -36,14 +36,27 @@ Shader::Shader(const char * vertexFilePath,const char * fragmentFilePath){
         glDeleteShader(this->_vertexShaderID);
         glDeleteShader(this->_fragmentShaderID);
 
-        // this->_mvpID = glGetUniformLocation(this->_programID, "MVP");
-        this->_mvpID = GetUniformLocation("MVP");
-
         this->_modelMatrixID = GetUniformLocation("M");
         this->_viewMatrixID = GetUniformLocation("V");
         this->_projectionMatrixID = GetUniformLocation("P");
 
-        this->_lightID = GetUniformLocation("LightPosition_worldspace");
+        // GLuint DiffuseTextureID  = glGetUniformLocation(programID, "DiffuseTextureSampler");
+        // GLuint NormalTextureID  = glGetUniformLocation(programID, "NormalTextureSampler");
+        // GLuint SpecularTextureID  = glGetUniformLocation(programID, "SpecularTextureSampler");
+
+        this->_lightPositionID = GetUniformLocation("LightPosition");
+        this->_lightColorID = GetUniformLocation("LightColor");
+        this->_lightIntensityID = GetUniformLocation("LightIntensity");
+
+        this->_specularID = GetUniformLocation("specular");
+        this->_diffuseID = GetUniformLocation("diffuse");
+        this->_ambientID = GetUniformLocation("ambient");
+        this->_emissiveID = GetUniformLocation("emissive");
+        this->_reflectiveID = GetUniformLocation("reflective");
+        this->_transparentID = GetUniformLocation("transparent");
+        this->_shininessID = GetUniformLocation("shininess");
+        this->_bumpScaleID = GetUniformLocation("bumpScale");
+
     }
 }
 
@@ -123,12 +136,48 @@ GLuint Shader::GetProjectionMatrixID(){
     return this->_projectionMatrixID;
 }
 
-GLuint Shader::GetmvpID(){
-    return this->_mvpID;
+GLuint Shader::GetLightPositionID(){
+    return this->_lightPositionID;
 }
 
-GLuint Shader::GetLightID(){
-    return this->_lightID;
+GLuint Shader::GetLightColorID(){
+    return this->_lightColorID;
+}
+
+GLuint Shader::GetLightIntensityID(){
+    return this->_lightIntensityID;
+}
+
+GLuint Shader::GetSpecularID(){
+    return this->_specularID;
+}
+
+GLuint Shader::GetDiffuseID(){
+    return this->_diffuseID;
+}
+
+GLuint Shader::GetAmbientID(){
+    return this->_ambientID;
+}
+
+GLuint Shader::GetEmissiveID(){
+    return this->_emissiveID;
+}
+
+GLuint Shader::GetReflectiveID(){
+    return this->_reflectiveID;
+}
+
+GLuint Shader::GetTransparentID(){
+    return this->_transparentID;
+}
+
+GLuint Shader::GetShininessID(){
+    return this->_shininessID;
+}
+
+GLuint Shader::GetBumpScaleID(){
+    return this->_bumpScaleID;
 }
 
 GLuint Shader::GetUniformLocation(const char * variableName){
@@ -173,6 +222,11 @@ void	Shader::SetFloat4(GLint id, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
 void	Shader::SetFloat4(GLint id, vec4 newValues) {
 	
 	glUniform4f(id, newValues.x, newValues.y, newValues.z, newValues.w);
+}
+
+void    Shader::SetMatrix3fv(GLint id, const GLfloat *newValue){
+
+    glUniformMatrix3fv(id, 1, GL_FALSE, newValue);
 }
 
 void    Shader::SetMatrix4fv(GLint id, const GLfloat *newValue){

@@ -17,7 +17,8 @@ public:
     ~Light();
 
     Transform       transform;
+    float            intensity;
+    vec3            color;
 };
-
 
 #endif

@@ -25,13 +25,27 @@ private:
     Shader();
 
     GLuint      _programID;
+
     GLuint      _vertexShaderID;
     GLuint      _fragmentShaderID;
-    GLuint      _mvpID;
+
     GLuint      _modelMatrixID;
     GLuint      _viewMatrixID;
     GLuint      _projectionMatrixID;
-    GLuint      _lightID;
+
+    GLuint      _lightPositionID;
+    GLuint      _lightColorID;
+    GLuint      _lightIntensityID;
+
+    GLuint      _specularID;
+    GLuint      _diffuseID;
+    GLuint      _ambientID;
+    GLuint      _emissiveID;
+    GLuint      _reflectiveID;
+    GLuint      _transparentID;
+    GLuint      _shininessID;
+    GLuint      _bumpScaleID;
+
     const char  *_vertexFilePath;
     const char  *_fragmentFilePath;
 
@@ -43,8 +57,17 @@ public:
     GLuint      GetModelMatrixID();
     GLuint      GetViewMatrixID();
     GLuint      GetProjectionMatrixID();
-    GLuint      GetmvpID();
-    GLuint      GetLightID();
+    GLuint      GetLightPositionID();
+    GLuint      GetLightColorID();
+    GLuint      GetLightIntensityID();
+    GLuint      GetSpecularID();
+    GLuint      GetDiffuseID();
+    GLuint      GetAmbientID();
+    GLuint      GetEmissiveID();
+    GLuint      GetReflectiveID();
+    GLuint      GetTransparentID();
+    GLuint      GetShininessID();
+    GLuint      GetBumpScaleID();
     GLuint      GetUniformLocation(const char * variableName);
     void        SetInt(GLint id, int newValue);
     void        SetFloat(GLint id, GLfloat newValue);
@@ -54,6 +77,7 @@ public:
     void        SetFloat3(GLint id, vec3 newValues);
     void        SetFloat4(GLint id, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
     void        SetFloat4(GLint id, vec4 newValues);
+    void        SetMatrix3fv(GLint id, const GLfloat *newValue);
     void        SetMatrix4fv(GLint id, const GLfloat *newValue);
 
     string      LoadShaderCode(const char *shaderFilePath);

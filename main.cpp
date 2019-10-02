@@ -20,7 +20,10 @@ int main(int argc, char **argv) {
 
 	// Shader *shader = new Shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.frag");
 	// Shader *shader = new Shader("Shaders/TexturedVertexShader.vert", "Shaders/TexturedFragmentShader.frag");
-	Shader *shader = new Shader("Shaders/TexLightVertexShader.vert", "Shaders/TexLightFragmentShader.frag");
+	// Shader *shader = new Shader("Shaders/TexLightVertexShader.vert", "Shaders/TexLightFragmentShader.frag");
+	// Shader *shader = new Shader("Shaders/TexLightTranspVertexShader.vert", "Shaders/TexLightTranspFragmentShader.frag");
+	// Shader *shader = new Shader("Shaders/TexLightTranspNVertexShader.vert", "Shaders/TexLightTranspNFragmentShader.frag");
+	Shader *shader = new Shader("Shaders/Standard.vert", "Shaders/Standard.frag");
 
 	Camera *camera = new Camera(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 	camera->transform.position = vec3(4, 3, -3);
@@ -36,15 +39,14 @@ int main(int argc, char **argv) {
 		objFile_A = argv[2];
 
 	Object *object = new Object(shader, objFile.c_str());
-	Object *object_A = new Object(shader, objFile_A.c_str());
+	// Object *object_A = new Object(shader, objFile_A.c_str());
 	
 	renderPipeline->GenVAO(object);
-	renderPipeline->SetMVP(camera, object); // not useful
 	renderPipeline->GenBuffers(object);
 
-	renderPipeline->GenVAO(object_A);
-	renderPipeline->SetMVP(camera, object_A); // not useful
-	renderPipeline->GenBuffers(object_A);
+	// renderPipeline->GenVAO(object_A);
+	// renderPipeline->SetMVP(camera, object_A); // not useful
+	// renderPipeline->GenBuffers(object_A);
 
 	camera->LookAt(camera->transform.position - vec3(0, 0, 0), vec3_up);
 
@@ -73,14 +75,12 @@ int main(int argc, char **argv) {
 		}
 
 		camera->LookAt(camera->transform.position + camera->transform.GetDirection(), camera->transform.Up());
-		renderPipeline->SetMVP(camera, object);
 		renderPipeline->BindBuffers(object, camera, light);
 		renderPipeline->Draw(object);
 
-		renderPipeline->UseProgram(object_A);
-		renderPipeline->SetMVP(camera, object_A);
-		renderPipeline->BindBuffers(object_A, camera, light);
-		renderPipeline->Draw(object_A);
+		// renderPipeline->UseProgram(object_A);
+		// renderPipeline->BindBuffers(object_A, camera, light);
+		// renderPipeline->Draw(object_A);
 
 
 		window.SwapBuffer();
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
 	}
 
 	renderPipeline->ClearBuffers(object);
-	renderPipeline->ClearBuffers(object_A);
+	// renderPipeline->ClearBuffers(object_A);
 	window.Terminate();
 	return 0;
 }

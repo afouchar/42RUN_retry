@@ -19,6 +19,8 @@ struct Vertex {
 	vec3        position;
 	vec3        normal;
 	vec2        texCoords;
+	vec3        tangent;
+	vec3        biTangent;
 };
 
 
@@ -28,22 +30,33 @@ struct Texture {
 	aiString    path;
 };
 
+struct Material {
+    vec3        specular;
+    vec3        diffuse;
+    vec3        ambient;
+    vec3        emissive;
+    vec3        reflective;
+    vec3        transparent;
+    float       shininess;
+    float       bumpScale;
+};
 
 class Mesh {
 
 private:
     
 public:
-    Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures);
+    Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures, Material material);
     ~Mesh();
 
-    GLuint          vertexArrayID;
-    GLuint          vertexBufferID;
-    GLuint          elementBufferID;
+    GLuint              vertexArrayID;
+    GLuint              vertexBufferID;
+    GLuint              elementBufferID;
 
-    vector<Vertex>     vertices;
-    vector<GLuint>     indices;
-    vector<Texture>    textures;
+    vector<Vertex>      vertices;
+    vector<GLuint>      indices;
+    vector<Texture>     textures;
+    Material            material;
 };
 
 #endif

@@ -5,14 +5,14 @@ Object::~Object(){}
 Object::Object(){
 
     // this->_modelMatrix = mat4(1.0f);
-    SetObjTemp();
+    // SetObjTemp();
 }
 
 Object::Object(Shader *shader, const char *objFile){
 
     this->shader = shader;
     // this->_modelMatrix = mat4(1.0f);
-    SetObjTemp();
+    // SetObjTemp();
 	LoadModel(objFile);
 }
 
@@ -147,9 +147,11 @@ Mesh	Object::LoadMesh(aiMesh *mesh, const aiScene *scene, string directory) {
 	vector<Vertex> vertices;
 	vector<GLuint> indices;
 	vector<Texture> textures;
+	bool tangentAvailable = false;
+	bool biTangentAvailable = false;
 
 	vertices.reserve(mesh->mNumVertices);
-	for(GLuint i = 0; i < mesh->mNumVertices; i++) {
+	for(int i = 0; i < mesh->mNumVertices; i++) {
 
 		Vertex vertex;
 
@@ -159,38 +161,169 @@ Mesh	Object::LoadMesh(aiMesh *mesh, const aiScene *scene, string directory) {
 			vertex.texCoords = vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
 		else
 			vertex.texCoords = vec2(0.0f, 0.0f);
+		if (mesh->mTangents){
+			vertex.tangent = vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+			tangentAvailable = true;
+		}
+		if (mesh->mBitangents){
+			vertex.biTangent = vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+			biTangentAvailable = true;
+		}
 		vertices.push_back(vertex);
 	}
 
+	if (!tangentAvailable){
+		for (int i = 0; i < vertices.size(); i += 3){
+			vertices[i].tangent = ComputeTangent(vertices, i);
+			vertices[i].tangent = ComputeTangent(vertices, i + 1);
+			vertices[i].tangent = ComputeTangent(vertices, i + 2);
+		}
+	}
+
+	if (!biTangentAvailable){
+		for (int i = 0; i < vertices.size(); i += 3){
+			vertices[i].tangent = ComputeBiTangent(vertices, i);
+			vertices[i].tangent = ComputeBiTangent(vertices, i + 1);
+			vertices[i].tangent = ComputeBiTangent(vertices, i + 2);
+		}
+	}
+
 	indices.reserve(3 * mesh->mNumFaces);
-	for(GLuint i = 0; i < mesh->mNumFaces; i++) {
+	for(int i = 0; i < mesh->mNumFaces; i++) {
 		aiFace face = mesh->mFaces[i];
-		for(GLuint j = 0; j < face.mNumIndices; j++)
+		for(int j = 0; j < face.mNumIndices; j++)
 			indices.push_back(face.mIndices[j]);
     }
 
 	// Process materials
 	aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-	// We assume a convention for sampler names in the shaders. Each diffuse texture should be named
-	// as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER.
-	// Same applies to other texture as the following list summarizes:
+	// Convention (N is the index):
 	// Diffuse: texture_diffuseN
 	// Specular: texture_specularN
 	// Normal: texture_normalN
 
-	std::vector<Texture> diffuseMaps = this->LoadMaterial(material, aiTextureType_DIFFUSE, "texture_diffuse", directory);
+	vector<Texture> diffuseMaps = this->LoadTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", directory);
 	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-	std::vector<Texture> specularMaps = this->LoadMaterial(material, aiTextureType_SPECULAR, "texture_specular", directory);
+	vector<Texture> specularMaps = this->LoadTextures(material, aiTextureType_SPECULAR, "texture_specular", directory);
 	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-	return Mesh(vertices, indices, textures);
+	vector<Texture> normalMaps = this->LoadTextures(material, aiTextureType_NORMALS, "texture_normal", directory);
+	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+
+	Material mat = LoadMaterial(material);
+
+	return Mesh(vertices, indices, textures, mat);
 }
 
-vector<Texture>	Object::LoadMaterial(aiMaterial *mat, aiTextureType type, string typeName, string directory) {
+vec3 Object::ComputeTangent(vector<Vertex> vertices, int index){
+
+	vec3 deltaPos1 = vertices[index + 1].position - vertices[index + 0].position;
+	vec3 deltaPos2 = vertices[index + 2].position - vertices[index + 0].position;
+	vec2 deltaUV1 = vertices[index + 1].texCoords - vertices[index + 0].texCoords;
+	vec2 deltaUV2 = vertices[index + 2].texCoords - vertices[index + 0].texCoords;
+
+	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+
+	return (deltaPos1 * deltaUV2.y   - deltaPos2 * deltaUV1.y) * r;
+}
+
+vec3 Object::ComputeBiTangent(vector<Vertex> vertices, int index){
+
+	vec3 deltaPos1 = vertices[index + 1].position - vertices[index + 0].position;
+	vec3 deltaPos2 = vertices[index + 2].position - vertices[index + 0].position;
+	vec2 deltaUV1 = vertices[index + 1].texCoords - vertices[index + 0].texCoords;
+	vec2 deltaUV2 = vertices[index + 2].texCoords - vertices[index + 0].texCoords;
+
+	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+
+	return (deltaPos2 * deltaUV1.x   - deltaPos1 * deltaUV2.x) * r;
+}
+
+Material Object::LoadMaterial(aiMaterial *mat){
+
+	Material newMat;
+	aiColor4D specularColor;
+	aiColor4D diffuseColor;
+	aiColor4D ambientColor;
+	aiColor4D emissiveColor;
+	aiColor4D reflectiveColor;
+	aiColor4D transparentColor;
+	float shininess;
+	float bumpScale;
+
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_SPECULAR, &specularColor);
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor);
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_AMBIENT, &ambientColor);
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_EMISSIVE, &emissiveColor);
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_REFLECTIVE, &reflectiveColor);
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_TRANSPARENT, &transparentColor);
+	aiGetMaterialFloat(mat, AI_MATKEY_SHININESS, &shininess);
+	aiGetMaterialFloat(mat, AI_MATKEY_BUMPSCALING, &bumpScale);
+
+	newMat.specular = vec3(specularColor.r, specularColor.g, specularColor.b);
+	newMat.diffuse = vec3(diffuseColor.r, diffuseColor.g, diffuseColor.b);
+	newMat.ambient = vec3(ambientColor.r, ambientColor.g, ambientColor.b);
+	newMat.emissive = vec3(emissiveColor.r, emissiveColor.g, emissiveColor.b);
+	newMat.reflective = vec3(reflectiveColor.r, reflectiveColor.g, reflectiveColor.b);
+	newMat.transparent = vec3(transparentColor.r, transparentColor.g, transparentColor.b);
+	newMat.shininess = shininess;
+	newMat.bumpScale = bumpScale;
+
+	return newMat;
+	// aiString matName;
+	// aiGetMaterialString(mat, AI_DEFAULT_MATERIAL_NAME, 0, 0, &matName);
+
+	// std::cout << matName.C_Str() << std::endl;
+	// std::cout << "SPECULAR    : " << specularColor.r << " | " << specularColor.g << " | " << specularColor.b << std::endl;
+	// std::cout << "DIFFUSE     : " << diffuseColor.r << " | " << diffuseColor.g << " | " << diffuseColor.b << std::endl;
+	// std::cout << "AMBIENT     : " << ambientColor.r << " | " << ambientColor.g << " | " << ambientColor.b << std::endl;
+	// std::cout << "EMISSIVE    : " << emissiveColor.r << " | " << emissiveColor.g << " | " << emissiveColor.b << std::endl;
+	// std::cout << "REFLECTIVE  : " << reflectiveColor.r << " | " << reflectiveColor.g << " | " << reflectiveColor.b << std::endl;
+	// std::cout << "TRANSPARENT : " << transparentColor.r << " | " << transparentColor.g << " | " << transparentColor.b << std::endl;
+	// std::cout << "SHININESS   : " << shininess << std::endl;
+	// std::cout << "BUMPSCLE    : " << bumpScale << std::endl;
+	// std::cout << std::endl;
+
+}
+
+vector<Texture>	Object::LoadTextures(aiMaterial *mat, aiTextureType type, string typeName, string directory) {
 
 	vector<Texture> array_textures;
 	unsigned int textureCount = mat->GetTextureCount(type);
+
+
+	aiColor4D specularColor;
+	aiColor4D diffuseColor;
+	aiColor4D ambientColor;
+	aiColor4D emissiveColor;
+	aiColor4D reflectiveColor;
+	aiColor4D transparentColor;
+	float shininess;
+	float bumpScale;
+
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_SPECULAR, &specularColor);
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor);
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_AMBIENT, &ambientColor);
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_EMISSIVE, &emissiveColor);
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_REFLECTIVE, &reflectiveColor);
+	aiGetMaterialColor(mat, AI_MATKEY_COLOR_TRANSPARENT, &transparentColor);
+	aiGetMaterialFloat(mat, AI_MATKEY_SHININESS, &shininess);
+	aiGetMaterialFloat(mat, AI_MATKEY_BUMPSCALING, &bumpScale);
+
+	aiString matName;
+	aiGetMaterialString(mat, AI_DEFAULT_MATERIAL_NAME, 0, 0, &matName);
+
+	std::cout << matName.C_Str() << std::endl;
+	std::cout << "SPECULAR    : " << specularColor.r << " | " << specularColor.g << " | " << specularColor.b << std::endl;
+	std::cout << "DIFFUSE     : " << diffuseColor.r << " | " << diffuseColor.g << " | " << diffuseColor.b << std::endl;
+	std::cout << "AMBIENT     : " << ambientColor.r << " | " << ambientColor.g << " | " << ambientColor.b << std::endl;
+	std::cout << "EMISSIVE    : " << emissiveColor.r << " | " << emissiveColor.g << " | " << emissiveColor.b << std::endl;
+	std::cout << "REFLECTIVE  : " << reflectiveColor.r << " | " << reflectiveColor.g << " | " << reflectiveColor.b << std::endl;
+	std::cout << "TRANSPARENT : " << transparentColor.r << " | " << transparentColor.g << " | " << transparentColor.b << std::endl;
+	std::cout << "SHININESS   : " << shininess << std::endl;
+	std::cout << "BUMPSCLE    : " << bumpScale << std::endl;
+	std::cout << std::endl;
 
 	array_textures.reserve(textureCount);
 	for(GLuint i = 0; i < textureCount; i++) {

@@ -26,8 +26,11 @@ private:
 
     void            LoadNodes(aiNode *node, const aiScene *scene, string directory);
     Mesh            LoadMesh(aiMesh *mesh, const aiScene *scene, string directory);
-    vector<Texture> LoadMaterial(aiMaterial *mat, aiTextureType type, string typeName, string directory);
+    Material        LoadMaterial(aiMaterial *mat);
+    vector<Texture> LoadTextures(aiMaterial *mat, aiTextureType type, string typeName, string directory);
     GLint           LoadTexture(const char *path, string directory);
+    vec3            ComputeTangent(vector<Vertex> vertices, int index);
+    vec3            ComputeBiTangent(vector<Vertex> vertices, int index);
 
 public:
     Object(Shader *shader, const char *objFile);
@@ -41,7 +44,6 @@ public:
     vector<vec3>    colors;
     vector<Mesh>    meshes;
 
-    mat4            MVP;
 
     void            SetObjTemp(); //replace with objloader
     void            SetShader(Shader *shader);

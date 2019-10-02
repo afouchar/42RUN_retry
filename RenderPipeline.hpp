@@ -15,21 +15,18 @@ class RenderPipeline {
 
 private:
 
-    GLuint      AddBuffer(vector<vec3> *data);
-    void        BindBuffer(GLuint bufferID, int layoutLocation);
+    void        DrawObjectMeshes(Object *object, Mesh *mesh);
 
 public:
     RenderPipeline();
     ~RenderPipeline();
 
-    void        SetMVP(Camera *camera, Object *object);
     void        GenVAO(Object *object);
     void        GenBuffers(Object *object);
     void        BindBuffers(Object *object, Camera *camera, Light *light);
     void        ClearBuffers(Object *object);
     void        UseProgram(Object *object);
     void        Draw(Object *object);
-    void        DrawObjectMeshes(Object *object, Mesh *mesh);
 };
 
 #endif
