@@ -30,15 +30,16 @@ private:
 
 public:
     Transform();
+    Transform(const Transform& rhs);
     Transform(vec3 pos);
     ~Transform();
 
     vec3        position;
-
     vec3        rotation;
     mat4        modelMatrix;
 
     mat4        LookAt(vec3 target, vec3 up);
+    void        Translate(vec3 translation);
     void        UpdateDirection(vec2 mouseDirection);
     vec3        GetDirection();
     void        Rotate(vec3 rotation, bool localOrientation);

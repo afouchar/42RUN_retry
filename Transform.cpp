@@ -11,6 +11,19 @@ Transform::Transform(){
     this->_verticalAngle = 0.0f;
 }
 
+Transform::Transform(const Transform& rhs){
+
+    this->position = rhs.position;
+    this->rotation = rhs.rotation;
+    this->modelMatrix = rhs.modelMatrix;
+
+    this->_horizontalAngle = rhs._horizontalAngle;
+    this->_verticalAngle = rhs._verticalAngle;
+    this->_direction = rhs._direction;
+    this->_right = rhs._right;
+    this->_up = rhs._up;
+}
+
 Transform::Transform(vec3 pos){
 
     this->modelMatrix = mat4(1.0f);
@@ -21,6 +34,11 @@ Transform::Transform(vec3 pos){
 
 mat4 Transform::LookAt(vec3 target, vec3 up){
 	return glm::lookAt(this->position, target, up);
+}
+
+void Transform::Translate(vec3 translation){
+    this->position += translation;
+    this->modelMatrix = translate(this->modelMatrix, translation);
 }
 
 void Transform::UpdateDirection(vec2 mouseDirection){

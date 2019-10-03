@@ -19,6 +19,7 @@ private:
     vec2        _size;
     vec4        _clearColor;
     GLFWwindow* _window;
+    float       _ratio;
 
     void        CreateWindow(const char* title, vec2 size, vec4 clearColor);
 
@@ -31,6 +32,7 @@ public:
     string      GetTitle();
     void        SetTitle(const char* title);
     vec2        GetSize();
+    float       GetRatio();
     vec4        GetClearColor();
     void        SetClearColor(vec4 clearColor);
     GLFWwindow  *GetWindow();

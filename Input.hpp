@@ -29,6 +29,7 @@ public:
     vec2        GetMouseDirection();
     void        ResetMousePosition();
     float       DeltaTime();
+    void        Terminate();
 };
 
 #endif

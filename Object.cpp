@@ -8,6 +8,17 @@ Object::Object(){
     // SetObjTemp();
 }
 
+Object::Object(const Object& rhs){
+
+	this->shader = rhs.shader;
+	this->transform = Transform(rhs.transform);
+	this->vertexBufferID = rhs.vertexBufferID;
+	this->colorBufferID = rhs.colorBufferID;
+	this->vertexBufferID = rhs.vertexBufferID;
+	this->colors = rhs.colors;
+	this->meshes = rhs.meshes;
+}
+
 Object::Object(Shader *shader, const char *objFile){
 
     this->shader = shader;
@@ -291,39 +302,6 @@ vector<Texture>	Object::LoadTextures(aiMaterial *mat, aiTextureType type, string
 
 	vector<Texture> array_textures;
 	unsigned int textureCount = mat->GetTextureCount(type);
-
-
-	aiColor4D specularColor;
-	aiColor4D diffuseColor;
-	aiColor4D ambientColor;
-	aiColor4D emissiveColor;
-	aiColor4D reflectiveColor;
-	aiColor4D transparentColor;
-	float shininess;
-	float bumpScale;
-
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_SPECULAR, &specularColor);
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor);
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_AMBIENT, &ambientColor);
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_EMISSIVE, &emissiveColor);
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_REFLECTIVE, &reflectiveColor);
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_TRANSPARENT, &transparentColor);
-	aiGetMaterialFloat(mat, AI_MATKEY_SHININESS, &shininess);
-	aiGetMaterialFloat(mat, AI_MATKEY_BUMPSCALING, &bumpScale);
-
-	aiString matName;
-	aiGetMaterialString(mat, AI_DEFAULT_MATERIAL_NAME, 0, 0, &matName);
-
-	std::cout << matName.C_Str() << std::endl;
-	std::cout << "SPECULAR    : " << specularColor.r << " | " << specularColor.g << " | " << specularColor.b << std::endl;
-	std::cout << "DIFFUSE     : " << diffuseColor.r << " | " << diffuseColor.g << " | " << diffuseColor.b << std::endl;
-	std::cout << "AMBIENT     : " << ambientColor.r << " | " << ambientColor.g << " | " << ambientColor.b << std::endl;
-	std::cout << "EMISSIVE    : " << emissiveColor.r << " | " << emissiveColor.g << " | " << emissiveColor.b << std::endl;
-	std::cout << "REFLECTIVE  : " << reflectiveColor.r << " | " << reflectiveColor.g << " | " << reflectiveColor.b << std::endl;
-	std::cout << "TRANSPARENT : " << transparentColor.r << " | " << transparentColor.g << " | " << transparentColor.b << std::endl;
-	std::cout << "SHININESS   : " << shininess << std::endl;
-	std::cout << "BUMPSCLE    : " << bumpScale << std::endl;
-	std::cout << std::endl;
 
 	array_textures.reserve(textureCount);
 	for(GLuint i = 0; i < textureCount; i++) {

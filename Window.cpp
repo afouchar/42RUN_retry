@@ -31,6 +31,7 @@ void Window::CreateWindow(const char* title, vec2 size, vec4 clearColor){
 	// Create OpenGL context
     this->_title = title;
     this->_size = size;
+	this->_ratio = this->_size.x / this->_size.y;
     this->_clearColor = clearColor;
 	this->_window = glfwCreateWindow( this->_size.x, this->_size.y, this->_title.c_str(), NULL, NULL);
 	if( this->_window == NULL ){
@@ -58,6 +59,10 @@ void Window::CreateWindow(const char* title, vec2 size, vec4 clearColor){
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+float Window::GetRatio(){
+	return this->_ratio;
 }
 
 string Window::GetTitle(){

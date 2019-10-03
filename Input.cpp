@@ -60,3 +60,7 @@ float Input::DeltaTime(){
 
     return deltaTime;
 }
+
+void Input::Terminate(){
+    glfwSetInputMode(this->_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}

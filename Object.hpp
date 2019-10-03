@@ -20,9 +20,6 @@ using namespace glm;
 class Object {
 
 private:
-    Object();
-
-    // mat4            _modelMatrix;
 
     void            LoadNodes(aiNode *node, const aiScene *scene, string directory);
     Mesh            LoadMesh(aiMesh *mesh, const aiScene *scene, string directory);
@@ -33,7 +30,9 @@ private:
     vec3            ComputeBiTangent(vector<Vertex> vertices, int index);
 
 public:
+    Object(); // should be private !!!
     Object(Shader *shader, const char *objFile);
+    Object(const Object& rhs);
     ~Object();
 
     Shader          *shader;
