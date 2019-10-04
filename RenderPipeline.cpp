@@ -51,13 +51,17 @@ void RenderPipeline::BindBuffers(Object *object, Camera *camera, Light *light){
     object->shader->SetFloat(object->shader->GetLightIntensityID(), light->intensity);
 }
 
-void RenderPipeline::ClearBuffers(Object *object){
+void RenderPipeline::ClearBuffers(Object *object, bool clearTextures){
 
-    // glDeleteBuffers(1, &object->vertexBufferID);
-    // glDeleteBuffers(1, &object->colorBufferID);
     glDeleteProgram(object->shader->GetProgramID());
     for (int i = 0; i < object->meshes.size(); i++){
         glDeleteVertexArrays(1, &object->meshes[i].vertexArrayID);
+        if (clearTextures){
+            int texAmount = object->meshes[i].textures.size();
+            for (int j = 0; j < texAmount; j++){
+                glDeleteTextures(1, &object->meshes[i].textures[j].id);
+            }
+        }
     }
 }
 

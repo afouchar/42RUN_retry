@@ -24,7 +24,7 @@ public:
     void        GenVAO(Object *object);
     void        GenBuffers(Object *object);
     void        BindBuffers(Object *object, Camera *camera, Light *light);
-    void        ClearBuffers(Object *object);
+    void        ClearBuffers(Object *object, bool clearTextures = true);
     void        UseProgram(Object *object);
     void        Draw(Object *object);
 };

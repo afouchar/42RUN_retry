@@ -24,7 +24,7 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
 
 void PathGenerator::SwapFirstToLast(RenderPipeline *renderPipeline){
 
-    renderPipeline->ClearBuffers(this->chunks.begin().base());
+    renderPipeline->ClearBuffers(this->chunks.begin().base(), false);
 
     this->chunks.erase(this->chunks.begin());
 

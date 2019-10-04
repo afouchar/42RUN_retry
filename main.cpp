@@ -9,6 +9,7 @@
 #include "Object.hpp"
 #include "Input.hpp"
 #include "Light.hpp"
+#include "Text.hpp"
 #include "PathGenerator.hpp"
 
 
@@ -20,6 +21,9 @@ int main(int argc, char **argv) {
 	Shader *shader = new Shader("Shaders/Standard.vert", "Shaders/Standard.frag");
 	Camera *camera = new Camera(70.0f, window.GetRatio(), 0.1f, 100.0f);
 	Light *light = new Light(vec3(4, 4, 4));
+
+	// Shader *textShader = new Shader("Shaders/StandardText.vert", "Shaders/StandardText.frag");
+	// Text *textFPS = new Text(textShader, &window, "Resources/Holstein.png");
 
 	string objFile = "models/spaceships/AK5/AK5.obj";
 	if (argc > 1)
@@ -41,6 +45,7 @@ int main(int argc, char **argv) {
 	light->intensity = 15.0f;
 
 	input.speed = 18.0f;
+	// textFPS->fontSize = 32;
 
 	while(!input.GetKeyPressed(GLFW_KEY_ESCAPE) && !window.IsClosed()){
 
@@ -90,6 +95,12 @@ int main(int argc, char **argv) {
 			pathGenerator.SwapFirstToLast(renderPipeline);
 		}
 
+		// float fps = (1.0 / deltaTime);
+		// ostringstream buff;
+		// buff << fps;
+
+		// textFPS->Draw(string("FPS : " + buff.str()).c_str());
+
 		window.SwapBuffer();
 		input.PollEvents();
 	}
@@ -99,6 +110,8 @@ int main(int argc, char **argv) {
 	for (int i = 0; i < pathGenerator.chunks.size(); i++){
 		renderPipeline->ClearBuffers(&pathGenerator.chunks[i]);
 	}
+
+	// textFPS->Clear();
 
 	input.Terminate();
 	window.Terminate();
