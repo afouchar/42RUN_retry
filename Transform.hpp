@@ -28,6 +28,11 @@ private:
     vec3        _right;
     vec3        _up;
 
+    // mat4        model;
+    mat4        _rotation;
+    mat4        _translation;
+    mat4        _scale;
+
 public:
     Transform();
     Transform(const Transform& rhs);
@@ -36,13 +41,22 @@ public:
 
     vec3        position;
     vec3        rotation;
+    vec3        scale;
     mat4        modelMatrix;
 
     mat4        LookAt(vec3 target, vec3 up);
-    void        Translate(vec3 translation);
+    // void        Translate(vec3 translation);
+    // void        Rotate(vec3 anglesDegrees);
+    void        Translate(const vec3 &axis);
+    void        Rotate(vec3 axis, float angle);
+    void        Scale(vec3 axis);
+    void        RotateAround(vec3 pivot);
+    void        UpdateMatrix();
+    void        ResetMatrix();
+
     void        UpdateDirection(vec2 mouseDirection);
     vec3        GetDirection();
-    void        Rotate(vec3 rotation, bool localOrientation);
+    // void        Rotate(vec3 rotation, bool localOrientation);
     vec3        Up();
     vec3        Right();
 };

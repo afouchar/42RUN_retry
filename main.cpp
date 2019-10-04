@@ -60,10 +60,18 @@ int main(int argc, char **argv) {
 			object->transform.Translate(vec3_down * input.speed * deltaTime);
 		}
 		if (input.GetKeyPressed(GLFW_KEY_A)){
-			object->transform.Translate(vec3_left * input.speed * deltaTime);
+			object->transform.Rotate(vec3_forward, input.speed * deltaTime);
+			// object->transform.RotateAround(vec3_zero);
 		}
 		if (input.GetKeyPressed(GLFW_KEY_D)){
-			object->transform.Translate(vec3_right * input.speed * deltaTime);
+			object->transform.Rotate(vec3_forward, -input.speed * deltaTime);
+			// object->transform.RotateAround(vec3_zero);
+		}
+		if (input.GetKeyPressed(GLFW_KEY_Q)){
+			object->transform.Scale(vec3_one * -(deltaTime / 100.0f));
+		}
+		if (input.GetKeyPressed(GLFW_KEY_E)){
+			object->transform.Scale(vec3_one * (deltaTime / 100.0f));
 		}
 
 		if (input.GetKeyPressed(GLFW_KEY_UP)){
@@ -75,9 +83,9 @@ int main(int argc, char **argv) {
 			// std::cout << "(-) tube speed : " << pathGenerator.speed << std::endl;
 		}
 
-		for (int i = 0; i < pathGenerator.chunks.size(); i++){
-			pathGenerator.chunks[i].transform.Translate(vec3_back * pathGenerator.speed * deltaTime);
-		}
+		// for (int i = 0; i < pathGenerator.chunks.size(); i++){
+		// 	pathGenerator.chunks[i].transform.Translate(vec3_back * pathGenerator.speed * deltaTime);
+		// }
 
 		camera->LookAt(object->transform.position, vec3_up);
 
