@@ -17,9 +17,9 @@ int main(int argc, char **argv) {
 
 	Window window = Window(argv[0], vec2(1024, 768));
 	Input input = Input(window.GetWindow());
-	RenderPipeline *renderPipeline = new RenderPipeline();
+	// RenderPipeline *renderPipeline = new RenderPipeline();
 	Shader *shader = new Shader("Shaders/Standard.vert", "Shaders/Standard.frag");
-	Camera *camera = new Camera(70.0f, window.GetRatio(), 0.1f, 100.0f);
+	Camera *camera = new Camera(70.0f, window.GetRatio(), 0.1f, 1000.0f);
 	Light *light = new Light(vec3(4, 4, 4));
 
 	// Shader *textShader = new Shader("Shaders/StandardText.vert", "Shaders/StandardText.frag");
@@ -32,13 +32,13 @@ int main(int argc, char **argv) {
 	Object *object = new Object(shader, objFile.c_str());
 	PathGenerator pathGenerator = PathGenerator(shader, 3, 8.0f);
 	
-	renderPipeline->GenVAO(object);
-	renderPipeline->GenBuffers(object);
+	// renderPipeline->GenVAO(object);
+	// renderPipeline->GenBuffers(object);
 
-	for (int i = 0 ; i < pathGenerator.chunks.size(); i++){
-		renderPipeline->GenVAO(&pathGenerator.chunks[i]);
-		renderPipeline->GenBuffers(&pathGenerator.chunks[i]);
-	}
+	// for (int i = 0 ; i < pathGenerator.chunks.size(); i++){
+	// 	renderPipeline->GenVAO(&pathGenerator.chunks[i]);
+	// 	renderPipeline->GenBuffers(&pathGenerator.chunks[i]);
+	// }
 
 	camera->transform.position = vec3(0, 0, 15);
 	camera->LookAt(object->transform.position, vec3_up);
@@ -86,21 +86,27 @@ int main(int argc, char **argv) {
 		// for (int i = 0; i < pathGenerator.chunks.size(); i++){
 		// 	pathGenerator.chunks[i].transform.Translate(vec3_back * pathGenerator.speed * deltaTime);
 		// }
+		pathGenerator.chunks.begin()->transform.Translate(vec3_back * pathGenerator.speed * deltaTime);
+
 
 		camera->LookAt(object->transform.position, vec3_up);
 
-		renderPipeline->UseProgram(object);
-		renderPipeline->BindBuffers(object, camera, light);
-		renderPipeline->Draw(object);
+		object->Draw(camera, light);
+
+		// renderPipeline->UseProgram(object);
+		// renderPipeline->BindBuffers(object, camera, light);
+		// renderPipeline->Draw(object);
 
 		for (int i = 0; i < pathGenerator.chunks.size(); i++){
-			renderPipeline->UseProgram(&pathGenerator.chunks[i]);
-			renderPipeline->BindBuffers(&pathGenerator.chunks[i], camera, light);
-			renderPipeline->Draw(&pathGenerator.chunks[i]);
+			pathGenerator.chunks[i].Draw(camera, light);
+			// renderPipeline->UseProgram(&pathGenerator.chunks[i]);
+			// renderPipeline->BindBuffers(&pathGenerator.chunks[i], camera, light);
+			// renderPipeline->Draw(&pathGenerator.chunks[i]);
 		}
 
-	    if (pathGenerator.chunks.begin()->transform.position.z > camera->transform.position.z + pathGenerator.GetChunkLength()){
-			pathGenerator.SwapFirstToLast(renderPipeline);
+	    if (pathGenerator.chunks.begin()->transform.position.z > camera->transform.position.z + (pathGenerator.GetChunkLength() / 2)){
+			// pathGenerator.SwapFirstToLast(renderPipeline);
+			pathGenerator.SwapFirstToLast();
 		}
 
 		// float fps = (1.0 / deltaTime);
@@ -113,10 +119,12 @@ int main(int argc, char **argv) {
 		input.PollEvents();
 	}
 
-	renderPipeline->ClearBuffers(object);
+	object->ClearBuffers();
+	// renderPipeline->ClearBuffers(object);
 	
 	for (int i = 0; i < pathGenerator.chunks.size(); i++){
-		renderPipeline->ClearBuffers(&pathGenerator.chunks[i]);
+		pathGenerator.chunks[i].ClearBuffers();
+		// renderPipeline->ClearBuffers(&pathGenerator.chunks[i]);
 	}
 
 	// textFPS->Clear();

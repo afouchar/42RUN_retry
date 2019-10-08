@@ -33,6 +33,9 @@ private:
     mat4        _translation;
     mat4        _scale;
 
+    Transform   *_child;
+    Transform   *_parent;
+
 public:
     Transform();
     Transform(const Transform& rhs);
@@ -54,11 +57,17 @@ public:
     void        UpdateMatrix();
     void        ResetMatrix();
 
+    void        UpdateTranslate();
+
+
     void        UpdateDirection(vec2 mouseDirection);
     vec3        GetDirection();
     // void        Rotate(vec3 rotation, bool localOrientation);
     vec3        Up();
     vec3        Right();
+
+    void SetChild(Transform *child);
+    void SetParent(Transform *parent);
 };
 
 #endif

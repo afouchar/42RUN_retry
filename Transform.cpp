@@ -15,6 +15,9 @@ Transform::Transform(){
     this->_rotation = mat4(1.0f);
     this->_translation = mat4(1.0f);
     this->_scale = mat4(1.0f);
+
+    this->_child = nullptr;
+    this->_parent = nullptr;
 }
 
 Transform::Transform(const Transform& rhs){
@@ -33,6 +36,9 @@ Transform::Transform(const Transform& rhs){
     this->_rotation = rhs._rotation;
     this->_translation = rhs._translation;
     this->_scale = rhs._scale;
+
+    this->_parent = rhs._parent;
+    this->_child = nullptr;
 }
 
 Transform::Transform(vec3 pos){
@@ -59,27 +65,38 @@ mat4 Transform::LookAt(vec3 target, vec3 up){
 //     this->modelMatrix = rotate(this->modelMatrix, anglesRadians.z, vec3_forward);
 // }
 
+void Transform::UpdateTranslate(){
+    this->_translation = glm::translate(this->_translation, this->position);
+    if (this->_child != nullptr)
+        this->_child->UpdateTranslate();
+}
 
 void Transform::Translate(const vec3 &axis){
 
     this->position += axis;
     this->_translation = glm::translate(this->_translation, axis); 
     UpdateMatrix();
+    // if (this->_child != nullptr)
+        // this->_child->Translate(axis); //relative to parent??
 }
 
 void Transform::Rotate(vec3 axis, float angleDegrees){
     this->rotation += (axis * angleDegrees);
     this->_rotation = glm::rotate(this->_rotation, radians(angleDegrees), axis);
     UpdateMatrix();
+    // if (this->_child != nullptr)
+    //     this->_child->Rotate(axis, angleDegrees); //relative to parent??
 }
 
 #include <iostream>
 
 void Transform::Scale(vec3 axis){
     this->scale += axis;
-    std::cout << "scale : x[" << this->scale.x << "] y[" << this->scale.y << "] z[" << this->scale.z << "]" << std::endl;
-    this->_scale = glm::scale(this->_scale, this->scale);
+    // std::cout << "scale : x[" << this->scale.x << "] y[" << this->scale.y << "] z[" << this->scale.z << "]" << std::endl;
+    this->_scale = glm::scale(this->_scale, axis);
     UpdateMatrix();
+    // if (this->_child != nullptr)
+    //     this->_child->Scale(axis); //relative to parent??
 }
 
 void Transform::RotateAround(vec3 pivot){
@@ -99,7 +116,35 @@ void Transform::RotateAround(vec3 pivot){
 }
 
 void Transform::UpdateMatrix(){
-    this->modelMatrix = this->_scale * this->_translation * this->_rotation ;
+// static int ii = 0;
+    std::cout << " add : " << this << std::endl;
+
+    mat4 parentModelMatrix = mat4(1.0f);
+    if (this->_parent != nullptr)
+        parentModelMatrix = this->_parent->modelMatrix;
+
+    this->_translation = glm::translate(mat4(1.0f), this->position);
+    //this->_scale = glm::scale(this->_scale, this->_scale);
+    // this->_rotation = glm::rotate(this->_rotation, 0.0f, vec3_zero);
+
+    // this->modelMatrix = parentModelMatrix * (this->_scale * this->_translation * this->_rotation);
+    this->modelMatrix = parentModelMatrix * this->_translation;
+
+    // if (this->_parent != nullptr)
+        std::cout << "pos : " << this->modelMatrix[3][2] << std::endl;
+        std::cout << "tran : " << this->_translation[3][2] << std::endl;
+    // else{
+    //     std::cout << "parent pos : " << this->position.z << std::endl;
+    // }
+    if (this->_child == nullptr)
+        std::cout << "_____________" << std::endl;
+
+
+    if (this->_child != nullptr)
+        this->_child->UpdateMatrix();
+// ii++;
+// if (ii == 4*3)
+//     exit(0);
 }
 
 void Transform::ResetMatrix() {
@@ -147,4 +192,12 @@ vec3 Transform::Up(){
 
 vec3 Transform::Right(){
     return this->_right;
+}
+
+void Transform::SetChild(Transform *child){
+    this->_child = child;
+}
+
+void Transform::SetParent(Transform *parent){
+    this->_parent = parent;
 }

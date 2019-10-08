@@ -4,25 +4,25 @@ RenderPipeline::~RenderPipeline(){}
 
 RenderPipeline::RenderPipeline(){}
 
-void RenderPipeline::GenVAO(Object *object){
+void RenderPipeline::GenVAO(vector<Mesh> &lstMeshes){
 
-    for (int i = 0; i < object->meshes.size(); i++) {
-        glGenVertexArrays(1, &object->meshes[i].vertexArrayID);
-        glBindVertexArray(object->meshes[i].vertexArrayID);
+    for (int i = 0; i < lstMeshes.size(); i++) {
+        glGenVertexArrays(1, &lstMeshes[i].vertexArrayID);
+        glBindVertexArray(lstMeshes[i].vertexArrayID);
     }
 }
 
-void RenderPipeline::GenBuffers(Object *object){
+void RenderPipeline::GenBuffers(vector<Mesh> &lstMeshes){
 
-    for (int i = 0; i < object->meshes.size(); i++){
+    for (int i = 0; i < lstMeshes.size(); i++){
 
-        glGenBuffers(1, &object->meshes[i].elementBufferID);
-        glGenBuffers(1, &object->meshes[i].vertexBufferID);
-        glBindBuffer(GL_ARRAY_BUFFER, object->meshes[i].vertexBufferID);
-        glBufferData(GL_ARRAY_BUFFER, object->meshes[i].vertices.size() * sizeof(Vertex), &object->meshes[i].vertices[0], GL_STATIC_DRAW);
+        glGenBuffers(1, &lstMeshes[i].elementBufferID);
+        glGenBuffers(1, &lstMeshes[i].vertexBufferID);
+        glBindBuffer(GL_ARRAY_BUFFER, lstMeshes[i].vertexBufferID);
+        glBufferData(GL_ARRAY_BUFFER, lstMeshes[i].vertices.size() * sizeof(Vertex), &lstMeshes[i].vertices[0], GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object->meshes[i].elementBufferID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, object->meshes[i].indices.size() * sizeof(GLuint), &object->meshes[i].indices[0], GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lstMeshes[i].elementBufferID);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, lstMeshes[i].indices.size() * sizeof(GLuint), &lstMeshes[i].indices[0], GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
@@ -41,44 +41,44 @@ void RenderPipeline::GenBuffers(Object *object){
     }
 }
 
-void RenderPipeline::BindBuffers(Object *object, Camera *camera, Light *light){
+void RenderPipeline::BindBuffers(Shader *shader, Camera *camera, Light *light, mat4 &objectMatrix){
 
-    object->shader->SetMatrix4fv(object->shader->GetModelMatrixID(), &object->GetModelMatrix()[0][0]);
-    object->shader->SetMatrix4fv(object->shader->GetViewMatrixID(), &camera->GetViewMatrix()[0][0]);
-    object->shader->SetMatrix4fv(object->shader->GetProjectionMatrixID(), &camera->GetProjectionMatrix()[0][0]);
-    object->shader->SetFloat3(object->shader->GetLightPositionID(), light->transform.position);
-    object->shader->SetFloat3(object->shader->GetLightColorID(), light->color);
-    object->shader->SetFloat(object->shader->GetLightIntensityID(), light->intensity);
+    shader->SetMatrix4fv(shader->GetModelMatrixID(), &objectMatrix[0][0]);
+    shader->SetMatrix4fv(shader->GetViewMatrixID(), &camera->GetViewMatrix()[0][0]);
+    shader->SetMatrix4fv(shader->GetProjectionMatrixID(), &camera->GetProjectionMatrix()[0][0]);
+    shader->SetFloat3(shader->GetLightPositionID(), light->transform.position);
+    shader->SetFloat3(shader->GetLightColorID(), light->color);
+    shader->SetFloat(shader->GetLightIntensityID(), light->intensity);
 }
 
-void RenderPipeline::ClearBuffers(Object *object, bool clearTextures){
+void RenderPipeline::ClearBuffers(Shader *shader, vector<Mesh> &lstMeshes, bool clearTextures){
 
-    glDeleteProgram(object->shader->GetProgramID());
-    for (int i = 0; i < object->meshes.size(); i++){
-        glDeleteVertexArrays(1, &object->meshes[i].vertexArrayID);
+    glDeleteProgram(shader->GetProgramID());
+    for (int i = 0; i < lstMeshes.size(); i++){
+        glDeleteVertexArrays(1, &lstMeshes[i].vertexArrayID);
         if (clearTextures){
-            int texAmount = object->meshes[i].textures.size();
+            int texAmount = lstMeshes[i].textures.size();
             for (int j = 0; j < texAmount; j++){
-                glDeleteTextures(1, &object->meshes[i].textures[j].id);
+                glDeleteTextures(1, &lstMeshes[i].textures[j].id);
             }
         }
     }
 }
 
-void RenderPipeline::UseProgram(Object *object){
+void RenderPipeline::UseProgram(Shader *shader){
 
-    glUseProgram(object->shader->GetProgramID());
+    glUseProgram(shader->GetProgramID());
 }
 
-void RenderPipeline::Draw(Object *object){
+void RenderPipeline::Draw(Shader *shader, vector<Mesh> &lstMeshes){
 
-    for (int i = 0; i < object->meshes.size(); i++) {
-        DrawObjectMeshes(object, &object->meshes[i]);
+    for (int i = 0; i < lstMeshes.size(); i++) {
+        DrawObjectMeshes(shader, &lstMeshes[i]);
     }
     
 }
 
-void	RenderPipeline::DrawObjectMeshes(Object *object, Mesh *mesh) {
+void	RenderPipeline::DrawObjectMeshes(Shader *shader, Mesh *mesh) {
 
 	GLuint diffuseNr = 1;
 	GLuint specularNr = 1;
@@ -98,21 +98,21 @@ void	RenderPipeline::DrawObjectMeshes(Object *object, Mesh *mesh) {
 			ss << normalNr++;
 		number = ss.str();
 
-		object->shader->SetFloat(object->shader->GetUniformLocation((name + number).c_str()), i);
+		shader->SetFloat(shader->GetUniformLocation((name + number).c_str()), i);
 
 		glBindTexture(GL_TEXTURE_2D, mesh->textures[i].id);
 	}
 
-    object->shader->SetFloat3(object->shader->GetSpecularID(), mesh->material.specular);
-    object->shader->SetFloat3(object->shader->GetDiffuseID(), mesh->material.diffuse);
-    object->shader->SetFloat3(object->shader->GetAmbientID(), mesh->material.ambient);
-    object->shader->SetFloat3(object->shader->GetEmissiveID(), mesh->material.emissive);
-    object->shader->SetFloat3(object->shader->GetReflectiveID(), mesh->material.reflective);
-    object->shader->SetFloat3(object->shader->GetTransparentID(), mesh->material.transparent);
-    object->shader->SetFloat(object->shader->GetShininessID(), mesh->material.shininess);
-    object->shader->SetFloat(object->shader->GetBumpScaleID(), mesh->material.shininess);
+    shader->SetFloat3(shader->GetSpecularID(), mesh->material.specular);
+    shader->SetFloat3(shader->GetDiffuseID(), mesh->material.diffuse);
+    shader->SetFloat3(shader->GetAmbientID(), mesh->material.ambient);
+    shader->SetFloat3(shader->GetEmissiveID(), mesh->material.emissive);
+    shader->SetFloat3(shader->GetReflectiveID(), mesh->material.reflective);
+    shader->SetFloat3(shader->GetTransparentID(), mesh->material.transparent);
+    shader->SetFloat(shader->GetShininessID(), mesh->material.shininess);
+    shader->SetFloat(shader->GetBumpScaleID(), mesh->material.shininess);
 
-	// object->shader->SetFloat(object->shader->GetUniformLocation("material.shininess"), 16.0f);
+	// shader->SetFloat(shader->GetUniformLocation("material.shininess"), 16.0f);
 
 	glBindVertexArray(mesh->vertexArrayID);
 	glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);

@@ -10,6 +10,9 @@
 #include "Shader.hpp"
 #include "Mesh.hpp"
 #include "Loader.hpp"
+#include "Camera.hpp"
+#include "Light.hpp"
+#include "RenderPipeline.hpp"
 
 using namespace std;
 using namespace glm;
@@ -28,8 +31,10 @@ public:
     Transform       transform;
     vector<Mesh>    meshes;
 
+    void            Draw(Camera *camera, Light *light);
     void            SetShader(Shader *shader);
     mat4            GetModelMatrix();
+    void            ClearBuffers();
 };
 
 #endif

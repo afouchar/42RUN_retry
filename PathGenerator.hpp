@@ -21,7 +21,8 @@ public:
     PathGenerator(Shader *shader, unsigned int chunksAmount, float speed);
     ~PathGenerator();
 
-    void                SwapFirstToLast(RenderPipeline *renderPipeline);
+    // void                SwapFirstToLast(RenderPipeline *renderPipeline);
+    void                SwapFirstToLast();
     float               GetChunkLength();
 
     vector<Object>      chunks;
