@@ -26,7 +26,7 @@ public:
     float               GetChunkLength();
 
     vector<Object>      chunks;
-    float        speed;
+    float               speed;
 
 };
 

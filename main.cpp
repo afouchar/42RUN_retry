@@ -30,15 +30,7 @@ int main(int argc, char **argv) {
 		objFile = argv[1];
 
 	Object *object = new Object(shader, objFile.c_str());
-	PathGenerator pathGenerator = PathGenerator(shader, 3, 8.0f);
-	
-	// renderPipeline->GenVAO(object);
-	// renderPipeline->GenBuffers(object);
-
-	// for (int i = 0 ; i < pathGenerator.chunks.size(); i++){
-	// 	renderPipeline->GenVAO(&pathGenerator.chunks[i]);
-	// 	renderPipeline->GenBuffers(&pathGenerator.chunks[i]);
-	// }
+	PathGenerator pathGenerator = PathGenerator(shader, 6, 8.0f);
 
 	camera->transform.position = vec3(0, 0, 15);
 	camera->LookAt(object->transform.position, vec3_up);
@@ -83,9 +75,6 @@ int main(int argc, char **argv) {
 			// std::cout << "(-) tube speed : " << pathGenerator.speed << std::endl;
 		}
 
-		// for (int i = 0; i < pathGenerator.chunks.size(); i++){
-		// 	pathGenerator.chunks[i].transform.Translate(vec3_back * pathGenerator.speed * deltaTime);
-		// }
 		pathGenerator.chunks.begin()->transform.Translate(vec3_back * pathGenerator.speed * deltaTime);
 
 
@@ -93,19 +82,12 @@ int main(int argc, char **argv) {
 
 		object->Draw(camera, light);
 
-		// renderPipeline->UseProgram(object);
-		// renderPipeline->BindBuffers(object, camera, light);
-		// renderPipeline->Draw(object);
 
 		for (int i = 0; i < pathGenerator.chunks.size(); i++){
 			pathGenerator.chunks[i].Draw(camera, light);
-			// renderPipeline->UseProgram(&pathGenerator.chunks[i]);
-			// renderPipeline->BindBuffers(&pathGenerator.chunks[i], camera, light);
-			// renderPipeline->Draw(&pathGenerator.chunks[i]);
 		}
 
-	    if (pathGenerator.chunks.begin()->transform.position.z > camera->transform.position.z + (pathGenerator.GetChunkLength() / 2)){
-			// pathGenerator.SwapFirstToLast(renderPipeline);
+	    if (pathGenerator.chunks.begin()->transform.position.z >= (camera->transform.position.z + (pathGenerator.GetChunkLength() / 2))){
 			pathGenerator.SwapFirstToLast();
 		}
 
@@ -120,11 +102,9 @@ int main(int argc, char **argv) {
 	}
 
 	object->ClearBuffers();
-	// renderPipeline->ClearBuffers(object);
 	
 	for (int i = 0; i < pathGenerator.chunks.size(); i++){
 		pathGenerator.chunks[i].ClearBuffers();
-		// renderPipeline->ClearBuffers(&pathGenerator.chunks[i]);
 	}
 
 	// textFPS->Clear();

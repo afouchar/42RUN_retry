@@ -1,9 +1,11 @@
 #ifndef TRANSFORM_HPP
 #define TRANSFORM_HPP
 
+#define GLM_ENABLE_EXPERIMENTAL
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
+#include <gtx/matrix_decompose.hpp>
 // #include <gtc/quaternion.hpp>
 
 #define vec3_zero       vec3(0, 0, 0)
@@ -33,8 +35,6 @@ private:
     mat4        _translation;
     mat4        _scale;
 
-    Transform   *_child;
-    Transform   *_parent;
 
 public:
     Transform();
@@ -42,6 +42,9 @@ public:
     Transform(vec3 pos);
     ~Transform();
 
+    Transform   *child;
+    Transform   *parent;
+    
     vec3        position;
     vec3        rotation;
     vec3        scale;
@@ -56,6 +59,7 @@ public:
     void        RotateAround(vec3 pivot);
     void        UpdateMatrix();
     void        ResetMatrix();
+    vec3        LocalToWorldPosition();
 
     void        UpdateTranslate();
 
@@ -66,8 +70,8 @@ public:
     vec3        Up();
     vec3        Right();
 
-    void SetChild(Transform *child);
-    void SetParent(Transform *parent);
+    // void SetChild(Transform *child);
+    // void SetParent(Transform *parent);
 };
 
 #endif

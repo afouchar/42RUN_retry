@@ -2,11 +2,7 @@
 
 Object::~Object(){}
 
-Object::Object(){
-
-    // this->shader = Loader::DefaultShader();
-    // this->meshes = Loader::DefaultMesh();
-}
+Object::Object(){}
 
 Object::Object(const Object& rhs){
 

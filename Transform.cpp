@@ -16,8 +16,8 @@ Transform::Transform(){
     this->_translation = mat4(1.0f);
     this->_scale = mat4(1.0f);
 
-    this->_child = nullptr;
-    this->_parent = nullptr;
+    this->child = nullptr;
+    this->parent = nullptr;
 }
 
 Transform::Transform(const Transform& rhs){
@@ -37,16 +37,25 @@ Transform::Transform(const Transform& rhs){
     this->_translation = rhs._translation;
     this->_scale = rhs._scale;
 
-    this->_parent = rhs._parent;
-    this->_child = nullptr;
+    this->parent = nullptr;
+    this->child = nullptr;
 }
 
 Transform::Transform(vec3 pos){
 
     this->modelMatrix = mat4(1.0f);
-    this->position = pos; //translate??
+    this->position = pos;
+    this->rotation = vec3(0.0f, 0.0f, 0.0f);
+    this->scale = vec3(1.0f, 1.0f, 1.0f);
     this->_horizontalAngle = PI;
     this->_verticalAngle = 0.0f;
+
+    this->_rotation = mat4(1.0f);
+    this->_translation = mat4(1.0f);
+    this->_scale = mat4(1.0f);
+
+    this->child = nullptr;
+    this->parent = nullptr;
 }
 
 mat4 Transform::LookAt(vec3 target, vec3 up){
@@ -67,8 +76,8 @@ mat4 Transform::LookAt(vec3 target, vec3 up){
 
 void Transform::UpdateTranslate(){
     this->_translation = glm::translate(this->_translation, this->position);
-    if (this->_child != nullptr)
-        this->_child->UpdateTranslate();
+    if (this->child != nullptr)
+        this->child->UpdateTranslate();
 }
 
 void Transform::Translate(const vec3 &axis){
@@ -76,16 +85,16 @@ void Transform::Translate(const vec3 &axis){
     this->position += axis;
     this->_translation = glm::translate(this->_translation, axis); 
     UpdateMatrix();
-    // if (this->_child != nullptr)
-        // this->_child->Translate(axis); //relative to parent??
+    // if (this->child != nullptr)
+        // this->child->Translate(axis); //relative to parent??
 }
 
 void Transform::Rotate(vec3 axis, float angleDegrees){
     this->rotation += (axis * angleDegrees);
     this->_rotation = glm::rotate(this->_rotation, radians(angleDegrees), axis);
     UpdateMatrix();
-    // if (this->_child != nullptr)
-    //     this->_child->Rotate(axis, angleDegrees); //relative to parent??
+    // if (this->child != nullptr)
+    //     this->child->Rotate(axis, angleDegrees); //relative to parent??
 }
 
 #include <iostream>
@@ -116,12 +125,11 @@ void Transform::RotateAround(vec3 pivot){
 }
 
 void Transform::UpdateMatrix(){
-// static int ii = 0;
-    std::cout << " add : " << this << std::endl;
+
 
     mat4 parentModelMatrix = mat4(1.0f);
-    if (this->_parent != nullptr)
-        parentModelMatrix = this->_parent->modelMatrix;
+    if (this->parent != nullptr)
+        parentModelMatrix = this->parent->modelMatrix;
 
     this->_translation = glm::translate(mat4(1.0f), this->position);
     //this->_scale = glm::scale(this->_scale, this->_scale);
@@ -130,21 +138,8 @@ void Transform::UpdateMatrix(){
     // this->modelMatrix = parentModelMatrix * (this->_scale * this->_translation * this->_rotation);
     this->modelMatrix = parentModelMatrix * this->_translation;
 
-    // if (this->_parent != nullptr)
-        std::cout << "pos : " << this->modelMatrix[3][2] << std::endl;
-        std::cout << "tran : " << this->_translation[3][2] << std::endl;
-    // else{
-    //     std::cout << "parent pos : " << this->position.z << std::endl;
-    // }
-    if (this->_child == nullptr)
-        std::cout << "_____________" << std::endl;
-
-
-    if (this->_child != nullptr)
-        this->_child->UpdateMatrix();
-// ii++;
-// if (ii == 4*3)
-//     exit(0);
+    if (this->child != nullptr)
+        this->child->UpdateMatrix();
 }
 
 void Transform::ResetMatrix() {
@@ -153,6 +148,21 @@ void Transform::ResetMatrix() {
     this->_rotation = mat4(1.0f);
     this->_scale = mat4(1.0f);
     this->_translation = mat4(1.0f);
+}
+
+vec3 Transform::LocalToWorldPosition(){
+
+    return vec3(this->modelMatrix[3]);
+
+    // // mat4 d_transformation;
+    // vec3 d_scale;
+    // quat d_rotation;
+    // vec3 d_translation;
+    // vec3 d_skew;
+    // vec4 d_perspective;
+    // glm::decompose(this->modelMatrix, d_scale, d_rotation, d_translation, d_skew, d_perspective);
+    // d_rotation = glm::conjugate(d_rotation);
+    // return d_translation;
 }
 
 void Transform::UpdateDirection(vec2 mouseDirection){
@@ -194,10 +204,21 @@ vec3 Transform::Right(){
     return this->_right;
 }
 
-void Transform::SetChild(Transform *child){
-    this->_child = child;
-}
+// void Transform::SetChild(Transform *child){
+//     this->_child = child;
 
-void Transform::SetParent(Transform *parent){
-    this->_parent = parent;
-}
+//     if (this->_child != nullptr && this->_child->parent != this)
+//         this->_child->SetParent(this);
+// }
+
+// void Transform::SetParent(Transform *parent){
+
+//     this->parent = parent;
+
+
+//     if (this->parent == nullptr)
+//         this->position = LocalToWorldPosition();
+
+//     if (this->parent != nullptr && this->parent->_child != this)
+//         this->parent->SetChild(this);
+// }

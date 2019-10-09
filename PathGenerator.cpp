@@ -6,8 +6,8 @@ PathGenerator::PathGenerator(){}
 
 PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float speed){
 
-    if (chunksAmount < 2)
-        chunksAmount = 2;
+    if (chunksAmount < 3)
+        chunksAmount = 3;
 
     this->_chunksAmount = chunksAmount;
     this->speed = speed;
@@ -27,40 +27,46 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
     //parenting
     for (int i = 0; i < this->_chunksAmount; i++){
         if (i != 0)
-            this->chunks[i].transform.SetParent(&this->chunks[i - 1].transform);
+            this->chunks[i].transform.parent = &this->chunks[i - 1].transform;
         if (i < this->_chunksAmount - 1)
-            this->chunks[i].transform.SetChild(&this->chunks[i + 1].transform);
+            this->chunks[i].transform.child = &this->chunks[i + 1].transform;
     }
+
+    std::cout << "BEGIN" << std::endl;
+    for (int i = 0; i < this->chunks.size(); i++){
+        std::cout << "[" << i << "]  " << &this->chunks[i] << "  Z : " << this->chunks[i].transform.position.z << std::endl;
+    }
+    std::cout << "__________" << std::endl << std::endl;
 }
 
-// void PathGenerator::SwapFirstToLast(RenderPipeline *renderPipeline){
 void PathGenerator::SwapFirstToLast(){
 
-    // renderPipeline->ClearBuffers(this->chunks.begin().base(), false);
-    bool var = false;
-    RenderPipeline::ClearBuffers(this->chunks.begin()->shader, this->chunks.begin()->meshes, var);
-
-    (this->chunks.begin() + 1)->transform.position += this->chunks.begin()->transform.position;
+    RenderPipeline::ClearBuffers(this->chunks.begin()->shader, this->chunks.begin()->meshes, false);
 
     this->chunks.erase(this->chunks.begin());
 
     Object objectChunk = Object(pathPart);
 
-    // float distance = abs(this->chunks.end()->transform.position.z) + this->_chunkLength;
-    // objectChunk.transform.Translate(vec3_forward * distance);
-    // objectChunk.transform.SetParent(&this->chunks.end().base()->transform);
-
-    RenderPipeline::GenVAO(objectChunk.meshes);
-    RenderPipeline::GenBuffers(objectChunk.meshes);
-
+    objectChunk.transform.position = vec3_forward * this->_chunkLength; // get local forward of parent
     this->chunks.push_back(objectChunk);
 
-    this->chunks.begin()->transform.SetParent(nullptr);
-    this->chunks.end()->transform.SetParent(&((this->chunks.end() - 1)->transform));
-    this->chunks.end()->transform.SetChild(nullptr);
+    // this->chunks[0].transform.parent = nullptr;
+    // this->chunks[this->_chunksAmount - 0].transform.child = nullptr;
+    // this->chunks[this->_chunksAmount - 0].transform.parent = &this->chunks[this->_chunksAmount - 1].transform;
+    // this->chunks[this->_chunksAmount - 1].transform.child = &this->chunks[this->_chunksAmount - 0].transform;
 
-    this->chunks.end()->transform.position = vec3_forward * this->_chunkLength; // get local forward of parent
-    this->chunks.begin()->transform.Translate(vec3_zero);
+    for (int i = 0; i < this->_chunksAmount; i++){
+        if (i != 0)
+            this->chunks[i].transform.parent = &this->chunks[i - 1].transform;
+        else
+            this->chunks[i].transform.parent = nullptr;
+        if (i < this->_chunksAmount - 1)
+            this->chunks[i].transform.child = &this->chunks[i + 1].transform;
+        else
+            this->chunks[i].transform.child = nullptr;
+    }
+
+    this->chunks[0].transform.position = this->chunks[0].transform.LocalToWorldPosition();
 }
 
 float PathGenerator::GetChunkLength(){

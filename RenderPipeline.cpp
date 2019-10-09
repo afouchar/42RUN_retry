@@ -112,8 +112,6 @@ void	RenderPipeline::DrawObjectMeshes(Shader *shader, Mesh *mesh) {
     shader->SetFloat(shader->GetShininessID(), mesh->material.shininess);
     shader->SetFloat(shader->GetBumpScaleID(), mesh->material.shininess);
 
-	// shader->SetFloat(shader->GetUniformLocation("material.shininess"), 16.0f);
-
 	glBindVertexArray(mesh->vertexArrayID);
 	glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
