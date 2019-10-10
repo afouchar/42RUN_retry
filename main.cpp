@@ -83,8 +83,8 @@ int main(int argc, char **argv) {
 		object->Draw(camera, light);
 
 
-		for (int i = 0; i < pathGenerator.chunks.size(); i++){
-			pathGenerator.chunks[i].Draw(camera, light);
+		for (list<Object>::iterator it = pathGenerator.chunks.begin(); it != pathGenerator.chunks.end(); it++){
+			it->Draw(camera, light);
 		}
 
 	    if (pathGenerator.chunks.begin()->transform.position.z >= (camera->transform.position.z + (pathGenerator.GetChunkLength() / 2))){
@@ -103,8 +103,8 @@ int main(int argc, char **argv) {
 
 	object->ClearBuffers();
 	
-	for (int i = 0; i < pathGenerator.chunks.size(); i++){
-		pathGenerator.chunks[i].ClearBuffers();
+	for (list<Object>::iterator it = pathGenerator.chunks.begin(); it != pathGenerator.chunks.end(); it++){
+		it->ClearBuffers();
 	}
 
 	// textFPS->Clear();

@@ -4,6 +4,8 @@
 #include "Object.hpp"
 #include "RenderPipeline.hpp"
 
+#include <list>
+
 using namespace std;
 using namespace glm;
 
@@ -25,7 +27,7 @@ public:
     void                SwapFirstToLast();
     float               GetChunkLength();
 
-    vector<Object>      chunks;
+    list<Object>      chunks;
     float               speed;
 
 };
