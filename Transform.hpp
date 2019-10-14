@@ -69,6 +69,7 @@ public:
     // void        Rotate(vec3 rotation, bool localOrientation);
     vec3        Up();
     vec3        Right();
+    vec3        Forward();
 
     // void SetChild(Transform *child);
     // void SetParent(Transform *parent);

@@ -97,8 +97,6 @@ void Transform::Rotate(vec3 axis, float angleDegrees){
     //     this->child->Rotate(axis, angleDegrees); //relative to parent??
 }
 
-#include <iostream>
-
 void Transform::Scale(vec3 axis){
     this->scale += axis;
     // std::cout << "scale : x[" << this->scale.x << "] y[" << this->scale.y << "] z[" << this->scale.z << "]" << std::endl;
@@ -132,11 +130,11 @@ void Transform::UpdateMatrix(){
         parentModelMatrix = this->parent->modelMatrix;
 
     this->_translation = glm::translate(mat4(1.0f), this->position);
-    //this->_scale = glm::scale(this->_scale, this->_scale);
-    // this->_rotation = glm::rotate(this->_rotation, 0.0f, vec3_zero);
+    this->_scale = glm::scale(mat4(1.0f), this->scale);
+    this->_rotation = glm::rotate(this->_rotation, 0.0f, vec3_up);
 
-    // this->modelMatrix = parentModelMatrix * (this->_scale * this->_translation * this->_rotation);
-    this->modelMatrix = parentModelMatrix * this->_translation;
+    this->modelMatrix = parentModelMatrix * (this->_scale * this->_translation * this->_rotation);
+    // this->modelMatrix = parentModelMatrix * this->_translation;
 
     if (this->child != nullptr)
         this->child->UpdateMatrix();
@@ -202,6 +200,12 @@ vec3 Transform::Up(){
 
 vec3 Transform::Right(){
     return this->_right;
+}
+
+vec3 Transform::Forward(){
+    mat4 inverted = glm::inverse(this->modelMatrix);
+    vec3 forward = glm::normalize(glm::vec3(inverted[2]));
+    return forward * vec3(1, 1, -1);
 }
 
 // void Transform::SetChild(Transform *child){

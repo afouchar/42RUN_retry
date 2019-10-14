@@ -16,11 +16,20 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
     //GET LENGTH CHUNK PROPERLY !!!
     this->_chunkLength = 40.0f;
 
-    pathPart = Object(this->_shader, "models/tubecube/tubecube.obj");
+    pathForward = Object(this->_shader, "models/tubecube/tubecube.obj");
+    pathForward.tag = "forward";
+    pathTurn = Object(this->_shader, "models/tubecube/tubecube_turn.obj");
+    pathTurn.tag = "turn";
+
+    srand(time(0));
 
     for (int i = 0; i < this->_chunksAmount; i++){
-        Object objectChunk = Object(pathPart);
-        objectChunk.transform.position = vec3_forward * this->_chunkLength; // get local forward of parent
+
+        Object objectChunk;
+        if (rand() % 100 < 15)
+            objectChunk = Object(pathTurn);
+        else
+            objectChunk = Object(pathForward);
         this->chunks.push_back(objectChunk);
     }
     
@@ -29,6 +38,11 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
         if (it != this->chunks.begin()){
             list<Object>::iterator it_previous = prev(it);
             it->transform.parent = &it_previous->transform;
+
+            //position relative to parent
+            it->transform.position = it_previous->transform.Forward() * this->_chunkLength;
+            //get rotation if previous is turn
+            //rotate randomly if is turn
         }
         if (it != prev(this->chunks.end())){
             list<Object>::iterator it_next = next(it, +1);
@@ -43,9 +57,12 @@ void PathGenerator::SwapFirstToLast(){
 
     this->chunks.erase(this->chunks.begin());
 
-    Object objectChunk = Object(pathPart);
+            Object objectChunk;
+        if (rand() % 100 < 15)
+            objectChunk = Object(pathTurn);
+        else
+            objectChunk = Object(pathForward);
 
-    objectChunk.transform.position = vec3_forward * this->_chunkLength; // get local forward of parent
     this->chunks.push_back(objectChunk);
 
     //parenting
@@ -55,6 +72,10 @@ void PathGenerator::SwapFirstToLast(){
     next(this->chunks.end(), -1)->transform.child = nullptr;
 
     this->chunks.begin()->transform.position = this->chunks.begin()->transform.LocalToWorldPosition();
+    next(this->chunks.end(), -1)->transform.position = next(this->chunks.end(), -2)->transform.Forward() * this->_chunkLength;
+    //get rotation if previous is turn
+    //rotate randomly if is turn
+
 }
 
 float PathGenerator::GetChunkLength(){

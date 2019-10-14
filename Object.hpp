@@ -27,6 +27,7 @@ public:
     Object(const Object& rhs);
     ~Object();
 
+    string          tag;
     Shader          *shader;
     Transform       transform;
     vector<Mesh>    meshes;

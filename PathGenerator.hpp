@@ -5,6 +5,7 @@
 #include "RenderPipeline.hpp"
 
 #include <list>
+#include <time.h>
 
 using namespace std;
 using namespace glm;
@@ -17,7 +18,8 @@ private:
     unsigned int        _chunksAmount;
     float               _chunkLength;
     Shader              *_shader;
-    Object              pathPart;
+    Object              pathForward;
+    Object              pathTurn;
 
 public:
     PathGenerator(Shader *shader, unsigned int chunksAmount, float speed);
