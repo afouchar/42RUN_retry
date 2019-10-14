@@ -12,14 +12,14 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
     this->_chunksAmount = chunksAmount;
     this->speed = speed;
     this->_shader = shader;
-    // this->chunks.reserve(this->_chunksAmount);
+
     //GET LENGTH CHUNK PROPERLY !!!
     this->_chunkLength = 40.0f;
 
     pathForward = Object(this->_shader, "models/tubecube/tubecube.obj");
-    pathForward.tag = "forward";
+    pathForward.SetTag("forward");
     pathTurn = Object(this->_shader, "models/tubecube/tubecube_turn.obj");
-    pathTurn.tag = "turn";
+    pathTurn.SetTag("turn");
 
     srand(time(0));
 
@@ -40,7 +40,16 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
             it->transform.parent = &it_previous->transform;
 
             //position relative to parent
-            it->transform.position = it_previous->transform.Forward() * this->_chunkLength;
+            if (it_previous->GetTag() == "turn") {
+                std::cout << it_previous->GetTag() << std::endl;
+                it->transform.Rotate(it_previous->transform.Forward(), it_previous->transform.rotation.z); 
+                it->transform.Rotate(it->transform.Up(), 90.0f); 
+                it->transform.position = it_previous->transform.Right() * this->_chunkLength;
+            }
+            else {
+                it->transform.Rotate(it->transform.Forward(), rand() % 360);
+                it->transform.position = it_previous->transform.Forward() * this->_chunkLength;
+            }
             //get rotation if previous is turn
             //rotate randomly if is turn
         }
@@ -72,7 +81,21 @@ void PathGenerator::SwapFirstToLast(){
     next(this->chunks.end(), -1)->transform.child = nullptr;
 
     this->chunks.begin()->transform.position = this->chunks.begin()->transform.LocalToWorldPosition();
-    next(this->chunks.end(), -1)->transform.position = next(this->chunks.end(), -2)->transform.Forward() * this->_chunkLength;
+    this->chunks.begin()->transform.rotation = this->chunks.begin()->transform.LocalToWorldRotation();
+    // next(this->chunks.end(), -1)->transform.position = next(this->chunks.end(), -2)->transform.Forward() * this->_chunkLength;
+    //position relative to parent
+
+    list<Object>::iterator it = next(this->chunks.end(), -1);
+    if (it->transform.parent->GetTag() == "turn") {
+        std::cout << it->transform.parent->GetTag() << std::endl;
+        it->transform.Rotate(it->transform.parent->Forward(), it->transform.parent->rotation.z); 
+        it->transform.Rotate(it->transform.Up(), 90.0f); 
+        it->transform.position = it->transform.parent->Right() * this->_chunkLength;
+    }
+    else {
+        it->transform.Rotate(it->transform.Forward(), rand() % 360);
+        it->transform.position = it->transform.parent->Forward() * this->_chunkLength;
+    }
     //get rotation if previous is turn
     //rotate randomly if is turn
 

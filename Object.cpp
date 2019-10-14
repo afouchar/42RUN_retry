@@ -2,7 +2,8 @@
 
 Object::~Object(){}
 
-Object::Object(){}
+Object::Object(){
+}
 
 Object::Object(const Object& rhs){
 
@@ -18,6 +19,7 @@ Object::Object(Shader *shader, const char *objFile){
 
     this->shader = shader;
 	this->meshes = Loader::LoadModel(objFile);
+
 
     RenderPipeline::GenVAO(this->meshes);
 	RenderPipeline::GenBuffers(this->meshes);
@@ -39,4 +41,12 @@ mat4 Object::GetModelMatrix(){
 
 void Object::ClearBuffers(){
     RenderPipeline::ClearBuffers(this->shader, this->meshes);
+}
+
+string Object::GetTag(){
+    return this->transform.GetTag();
+}
+
+void Object::SetTag(string newTag){
+    this->transform.SetTag(newTag);
 }

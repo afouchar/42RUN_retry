@@ -8,6 +8,8 @@
 #include <gtx/matrix_decompose.hpp>
 // #include <gtc/quaternion.hpp>
 
+#include <string>
+
 #define vec3_zero       vec3(0, 0, 0)
 #define vec3_one        vec3(1, 1, 1)
 #define vec3_left       vec3(-1, 0, 0)
@@ -19,6 +21,7 @@
 #define PI              3.14159265358979323846
 
 using namespace glm;
+using namespace std;
 
 
 class Transform {
@@ -34,6 +37,8 @@ private:
     mat4        _rotation;
     mat4        _translation;
     mat4        _scale;
+    string      _tag;
+
 
 
 public:
@@ -60,6 +65,7 @@ public:
     void        UpdateMatrix();
     void        ResetMatrix();
     vec3        LocalToWorldPosition();
+    vec3        LocalToWorldRotation();
 
     void        UpdateTranslate();
 
@@ -70,6 +76,8 @@ public:
     vec3        Up();
     vec3        Right();
     vec3        Forward();
+    string      GetTag();
+    void        SetTag(string newTag);
 
     // void SetChild(Transform *child);
     // void SetParent(Transform *parent);

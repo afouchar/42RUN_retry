@@ -18,6 +18,7 @@ Transform::Transform(){
 
     this->child = nullptr;
     this->parent = nullptr;
+    this->_tag = "";
 }
 
 Transform::Transform(const Transform& rhs){
@@ -39,6 +40,7 @@ Transform::Transform(const Transform& rhs){
 
     this->parent = nullptr;
     this->child = nullptr;
+    this->_tag = rhs._tag;
 }
 
 Transform::Transform(vec3 pos){
@@ -56,6 +58,7 @@ Transform::Transform(vec3 pos){
 
     this->child = nullptr;
     this->parent = nullptr;
+    this->_tag = "";
 }
 
 mat4 Transform::LookAt(vec3 target, vec3 up){
@@ -163,6 +166,11 @@ vec3 Transform::LocalToWorldPosition(){
     // return d_translation;
 }
 
+vec3 Transform::LocalToWorldRotation(){
+    vec3 degreeRot = vec3(glm::degrees(this->modelMatrix[2][0]), glm::degrees(this->modelMatrix[2][1]), glm::degrees(this->modelMatrix[2][2]));
+    return degreeRot;
+}
+
 void Transform::UpdateDirection(vec2 mouseDirection){
 
     // Compute new orientation
@@ -195,17 +203,31 @@ vec3 Transform::GetDirection(){
 // }
 
 vec3 Transform::Up(){
-    return this->_up;
+    // return this->_up;
+    mat4 inverted = glm::inverse(this->modelMatrix);
+    vec3 forward = glm::normalize(glm::vec3(inverted[2]) * vec3_up);
+    return forward * vec3(1, -1, 1);
 }
 
 vec3 Transform::Right(){
-    return this->_right;
+    // return this->_right;
+    mat4 inverted = glm::inverse(this->modelMatrix);
+    vec3 forward = glm::normalize(glm::vec3(inverted[2]) * vec3_right);
+    return forward * vec3(-1, 1, 1);
 }
 
 vec3 Transform::Forward(){
     mat4 inverted = glm::inverse(this->modelMatrix);
     vec3 forward = glm::normalize(glm::vec3(inverted[2]));
     return forward * vec3(1, 1, -1);
+}
+
+string Transform::GetTag(){
+    return this->_tag;
+}
+
+void Transform::SetTag(string newTag){
+    this->_tag = newTag;
 }
 
 // void Transform::SetChild(Transform *child){
