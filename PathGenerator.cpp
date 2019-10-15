@@ -26,7 +26,7 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
     for (int i = 0; i < this->_chunksAmount; i++){
 
         Object objectChunk;
-        if (rand() % 100 < 15)
+        if (rand() % 100 < 15 && i > 0)
             objectChunk = Object(pathTurn);
         else
             objectChunk = Object(pathForward);
@@ -42,9 +42,9 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
             //position relative to parent
             if (it_previous->GetTag() == "turn") {
                 std::cout << it_previous->GetTag() << std::endl;
-                it->transform.Rotate(it_previous->transform.Forward(), it_previous->transform.rotation.z); 
-                it->transform.Rotate(it->transform.Up(), 90.0f); 
-                it->transform.position = it_previous->transform.Right() * this->_chunkLength;
+                it->transform.position = it->transform.parent->Right() * this->_chunkLength;
+                it->transform.Rotate(it->transform.parent->Forward(), it->transform.parent->rotation.z);
+                it->transform.Rotate(it->transform.Up(), 90.0f);
             }
             else {
                 it->transform.Rotate(it->transform.Forward(), rand() % 360);
@@ -66,7 +66,7 @@ void PathGenerator::SwapFirstToLast(){
 
     this->chunks.erase(this->chunks.begin());
 
-            Object objectChunk;
+        Object objectChunk;
         if (rand() % 100 < 15)
             objectChunk = Object(pathTurn);
         else
@@ -88,9 +88,9 @@ void PathGenerator::SwapFirstToLast(){
     list<Object>::iterator it = next(this->chunks.end(), -1);
     if (it->transform.parent->GetTag() == "turn") {
         std::cout << it->transform.parent->GetTag() << std::endl;
-        it->transform.Rotate(it->transform.parent->Forward(), it->transform.parent->rotation.z); 
-        it->transform.Rotate(it->transform.Up(), 90.0f); 
-        it->transform.position = it->transform.parent->Right() * this->_chunkLength;
+                it->transform.position = it->transform.parent->Right() * this->_chunkLength;
+                it->transform.Rotate(it->transform.parent->Forward(), it->transform.parent->rotation.z);
+                it->transform.Rotate(it->transform.Up(), 90.0f);
     }
     else {
         it->transform.Rotate(it->transform.Forward(), rand() % 360);

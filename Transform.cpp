@@ -15,6 +15,7 @@ Transform::Transform(){
     this->_rotation = mat4(1.0f);
     this->_translation = mat4(1.0f);
     this->_scale = mat4(1.0f);
+    this->_quatRotation = toQuat(this->_rotation);
 
     this->child = nullptr;
     this->parent = nullptr;
@@ -37,6 +38,7 @@ Transform::Transform(const Transform& rhs){
     this->_rotation = rhs._rotation;
     this->_translation = rhs._translation;
     this->_scale = rhs._scale;
+    this->_quatRotation = rhs._quatRotation;
 
     this->parent = nullptr;
     this->child = nullptr;
@@ -55,6 +57,7 @@ Transform::Transform(vec3 pos){
     this->_rotation = mat4(1.0f);
     this->_translation = mat4(1.0f);
     this->_scale = mat4(1.0f);
+    this->_quatRotation = toQuat(this->_rotation);
 
     this->child = nullptr;
     this->parent = nullptr;
@@ -87,15 +90,21 @@ void Transform::Translate(const vec3 &axis){
 
     this->position += axis;
     this->_translation = glm::translate(this->_translation, axis); 
-    UpdateMatrix();
+    GetRoot()->UpdateMatrix();
+
     // if (this->child != nullptr)
         // this->child->Translate(axis); //relative to parent??
 }
 
 void Transform::Rotate(vec3 axis, float angleDegrees){
+    axis = normalize(axis);
     this->rotation += (axis * angleDegrees);
-    this->_rotation = glm::rotate(this->_rotation, radians(angleDegrees), axis);
-    UpdateMatrix();
+
+    // this->_quatRotation *= angleAxis(radians(angleDegrees), axis);
+    this->_quatRotation *= quat(axis * radians(angleDegrees));
+    // this->_rotation = glm::rotate(this->_rotation, radians(angleDegrees), axis);
+    // this->_quatRotation = quat(vec3(radians(this->rotation.x), radians(this->rotation.y), radians(this->rotation.z)));
+    GetRoot()->UpdateMatrix();
     // if (this->child != nullptr)
     //     this->child->Rotate(axis, angleDegrees); //relative to parent??
 }
@@ -104,25 +113,34 @@ void Transform::Scale(vec3 axis){
     this->scale += axis;
     // std::cout << "scale : x[" << this->scale.x << "] y[" << this->scale.y << "] z[" << this->scale.z << "]" << std::endl;
     this->_scale = glm::scale(this->_scale, axis);
-    UpdateMatrix();
+    GetRoot()->UpdateMatrix();
+
     // if (this->_child != nullptr)
     //     this->_child->Scale(axis); //relative to parent??
 }
 
-void Transform::RotateAround(vec3 pivot){
+void Transform::RotateAround(vec3 pivot, vec3 axis, float angleDegrees){
 
-    mat4 translate = glm::translate(mat4(), pivot);
-    mat4 invTranslate = glm::inverse(translate);
+// rotated_point = origin + (orientation_quaternion * (point-origin));
+    // axis = normalize(axis);
+    // this->rotation += (axis * angleDegrees);
+    // quat rotAround = angleAxis(radians(angleDegrees), axis);
+    quat rotAround = quat(axis * radians(angleDegrees));
+    // this->_rotation = toMat4(this->_quatRotation);
+    this->position = this->position + (rotAround * (pivot - this->position));
 
-  // The idea:
-  // 1) Translate the object to the center
-  // 2) Make the rotation
-  // 3) Translate the object back to its original location
+//     mat4 translate = glm::translate(mat4(), pivot);
+//     mat4 invTranslate = glm::inverse(translate);
 
-  mat4 transform = translate * this->_rotation * invTranslate;
-  this->position = transform * vec4(pivot, 1.0f);
-  glm::translate(this->_translation, this->position);
-  UpdateMatrix();
+//   // The idea:
+//   // 1) Translate the object to the center
+//   // 2) Make the rotation
+//   // 3) Translate the object back to its original location
+
+//   mat4 transform = translate * this->_rotation * invTranslate;
+//   this->position = transform * vec4(pivot, 1.0f);
+//   glm::translate(this->_translation, this->position);
+//   GetRoot()->UpdateMatrix();
 }
 
 void Transform::UpdateMatrix(){
@@ -132,9 +150,12 @@ void Transform::UpdateMatrix(){
     if (this->parent != nullptr)
         parentModelMatrix = this->parent->modelMatrix;
 
+        
+
     this->_translation = glm::translate(mat4(1.0f), this->position);
     this->_scale = glm::scale(mat4(1.0f), this->scale);
-    this->_rotation = glm::rotate(this->_rotation, 0.0f, vec3_up);
+    // this->_rotation = glm::rotate(this->_rotation, 0.0f, vec3_up);
+    this->_rotation = toMat4(this->_quatRotation);
 
     this->modelMatrix = parentModelMatrix * (this->_scale * this->_translation * this->_rotation);
     // this->modelMatrix = parentModelMatrix * this->_translation;
@@ -167,8 +188,19 @@ vec3 Transform::LocalToWorldPosition(){
 }
 
 vec3 Transform::LocalToWorldRotation(){
-    vec3 degreeRot = vec3(glm::degrees(this->modelMatrix[2][0]), glm::degrees(this->modelMatrix[2][1]), glm::degrees(this->modelMatrix[2][2]));
-    return degreeRot;
+
+    vec3 d_scale;
+    quat d_rotation;
+    vec3 d_translation;
+    vec3 d_skew;
+    vec4 d_perspective;
+    glm::decompose(this->modelMatrix, d_scale, d_rotation, d_translation, d_skew, d_perspective);
+    d_rotation = glm::conjugate(d_rotation);
+
+    this->_quatRotation = d_rotation;
+    this->_rotation = toMat4(this->_quatRotation);
+    this->rotation = vec3(glm::degrees(this->_rotation[2][0]), glm::degrees(this->_rotation[2][1]), glm::degrees(this->_rotation[2][2]));
+    return this->rotation;
 }
 
 void Transform::UpdateDirection(vec2 mouseDirection){
@@ -205,15 +237,15 @@ vec3 Transform::GetDirection(){
 vec3 Transform::Up(){
     // return this->_up;
     mat4 inverted = glm::inverse(this->modelMatrix);
-    vec3 forward = glm::normalize(glm::vec3(inverted[2]) * vec3_up);
-    return forward * vec3(1, -1, 1);
+    vec3 up = glm::normalize(glm::vec3(inverted[1]));
+    return up;
 }
 
 vec3 Transform::Right(){
     // return this->_right;
     mat4 inverted = glm::inverse(this->modelMatrix);
-    vec3 forward = glm::normalize(glm::vec3(inverted[2]) * vec3_right);
-    return forward * vec3(-1, 1, 1);
+    vec3 right = glm::normalize(glm::vec3(inverted[0]));
+    return right;
 }
 
 vec3 Transform::Forward(){
@@ -228,6 +260,12 @@ string Transform::GetTag(){
 
 void Transform::SetTag(string newTag){
     this->_tag = newTag;
+}
+
+Transform *Transform::GetRoot(){
+    if (this->parent != nullptr)
+        return this->parent->GetRoot();
+    return this;
 }
 
 // void Transform::SetChild(Transform *child){

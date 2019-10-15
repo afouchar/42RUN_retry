@@ -6,6 +6,7 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtx/matrix_decompose.hpp>
+#include <gtx/quaternion.hpp>
 // #include <gtc/quaternion.hpp>
 
 #include <string>
@@ -37,6 +38,7 @@ private:
     mat4        _rotation;
     mat4        _translation;
     mat4        _scale;
+    quat        _quatRotation;
     string      _tag;
 
 
@@ -59,9 +61,9 @@ public:
     // void        Translate(vec3 translation);
     // void        Rotate(vec3 anglesDegrees);
     void        Translate(const vec3 &axis);
-    void        Rotate(vec3 axis, float angle);
+    void        Rotate(vec3 axis, float angleDegrees);
     void        Scale(vec3 axis);
-    void        RotateAround(vec3 pivot);
+    void        RotateAround(vec3 pivot, vec3 axis, float angleDegrees);
     void        UpdateMatrix();
     void        ResetMatrix();
     vec3        LocalToWorldPosition();
@@ -78,6 +80,7 @@ public:
     vec3        Forward();
     string      GetTag();
     void        SetTag(string newTag);
+    Transform   *GetRoot();
 
     // void SetChild(Transform *child);
     // void SetParent(Transform *parent);
