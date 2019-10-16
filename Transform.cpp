@@ -68,100 +68,92 @@ mat4 Transform::LookAt(vec3 target, vec3 up){
 	return glm::lookAt(this->position, target, up);
 }
 
-// void Transform::Translate(vec3 translation){
-//     this->position += translation;
-//     this->modelMatrix = translate(this->modelMatrix, translation);
-// }
-
-// void Transform::Rotate(vec3 anglesDegrees){
-
-//     vec3 anglesRadians = radians(anglesDegrees);
-
-//     this->modelMatrix = rotate(this->modelMatrix, anglesRadians.z, vec3_forward);
-// }
-
-void Transform::UpdateTranslate(){
-    this->_translation = glm::translate(this->_translation, this->position);
-    if (this->child != nullptr)
-        this->child->UpdateTranslate();
-}
-
 void Transform::Translate(const vec3 &axis){
 
     this->position += axis;
-    this->_translation = glm::translate(this->_translation, axis); 
     GetRoot()->UpdateMatrix();
-
-    // if (this->child != nullptr)
-        // this->child->Translate(axis); //relative to parent??
 }
 
 void Transform::Rotate(vec3 axis, float angleDegrees){
     axis = normalize(axis);
     this->rotation += (axis * angleDegrees);
+    // this->_quatRotation *= quat(axis * radians(angleDegrees));
+    // rotated_point = orientation_quaternion *  point;
 
-    // this->_quatRotation *= angleAxis(radians(angleDegrees), axis);
-    this->_quatRotation *= quat(axis * radians(angleDegrees));
-    // this->_rotation = glm::rotate(this->_rotation, radians(angleDegrees), axis);
-    // this->_quatRotation = quat(vec3(radians(this->rotation.x), radians(this->rotation.y), radians(this->rotation.z)));
     GetRoot()->UpdateMatrix();
-    // if (this->child != nullptr)
-    //     this->child->Rotate(axis, angleDegrees); //relative to parent??
 }
 
 void Transform::Scale(vec3 axis){
     this->scale += axis;
-    // std::cout << "scale : x[" << this->scale.x << "] y[" << this->scale.y << "] z[" << this->scale.z << "]" << std::endl;
-    this->_scale = glm::scale(this->_scale, axis);
     GetRoot()->UpdateMatrix();
-
-    // if (this->_child != nullptr)
-    //     this->_child->Scale(axis); //relative to parent??
 }
 
 void Transform::RotateAround(vec3 pivot, vec3 axis, float angleDegrees){
 
-// rotated_point = origin + (orientation_quaternion * (point-origin));
-    // axis = normalize(axis);
-    // this->rotation += (axis * angleDegrees);
-    // quat rotAround = angleAxis(radians(angleDegrees), axis);
-    quat rotAround = quat(axis * radians(angleDegrees));
-    // this->_rotation = toMat4(this->_quatRotation);
+    axis = normalize(axis);
+    quat rotAround = angleAxis(radians(angleDegrees), axis);
     this->position = this->position + (rotAround * (pivot - this->position));
-
-//     mat4 translate = glm::translate(mat4(), pivot);
-//     mat4 invTranslate = glm::inverse(translate);
-
-//   // The idea:
-//   // 1) Translate the object to the center
-//   // 2) Make the rotation
-//   // 3) Translate the object back to its original location
-
-//   mat4 transform = translate * this->_rotation * invTranslate;
-//   this->position = transform * vec4(pivot, 1.0f);
-//   glm::translate(this->_translation, this->position);
+    Rotate(axis, angleDegrees);
 //   GetRoot()->UpdateMatrix();
 }
 
 void Transform::UpdateMatrix(){
 
-
     mat4 parentModelMatrix = mat4(1.0f);
     if (this->parent != nullptr)
         parentModelMatrix = this->parent->modelMatrix;
 
-        
-
-    this->_translation = glm::translate(mat4(1.0f), this->position);
     this->_scale = glm::scale(mat4(1.0f), this->scale);
-    // this->_rotation = glm::rotate(this->_rotation, 0.0f, vec3_up);
+    vec3 eulerAngles = vec3(radians(this->rotation.x), radians(this->rotation.y), radians(this->rotation.z));
+    // this->_quatRotation = RotateTowards(this->_quatRotation, quat(eulerAngles), 360.0f);
+    this->_quatRotation = quat() * eulerAngles;
     this->_rotation = toMat4(this->_quatRotation);
+    this->position = this->_quatRotation * this->position;
+    this->_translation = glm::translate(mat4(1.0f), this->position);
 
     this->modelMatrix = parentModelMatrix * (this->_scale * this->_translation * this->_rotation);
-    // this->modelMatrix = parentModelMatrix * this->_translation;
 
     if (this->child != nullptr)
         this->child->UpdateMatrix();
+}
+
+quat Transform::RotateTowards(quat q1, quat q2, float maxAngle){
+	
+	if( maxAngle < 0.001f ){
+		// No rotation allowed. Prevent dividing by 0 later.
+		return q1;
+	}
+	
+	float cosTheta = dot(q1, q2);
+	
+	// q1 and q2 are already equal.
+	// Force q2 just to be sure
+	if(cosTheta > 0.9999f){
+		return q2;
+	}
+	
+	// Avoid taking the long path around the sphere
+	if (cosTheta < 0){
+		q1 = q1*-1.0f;
+		cosTheta *= -1.0f;
+	}
+	
+	float angle = acos(cosTheta);
+	
+	// If there is only a 2� difference, and we are allowed 5�,
+	// then we arrived.
+	if (angle < maxAngle){
+		return q2;
+	}
+
+	// This is just like slerp(), but with a custom t
+	float t = maxAngle / angle;
+	angle = maxAngle;
+	
+	quat res = (sin((1.0f - t) * angle) * q1 + sin(t * angle) * q2) / sin(angle);
+	res = normalize(res);
+	return res;
+	
 }
 
 void Transform::ResetMatrix() {
@@ -175,16 +167,6 @@ void Transform::ResetMatrix() {
 vec3 Transform::LocalToWorldPosition(){
 
     return vec3(this->modelMatrix[3]);
-
-    // // mat4 d_transformation;
-    // vec3 d_scale;
-    // quat d_rotation;
-    // vec3 d_translation;
-    // vec3 d_skew;
-    // vec4 d_perspective;
-    // glm::decompose(this->modelMatrix, d_scale, d_rotation, d_translation, d_skew, d_perspective);
-    // d_rotation = glm::conjugate(d_rotation);
-    // return d_translation;
 }
 
 vec3 Transform::LocalToWorldRotation(){

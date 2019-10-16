@@ -58,8 +58,6 @@ public:
     mat4        modelMatrix;
 
     mat4        LookAt(vec3 target, vec3 up);
-    // void        Translate(vec3 translation);
-    // void        Rotate(vec3 anglesDegrees);
     void        Translate(const vec3 &axis);
     void        Rotate(vec3 axis, float angleDegrees);
     void        Scale(vec3 axis);
@@ -69,21 +67,17 @@ public:
     vec3        LocalToWorldPosition();
     vec3        LocalToWorldRotation();
 
-    void        UpdateTranslate();
-
-
     void        UpdateDirection(vec2 mouseDirection);
     vec3        GetDirection();
-    // void        Rotate(vec3 rotation, bool localOrientation);
+
+    quat        RotateTowards(quat q1, quat q2, float maxAngle);
+
     vec3        Up();
     vec3        Right();
     vec3        Forward();
     string      GetTag();
     void        SetTag(string newTag);
     Transform   *GetRoot();
-
-    // void SetChild(Transform *child);
-    // void SetParent(Transform *parent);
 };
 
 #endif

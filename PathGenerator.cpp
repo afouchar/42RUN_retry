@@ -40,15 +40,12 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
             it->transform.parent = &it_previous->transform;
 
             //position relative to parent
-            if (it_previous->GetTag() == "turn") {
-                std::cout << it_previous->GetTag() << std::endl;
-                it->transform.position = it->transform.parent->Right() * this->_chunkLength;
-                it->transform.Rotate(it->transform.parent->Forward(), it->transform.parent->rotation.z);
-                it->transform.Rotate(it->transform.Up(), 90.0f);
+            it->transform.position = it->transform.parent->Forward() * this->_chunkLength;
+            if (it->transform.parent->GetTag() == "turn"){
+                it->transform.RotateAround(vec3_zero, it->transform.parent->Up(), 90.0f);
             }
-            else {
+            if (it->transform.GetTag() == "turn"){
                 it->transform.Rotate(it->transform.Forward(), rand() % 360);
-                it->transform.position = it_previous->transform.Forward() * this->_chunkLength;
             }
             //get rotation if previous is turn
             //rotate randomly if is turn
@@ -63,14 +60,13 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
 void PathGenerator::SwapFirstToLast(){
 
     RenderPipeline::ClearBuffers(this->chunks.begin()->shader, this->chunks.begin()->meshes, false);
-
     this->chunks.erase(this->chunks.begin());
 
-        Object objectChunk;
-        if (rand() % 100 < 15)
-            objectChunk = Object(pathTurn);
-        else
-            objectChunk = Object(pathForward);
+    Object objectChunk;
+    if (rand() % 100 < 15)
+        objectChunk = Object(pathTurn);
+    else
+        objectChunk = Object(pathForward);
 
     this->chunks.push_back(objectChunk);
 
@@ -81,23 +77,28 @@ void PathGenerator::SwapFirstToLast(){
     next(this->chunks.end(), -1)->transform.child = nullptr;
 
     this->chunks.begin()->transform.position = this->chunks.begin()->transform.LocalToWorldPosition();
-    this->chunks.begin()->transform.rotation = this->chunks.begin()->transform.LocalToWorldRotation();
-    // next(this->chunks.end(), -1)->transform.position = next(this->chunks.end(), -2)->transform.Forward() * this->_chunkLength;
+    // this->chunks.begin()->transform.rotation = this->chunks.begin()->transform.LocalToWorldRotation();
     //position relative to parent
 
     list<Object>::iterator it = next(this->chunks.end(), -1);
-    if (it->transform.parent->GetTag() == "turn") {
-        std::cout << it->transform.parent->GetTag() << std::endl;
-                it->transform.position = it->transform.parent->Right() * this->_chunkLength;
-                it->transform.Rotate(it->transform.parent->Forward(), it->transform.parent->rotation.z);
-                it->transform.Rotate(it->transform.Up(), 90.0f);
+
+    it->transform.position = it->transform.parent->Forward() * this->_chunkLength;
+    if (it->transform.parent->GetTag() == "turn"){
+        it->transform.RotateAround(vec3_zero, it->transform.parent->Up(), 90.0f);
     }
-    else {
+    if (it->transform.GetTag() == "turn"){
         it->transform.Rotate(it->transform.Forward(), rand() % 360);
-        it->transform.position = it->transform.parent->Forward() * this->_chunkLength;
     }
+
     //get rotation if previous is turn
     //rotate randomly if is turn
+
+    int i = 0;
+    for (list<Object>::iterator it = this->chunks.begin(); it != this->chunks.end(); it++){
+        std::cout << "[" << i << "] " << it->transform.GetTag() << std::endl;
+        i++;
+    }
+    std::cout << "==========================" << std::endl << std::endl;
 
 }
 
