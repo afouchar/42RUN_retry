@@ -35,12 +35,13 @@ private:
     vec3        _up;
 
     // mat4        model;
-    mat4        _rotation;
-    mat4        _translation;
-    mat4        _scale;
+    mat4        _matRotation;
+    mat4        _matTranslation;
+    mat4        _matScale;
     quat        _quatRotation;
     string      _tag;
 
+    void        UpdateMatrixFromRoot();
 
 
 public:
@@ -53,7 +54,7 @@ public:
     Transform   *parent;
     
     vec3        position;
-    vec3        rotation;
+    vec3        eulerAngles;
     vec3        scale;
     mat4        modelMatrix;
 
@@ -62,6 +63,7 @@ public:
     void        Rotate(vec3 axis, float angleDegrees);
     void        Scale(vec3 axis);
     void        RotateAround(vec3 pivot, vec3 axis, float angleDegrees);
+    void        Interpolate(quat targetRot, float angle);
     void        UpdateMatrix();
     void        ResetMatrix();
     vec3        LocalToWorldPosition();
@@ -70,14 +72,16 @@ public:
     void        UpdateDirection(vec2 mouseDirection);
     vec3        GetDirection();
 
-    quat        RotateTowards(quat q1, quat q2, float maxAngle);
-
     vec3        Up();
+    vec3        Down();
+    vec3        Left();
     vec3        Right();
     vec3        Forward();
+    vec3        Back();
     string      GetTag();
     void        SetTag(string newTag);
     Transform   *GetRoot();
+    quat        GetQuaternion();
 };
 
 #endif

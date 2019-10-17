@@ -57,7 +57,7 @@ Mesh	Loader::LoadMesh(aiMesh *mesh, const aiScene *scene, string directory) {
 	}
 
 	if (!tangentAvailable){
-		for (int i = 0; i < vertices.size(); i += 3){
+		for (int i = 0; i + 3 < vertices.size(); i += 3){
 			vertices[i].tangent = ComputeTangent(vertices, i);
 			vertices[i].tangent = ComputeTangent(vertices, i + 1);
 			vertices[i].tangent = ComputeTangent(vertices, i + 2);
@@ -65,7 +65,7 @@ Mesh	Loader::LoadMesh(aiMesh *mesh, const aiScene *scene, string directory) {
 	}
 
 	if (!biTangentAvailable){
-		for (int i = 0; i < vertices.size(); i += 3){
+		for (int i = 0; i + 3 < vertices.size(); i += 3){
 			vertices[i].tangent = ComputeBiTangent(vertices, i);
 			vertices[i].tangent = ComputeBiTangent(vertices, i + 1);
 			vertices[i].tangent = ComputeBiTangent(vertices, i + 2);

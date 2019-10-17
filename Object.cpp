@@ -26,6 +26,10 @@ Object::Object(Shader *shader, const char *objFile){
 }
 
 void Object::Draw(Camera *camera, Light *light){
+    
+    if (this->transform.parent == nullptr)
+        this->transform.UpdateMatrix();
+
     RenderPipeline::UseProgram(this->shader);
     RenderPipeline::BindBuffers(this->shader, camera, light, this->transform.modelMatrix);
     RenderPipeline::Draw(this->shader, this->meshes);

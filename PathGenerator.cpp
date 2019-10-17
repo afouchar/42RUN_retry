@@ -25,12 +25,10 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
 
     for (int i = 0; i < this->_chunksAmount; i++){
 
-        Object objectChunk;
-        if (rand() % 100 < 15 && i > 0)
-            objectChunk = Object(pathTurn);
+        if (i == 0)
+            this->chunks.push_back(Object(pathForward));
         else
-            objectChunk = Object(pathForward);
-        this->chunks.push_back(objectChunk);
+            this->chunks.push_back(RandomChunkFromLast());
     }
     
     //parenting
@@ -38,23 +36,22 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
         if (it != this->chunks.begin()){
             list<Object>::iterator it_previous = prev(it);
             it->transform.parent = &it_previous->transform;
-
-            //position relative to parent
-            it->transform.position = it->transform.parent->Forward() * this->_chunkLength;
-            if (it->transform.parent->GetTag() == "turn"){
-                it->transform.RotateAround(vec3_zero, it->transform.parent->Up(), 90.0f);
-            }
-            if (it->transform.GetTag() == "turn"){
-                it->transform.Rotate(it->transform.Forward(), rand() % 360);
-            }
-            //get rotation if previous is turn
-            //rotate randomly if is turn
         }
         if (it != prev(this->chunks.end())){
             list<Object>::iterator it_next = next(it, +1);
             it->transform.child = &it_next->transform;
         }
     }
+
+    //position relative to parent
+    for (list<Object>::iterator it = next(this->chunks.begin(), 1); it != this->chunks.end(); it++){
+        SetPositionFromParent((*it));
+    }
+
+    this->chunks.begin()->transform.UpdateMatrix();
+    this->_pivotPoint = Transform(this->chunks.begin()->transform);
+    this->_pivotPoint.Translate(vec3_right / 2.0f);
+    this->_pivotPoint.Translate(vec3_back / 2.0f);
 }
 
 void PathGenerator::SwapFirstToLast(){
@@ -62,13 +59,7 @@ void PathGenerator::SwapFirstToLast(){
     RenderPipeline::ClearBuffers(this->chunks.begin()->shader, this->chunks.begin()->meshes, false);
     this->chunks.erase(this->chunks.begin());
 
-    Object objectChunk;
-    if (rand() % 100 < 15)
-        objectChunk = Object(pathTurn);
-    else
-        objectChunk = Object(pathForward);
-
-    this->chunks.push_back(objectChunk);
+    this->chunks.push_back(RandomChunkFromLast());
 
     //parenting
     this->chunks.begin()->transform.parent = nullptr;
@@ -77,21 +68,15 @@ void PathGenerator::SwapFirstToLast(){
     next(this->chunks.end(), -1)->transform.child = nullptr;
 
     this->chunks.begin()->transform.position = this->chunks.begin()->transform.LocalToWorldPosition();
-    // this->chunks.begin()->transform.rotation = this->chunks.begin()->transform.LocalToWorldRotation();
-    //position relative to parent
+    this->chunks.begin()->transform.eulerAngles = this->chunks.begin()->transform.LocalToWorldRotation();
 
     list<Object>::iterator it = next(this->chunks.end(), -1);
 
-    it->transform.position = it->transform.parent->Forward() * this->_chunkLength;
-    if (it->transform.parent->GetTag() == "turn"){
-        it->transform.RotateAround(vec3_zero, it->transform.parent->Up(), 90.0f);
-    }
-    if (it->transform.GetTag() == "turn"){
-        it->transform.Rotate(it->transform.Forward(), rand() % 360);
-    }
-
-    //get rotation if previous is turn
-    //rotate randomly if is turn
+    SetPositionFromParent((*it));
+    this->_pivotPoint = Transform(this->chunks.begin()->transform);
+    this->_pivotPoint.Rotate(vec3_up, 90.0f);
+    this->_pivotPoint.Translate(vec3_right / 2.0f);
+    this->_pivotPoint.Translate(vec3_back / 2.0f);
 
     int i = 0;
     for (list<Object>::iterator it = this->chunks.begin(); it != this->chunks.end(); it++){
@@ -99,9 +84,58 @@ void PathGenerator::SwapFirstToLast(){
         i++;
     }
     std::cout << "==========================" << std::endl << std::endl;
+}
 
+void PathGenerator::MovePath(float deltaTime){
+
+    if (this->chunks.begin()->transform.GetTag() == "turn" && this->chunks.begin()->transform.eulerAngles.y < 90.0f){
+        // this->chunks.begin()->transform.Interpolate(this->_pivotPoint.GetQuaternion(), this->speed * deltaTime);
+        this->chunks.begin()->transform.RotateAround(this->_pivotPoint.position, vec3_up, 0.5f * this->speed * deltaTime);
+    }
+    else{
+        this->chunks.begin()->transform.Translate(vec3_back * this->speed * deltaTime);
+    }
 }
 
 float PathGenerator::GetChunkLength(){
     return this->_chunkLength;
+}
+
+float PathGenerator::GetHalfChunkLength(){
+    return this->_chunkLength / 2.0f;
+}
+
+void PathGenerator::SetPositionFromParent(Object &chunk){
+
+    // chunk.transform.Translate(chunk.transform.parent->Forward() * this->_chunkLength);
+    if (chunk.transform.parent->GetTag() == "turn"){
+        // chunk.transform.Rotate(vec3_up, -90.0f);
+        // chunk.transform.Translate(vec3_right * this->_chunkLength);
+        chunk.transform.Translate(vec3_forward * this->_chunkLength);
+        chunk.transform.RotateAround(vec3_zero, vec3_up, -90.0f);
+    }
+    else {
+        chunk.transform.Translate(vec3_forward * this->_chunkLength);    
+    }
+    
+    if (chunk.transform.GetTag() == "turn"){
+        chunk.transform.Rotate(vec3_forward, rand() % 360);
+    }
+
+}
+
+Object PathGenerator::RandomChunkFromLast(){
+    return RandomChunk((*next(this->chunks.end(), -1)));
+}
+
+Object PathGenerator::RandomChunk(Object previousChunk){
+
+    Object objectChunk;
+
+    if (previousChunk.GetTag() != "turn" && rand() % 100 < 15)
+        objectChunk = Object(pathTurn);
+    else
+        objectChunk = Object(pathForward);
+
+    return objectChunk;    
 }

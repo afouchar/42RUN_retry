@@ -76,9 +76,25 @@ int main(int argc, char **argv) {
 			// std::cout << "(-) tube speed : " << pathGenerator.speed << std::endl;
 		}
 
-		pathGenerator.chunks.begin()->transform.Translate(vec3_back * pathGenerator.speed * deltaTime);
+		pathGenerator.MovePath(deltaTime);
+		// if (pathGenerator.chunks.begin()->transform.GetTag() == "turn"
+		// 	// && pathGenerator.chunks.begin()->transform.position.z >= (object->transform.position.z + (pathGenerator.GetHalfChunkLength()))
+		// 	&& pathGenerator.chunks.begin()->transform.eulerAngles.y < 90.0f) {
 
+		// 	vec3 pivot = vec3((pathGenerator.chunks.begin()->transform.Right().x * pathGenerator.GetHalfChunkLength()),
+		// 					(pathGenerator.chunks.begin()->transform.Up().y * pathGenerator.GetHalfChunkLength()),
+		// 					(pathGenerator.chunks.begin()->transform.Back().z * pathGenerator.GetHalfChunkLength()));
+		// 	// vec3 pivot = vec3((vec3_right.x * pathGenerator.GetHalfChunkLength()),
+		// 	// 				  (vec3_up.y * pathGenerator.GetHalfChunkLength()),
+		// 	// 				  (vec3_back.z * pathGenerator.GetHalfChunkLength()));
 
+		// 	pathGenerator.chunks.begin()->transform.RotateAround(pivot, vec3_up, 5.0f * pathGenerator.speed * deltaTime);
+
+		// 	// std::cout << "Rotation : " << std::to_string(pathGenerator.chunks.begin()->transform.eulerAngles.y) << std::endl;
+		// 	// glm::quat interpolatedquat = quaternion::mix(quat1, quat2, 0.5f);
+		// }
+		// else
+		// 	pathGenerator.chunks.begin()->transform.Translate(vec3_back * pathGenerator.speed * deltaTime);
 		camera->LookAt(object->transform.position, vec3_up);
 
 		object->Draw(camera, light);
@@ -88,10 +104,12 @@ int main(int argc, char **argv) {
 			it->Draw(camera, light);
 		}
 
-	    // if (pathGenerator.chunks.begin()->transform.position.z >= (camera->transform.position.z + (pathGenerator.GetChunkLength() / 2))){
-	    if (pathGenerator.chunks.begin()->transform.position.z >= (15 + (pathGenerator.GetChunkLength() / 2))){
+
+	    // if (pathGenerator.chunks.begin()->transform.position.z >= (camera->transform.position.z + (pathGenerator.GetHalfChunkLength()))){
+	    if (pathGenerator.chunks.begin()->transform.position.z >= (pathGenerator.GetHalfChunkLength())){
 			pathGenerator.SwapFirstToLast();
 		}
+
 
 		// float fps = (1.0 / deltaTime);
 		// ostringstream buff;
