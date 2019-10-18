@@ -32,8 +32,8 @@ int main(int argc, char **argv) {
 	Object *object = new Object(shader, objFile.c_str());
 	PathGenerator pathGenerator = PathGenerator(shader, 6, 8.0f);
 
-	// camera->transform.position = vec3(0, 0, 15);
-	camera->transform.position = vec3(35, 45, 55);
+	camera->transform.position = vec3(0, 0, 15);
+	// camera->transform.position = vec3(35, 45, 55);
 	camera->LookAt(object->transform.position, vec3_up);
 	light->intensity = 15.0f;
 
@@ -106,7 +106,9 @@ int main(int argc, char **argv) {
 
 
 	    // if (pathGenerator.chunks.begin()->transform.position.z >= (camera->transform.position.z + (pathGenerator.GetHalfChunkLength()))){
-	    if (pathGenerator.chunks.begin()->transform.position.z >= (pathGenerator.GetHalfChunkLength())){
+	    // if (pathGenerator.chunks.begin()->transform.position.z >= (pathGenerator.GetChunkLength())){
+	    // if (pathGenerator.chunks.begin()->transform.position.z >= ( 15 + pathGenerator.GetChunkLength())){
+	    if (pathGenerator.chunks.begin()->transform.position.z >= 0){
 			pathGenerator.SwapFirstToLast();
 		}
 

@@ -87,15 +87,41 @@ void Transform::Scale(vec3 axis){
 void Transform::RotateAround(vec3 pivot, vec3 axis, float angleDegrees){
 
     axis = normalize(axis);
+    quat orientation = quat(axis * glm::radians(angleDegrees));
     this->eulerAngles += (axis * angleDegrees);
     vec3 eulerAnglesRadians = vec3(radians(this->eulerAngles.x), radians(this->eulerAngles.y), radians(this->eulerAngles.z));
     this->_quatRotation = quat(eulerAnglesRadians);
 
-    this->position = pivot + (this->_quatRotation * (this->position - pivot));    
+    // this->position = pivot + (this->_quatRotation * (this->position - pivot));
+    this->position = pivot + (orientation * (this->position - pivot));
+}
+
+vec3 Transform::RotatePointAround(vec3 pivot, vec3 point, vec3 axis, float angleDegrees){
+
+    axis = normalize(axis);
+    vec3 angleAxis = (axis * angleDegrees);
+    vec3 eulerAnglesRadians = vec3(radians(angleAxis.x), radians(angleAxis.y), radians(angleAxis.z));
+
+    return (pivot + (quat(eulerAnglesRadians) * (point - pivot)));
 }
 
 void Transform::Interpolate(quat targetRot, float angle){
     this->_quatRotation = mix(this->_quatRotation, targetRot, angle);
+}
+
+void Transform::SetRotation(quat newRotation){
+
+    this->_quatRotation = newRotation;
+    this->_matRotation = toMat4(this->_quatRotation);
+    this->eulerAngles = glm::eulerAngles(this->_quatRotation);
+    this->eulerAngles.x = glm::degrees(this->eulerAngles.x);
+    this->eulerAngles.y = glm::degrees(this->eulerAngles.y);
+    this->eulerAngles.z = glm::degrees(this->eulerAngles.z);
+}
+
+
+float Transform::Distance(vec3 start, vec3 end){
+    return glm::distance(start, end);
 }
 
 void Transform::UpdateMatrix(){
@@ -120,6 +146,15 @@ void Transform::UpdateMatrixFromRoot(){
         this->child->UpdateMatrixFromRoot();
 }
 
+void Transform::Reset(){
+
+    this->eulerAngles = vec3_zero;
+    this->scale = vec3_one;
+    this->position = vec3_zero;
+    this->_quatRotation = quat();
+    ResetMatrix();
+}
+
 void Transform::ResetMatrix() {
 
     this->modelMatrix = mat4(1.0f); 
@@ -133,20 +168,24 @@ vec3 Transform::LocalToWorldPosition(){
     return vec3(this->modelMatrix[3]);
 }
 
-vec3 Transform::LocalToWorldRotation(){
+void Transform::LocalToWorld(){
 
     vec3 d_matScale;
-    quat d_matRotation;
+    quat d_quatRotation;
     vec3 d_matTranslation;
     vec3 d_skew;
     vec4 d_perspective;
-    glm::decompose(this->modelMatrix, d_matScale, d_matRotation, d_matTranslation, d_skew, d_perspective);
-    d_matRotation = glm::conjugate(d_matRotation);
+    glm::decompose(this->modelMatrix, d_matScale, d_quatRotation, d_matTranslation, d_skew, d_perspective);
 
-    this->_quatRotation = d_matRotation;
+    this->scale = d_matScale;
+    this->_quatRotation = glm::conjugate(d_quatRotation);
+    this->position = d_matTranslation;
     this->_matRotation = toMat4(this->_quatRotation);
-    this->eulerAngles = vec3(glm::degrees(this->_matRotation[2][0]), glm::degrees(this->_matRotation[2][1]), glm::degrees(this->_matRotation[2][2]));
-    return this->eulerAngles;
+    this->eulerAngles = glm::eulerAngles(this->_quatRotation);
+    this->eulerAngles.x = glm::degrees(this->eulerAngles.x);
+    this->eulerAngles.y = glm::degrees(this->eulerAngles.y);
+    this->eulerAngles.z = glm::degrees(this->eulerAngles.z);
+    // this->eulerAngles = vec3(glm::degrees(this->_matRotation[2][0]), glm::degrees(this->_matRotation[2][1]), glm::degrees(this->_matRotation[2][2]));
 }
 
 void Transform::UpdateDirection(vec2 mouseDirection){
@@ -170,62 +209,38 @@ vec3 Transform::GetDirection(){
 }
 
 vec3 Transform::Up(){
-
     vec3 up;
-    // up = this->_quatRotation * vec3_up;
     up = glm::rotate(glm::inverse(this->_quatRotation), vec3_up);
-
-    // up.x = 2 * (this->_quatRotation.x * this->_quatRotation.y + this->_quatRotation.w * this->_quatRotation.z);
-    // up.y = 2 * (this->_quatRotation.x * this->_quatRotation.x + this->_quatRotation.z * this->_quatRotation.z);
-    // up.z = 1 - 2 * (this->_quatRotation.y * this->_quatRotation.z + this->_quatRotation.w * this->_quatRotation.x);
     return normalize(up);
 }
 
 vec3 Transform::Down(){
     vec3 down;
-    // down = this->_quatRotation * vec3_down;
     down = glm::rotate(glm::inverse(this->_quatRotation), vec3_down);
-
     return normalize(down);
 }
 
 vec3 Transform::Left(){
-
     vec3 left;
-    // left = this->_quatRotation * vec3_left;
     left = glm::rotate(glm::inverse(this->_quatRotation), vec3_left);
-
-    // left.x = 2 * (this->_quatRotation.y * this->_quatRotation.y + this->_quatRotation.z * this->_quatRotation.z);
-    // left.y = 2 * (this->_quatRotation.x * this->_quatRotation.y + this->_quatRotation.w * this->_quatRotation.z);
-    // left.z = 1 - 2 * (this->_quatRotation.x * this->_quatRotation.z + this->_quatRotation.w * this->_quatRotation.y);
     return normalize(left);
 }
 
 vec3 Transform::Right(){
     vec3 right;
     right = glm::rotate(glm::inverse(this->_quatRotation), vec3_right);
-    // right = this->_quatRotation * vec3_right;
     return normalize(right);
 }
 
 vec3 Transform::Forward(){
-    // mat4 inverted = glm::inverse(this->modelMatrix);
-    // vec3 forward = glm::normalize(glm::vec3(inverted[2]));
-    // return forward * vec3(1, 1, -1);
-
     vec3 forward;
-    // forward = this->_quatRotation * vec3_forward;
     forward = glm::rotate(glm::inverse(this->_quatRotation), vec3_forward);
-
-    // forward.x = 2 * (this->_quatRotation.x * this->_quatRotation.z + this->_quatRotation.w * this->_quatRotation.y);
-    // forward.y = 2 * (this->_quatRotation.y * this->_quatRotation.z + this->_quatRotation.w * this->_quatRotation.x);
-    // forward.z = 1 - 2 * (this->_quatRotation.x * this->_quatRotation.x + this->_quatRotation.y * this->_quatRotation.y);
     return normalize(forward);
 }
 
 vec3 Transform::Back(){
     vec3 back;
-    back = this->_quatRotation * vec3_back;
+    back = glm::rotate(glm::inverse(this->_quatRotation), vec3_back);
     return normalize(back);
 }
 

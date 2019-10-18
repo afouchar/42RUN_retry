@@ -20,18 +20,18 @@ private:
     Shader              *_shader;
     Object              pathForward;
     Object              pathTurn;
-    Transform            _pivotPoint;
+    vec3                _pivotPoint;
+    float                _pivotRotation;
+    bool                _pivotIsSet;
 
     void                SetPositionFromParent(Object &chunk);
     Object              RandomChunkFromLast();
     Object              RandomChunk(Object previousChunk);
 
-
 public:
     PathGenerator(Shader *shader, unsigned int chunksAmount, float speed);
     ~PathGenerator();
 
-    // void                SwapFirstToLast(RenderPipeline *renderPipeline);
     void                SwapFirstToLast();
     void                MovePath(float deltaTime);
     float               GetChunkLength();
