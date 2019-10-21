@@ -20,6 +20,7 @@ Transform::Transform(){
     this->child = nullptr;
     this->parent = nullptr;
     this->_tag = "";
+    this->pivot = vec3_zero;
 }
 
 Transform::Transform(const Transform& rhs){
@@ -43,6 +44,7 @@ Transform::Transform(const Transform& rhs){
     this->parent = nullptr;
     this->child = nullptr;
     this->_tag = rhs._tag;
+    this->pivot = rhs.pivot;
 }
 
 Transform::Transform(vec3 pos){
@@ -62,6 +64,7 @@ Transform::Transform(vec3 pos){
     this->child = nullptr;
     this->parent = nullptr;
     this->_tag = "";
+    this->pivot = vec3_zero;
 }
 
 mat4 Transform::LookAt(vec3 target, vec3 up){
@@ -83,7 +86,7 @@ void Transform::Rotate(vec3 axis, float angleDegrees){
 void Transform::Scale(vec3 axis){
     this->scale += axis;
 }
-
+#include <iostream>
 void Transform::RotateAround(vec3 pivot, vec3 axis, float angleDegrees){
 
     axis = normalize(axis);
@@ -91,9 +94,13 @@ void Transform::RotateAround(vec3 pivot, vec3 axis, float angleDegrees){
     this->eulerAngles += (axis * angleDegrees);
     vec3 eulerAnglesRadians = vec3(radians(this->eulerAngles.x), radians(this->eulerAngles.y), radians(this->eulerAngles.z));
     this->_quatRotation = quat(eulerAnglesRadians);
+    // this->_quatRotation += orientation;
+    // this->eulerAngles = glm::eulerAngles(this->_quatRotation);
 
     // this->position = pivot + (this->_quatRotation * (this->position - pivot));
+    // this->position = this->position + (orientation * (pivot - this->position));
     this->position = pivot + (orientation * (this->position - pivot));
+    // std::cout << "x : " << this->position.x << "y : " << this->position.y << "z : " << this->position.z << std::endl; 
 }
 
 vec3 Transform::RotatePointAround(vec3 pivot, vec3 point, vec3 axis, float angleDegrees){
@@ -229,7 +236,7 @@ vec3 Transform::Left(){
 vec3 Transform::Right(){
     vec3 right;
     right = glm::rotate(glm::inverse(this->_quatRotation), vec3_right);
-    return normalize(right);
+    return normalize(right) * vec3(1.0f, -1.0f, 1.0f);
 }
 
 vec3 Transform::Forward(){

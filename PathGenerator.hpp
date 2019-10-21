@@ -20,9 +20,6 @@ private:
     Shader              *_shader;
     Object              pathForward;
     Object              pathTurn;
-    vec3                _pivotPoint;
-    float                _pivotRotation;
-    bool                _pivotIsSet;
 
     void                SetPositionFromParent(Object &chunk);
     Object              RandomChunkFromLast();

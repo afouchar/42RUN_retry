@@ -34,6 +34,7 @@ private:
     vec3        _right;
     vec3        _up;
 
+
     // mat4        model;
     mat4        _matRotation;
     mat4        _matTranslation;
@@ -53,6 +54,7 @@ public:
     Transform   *child;
     Transform   *parent;
     
+    vec3        pivot;
     vec3        position;
     vec3        eulerAngles;
     vec3        scale;

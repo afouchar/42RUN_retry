@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
 	    // if (pathGenerator.chunks.begin()->transform.position.z >= (camera->transform.position.z + (pathGenerator.GetHalfChunkLength()))){
 	    // if (pathGenerator.chunks.begin()->transform.position.z >= (pathGenerator.GetChunkLength())){
 	    // if (pathGenerator.chunks.begin()->transform.position.z >= ( 15 + pathGenerator.GetChunkLength())){
-	    if (pathGenerator.chunks.begin()->transform.position.z >= 0){
+	    if (pathGenerator.chunks.begin()->transform.position.z >= pathGenerator.GetHalfChunkLength()){
 			pathGenerator.SwapFirstToLast();
 		}
 
