@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Transform.hpp"
+#include "Collider.hpp"
 #include "Shader.hpp"
 #include "Mesh.hpp"
 #include "Loader.hpp"
@@ -29,6 +30,7 @@ public:
 
     Shader          *shader;
     Transform       transform;
+    Collider        collider;
     vector<Mesh>    meshes;
 
     void            Draw(Camera *camera, Light *light);

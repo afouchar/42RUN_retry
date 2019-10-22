@@ -1,10 +1,12 @@
 #include "Loader.hpp"
 
-vector<Mesh> Loader::LoadModel(string path){
+vector<Mesh> Loader::LoadModel(string path, vec3 &minVertexPosition, vec3 &maxVertexPosition){
 
 	Assimp::Importer import;
 	string directory = path.substr(0, path.find_last_of('/'));
 	vector<Mesh> meshesNode;
+	minVertexPosition = vec3(numeric_limits<float>::max(), numeric_limits<float>::max(), numeric_limits<float>::max());
+	maxVertexPosition = vec3(numeric_limits<float>::min(), numeric_limits<float>::min(), numeric_limits<float>::min());
 
 	const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -12,6 +14,11 @@ vector<Mesh> Loader::LoadModel(string path){
 		std::cerr << import.GetErrorString() << std::endl;
 	else
 		LoadNodes(&meshesNode, scene->mRootNode, scene, directory);
+
+	for (int i = 0; i < meshesNode.size(); i++){
+		minVertexPosition = MinVec3(meshesNode[i].minVertexPosition, minVertexPosition);
+		maxVertexPosition = MaxVec3(meshesNode[i].maxVertexPosition, maxVertexPosition);
+	}
 	return meshesNode;
 }
 
@@ -33,6 +40,8 @@ Mesh	Loader::LoadMesh(aiMesh *mesh, const aiScene *scene, string directory) {
 	vector<Texture> textures;
 	bool tangentAvailable = false;
 	bool biTangentAvailable = false;
+	vec3 meshMinVertPos = vec3(numeric_limits<float>::max(), numeric_limits<float>::max(), numeric_limits<float>::max());
+	vec3 meshMaxVertPos = vec3(numeric_limits<float>::min(), numeric_limits<float>::min(), numeric_limits<float>::min());
 
 	vertices.reserve(mesh->mNumVertices);
 	for(int i = 0; i < mesh->mNumVertices; i++) {
@@ -54,6 +63,9 @@ Mesh	Loader::LoadMesh(aiMesh *mesh, const aiScene *scene, string directory) {
 			biTangentAvailable = true;
 		}
 		vertices.push_back(vertex);
+		meshMinVertPos = MinVec3(vertex.position, meshMinVertPos);
+		meshMaxVertPos = MaxVec3(vertex.position, meshMaxVertPos);
+
 	}
 
 	if (!tangentAvailable){
@@ -97,7 +109,30 @@ Mesh	Loader::LoadMesh(aiMesh *mesh, const aiScene *scene, string directory) {
 
 	Material mat = LoadMaterial(material);
 
-	return Mesh(vertices, indices, textures, mat);
+	Mesh outMesh = Mesh(vertices, indices, textures, mat);
+	outMesh.minVertexPosition = meshMinVertPos;
+	outMesh.maxVertexPosition = meshMaxVertPos;
+	return outMesh;
+}
+
+vec3 Loader::MinVec3(vec3 lhs, vec3 rhs){
+
+	vec3 min = vec3(0, 0, 0);
+	min.x = lhs.x < rhs.x ? lhs.x : rhs.x;
+	min.y = lhs.y < rhs.y ? lhs.y : rhs.y;
+	min.z = lhs.z < rhs.z ? lhs.z : rhs.z;
+
+	return min;
+}
+
+vec3 Loader::MaxVec3(vec3 lhs, vec3 rhs){
+
+	vec3 max = vec3(0, 0, 0);
+	max.x = lhs.x > rhs.x ? lhs.x : rhs.x;
+	max.y = lhs.y > rhs.y ? lhs.y : rhs.y;
+	max.z = lhs.z > rhs.z ? lhs.z : rhs.z;
+
+	return max;
 }
 
 vec3 Loader::ComputeTangent(vector<Vertex> vertices, int index){

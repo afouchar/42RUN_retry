@@ -12,6 +12,8 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
     this->_chunksAmount = chunksAmount;
     this->speed = speed;
     this->_shader = shader;
+    this->pathAngle = 0.0f;
+    this->firstTimeIn = true;
 
     //GET LENGTH CHUNK PROPERLY !!!
     this->_chunkLength = 40.0f;
@@ -54,7 +56,7 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
 void PathGenerator::SwapFirstToLast(){
 
     string previousTag = this->chunks.begin()->transform.GetTag();
-    next(this->chunks.begin(), 1)->transform.position += this->chunks.begin()->transform.position;
+    // next(this->chunks.begin(), 1)->transform.position += this->chunks.begin()->transform.position;
     RenderPipeline::ClearBuffers(this->chunks.begin()->shader, this->chunks.begin()->meshes, false);
     this->chunks.erase(this->chunks.begin());
 
@@ -85,28 +87,37 @@ void PathGenerator::SwapFirstToLast(){
     std::cout << "==========================" << std::endl << std::endl;
 }
 
-void PathGenerator::MovePath(float deltaTime){
+void PathGenerator::MovePath(Object & player, float deltaTime){
 
     list<Object>::iterator it = this->chunks.begin();
 
-    if (it->transform.GetTag() == "turn" && it->transform.eulerAngles.y < 90.0f){
-
-        if (it->transform.eulerAngles.y == 0.0f)
-        it->transform.pivot += it->transform.position;
-        float angle = it->transform.eulerAngles.z;
-        // it->transform.Rotate(vec3_forward, it->transform.eulerAngles.z);
-
-        // float angle = this->_pivotRotation - (this->_pivotRotation * (it->transform.eulerAngles.y / 90.0f));
-        // std::cout << "1 - rot Z : " << to_string(it->transform.eulerAngles.z) << std::endl;
-        it->transform.RotateAround(it->transform.pivot, vec3_up, this->speed * deltaTime);
-        // it->transform.RotateAround(it->transform.pivot, it->transform.Up(), this->speed * deltaTime);
-        // it->transform.Rotate(vec3_forward, -angle);
-
-        // std::cout << "2 - rot Z : " << to_string(it->transform.eulerAngles.z) << " _ angle :" << to_string(-angle) << std::endl;
+    //OnColliderEnter
+    //OnColliderStay
+    //OnColliderExit
+    if (it->collider.CheckCollision(player.collider) && it->transform.GetTag() == "turn"){
+            if (this->firstTimeIn){
+                it->transform.pivot = it->transform.position + (it->transform.Right() * GetHalfChunkLength()) + (it->transform.Back() * GetHalfChunkLength());
+                this->firstTimeIn = false;
+            }
+        it->transform.RotateAround(it->transform.pivot, it->transform.Up(), this->speed * deltaTime);
     }
     else{
         it->transform.Translate(vec3_back * this->speed * deltaTime);
+        this->firstTimeIn = true;
     }
+
+    // if (it->transform.GetTag() == "turn" && this->pathAngle < 90.0f){
+
+    //     if (this->pathAngle == 0.0f){
+    //         it->transform.pivot = it->transform.position + (it->transform.Right() * GetHalfChunkLength()) + (it->transform.Back() * GetHalfChunkLength());
+    //     }
+    //     this->pathAngle += this->speed * deltaTime;
+    //     it->transform.RotateAround(it->transform.pivot, it->transform.Up(), this->speed * deltaTime);
+    // }
+    // else{
+    //     it->transform.Translate(vec3_back * this->speed * deltaTime);
+    //     this->pathAngle = 0.0f;
+    // }
 }
 
 float PathGenerator::GetChunkLength(){
@@ -124,19 +135,7 @@ void PathGenerator::SetPositionFromParent(Object &chunk){
         chunk.transform.RotateAround(vec3_zero, vec3_up, -90.0f);
     }
     if (chunk.transform.GetTag() == "turn"){
-        int rot = rand() % 4;
-        chunk.transform.pivot = vec3_back * GetHalfChunkLength();
-        if (rot == 0) //right
-            chunk.transform.pivot += vec3_right * GetHalfChunkLength();
-        else if (rot == 1) //down
-            chunk.transform.pivot += vec3_down * GetHalfChunkLength();
-        else if (rot == 2) //left
-            chunk.transform.pivot += vec3_left * GetHalfChunkLength();
-        else if (rot == 3) //up
-            chunk.transform.pivot += vec3_up * GetHalfChunkLength();
-        chunk.transform.Rotate(vec3_forward, rot * 90.0f);
-        // chunk.transform.Rotate(vec3_forward, rand() % 360);
-        // chunk.transform.Rotate(vec3_forward, 130.0f);
+        chunk.transform.Rotate(vec3_forward, rand() % 360);
     }
 }
 

@@ -57,6 +57,9 @@ public:
     vector<GLuint>      indices;
     vector<Texture>     textures;
     Material            material;
+
+    vec3                minVertexPosition;
+    vec3                maxVertexPosition;
 };
 
 #endif

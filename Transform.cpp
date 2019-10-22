@@ -86,21 +86,18 @@ void Transform::Rotate(vec3 axis, float angleDegrees){
 void Transform::Scale(vec3 axis){
     this->scale += axis;
 }
-#include <iostream>
+
 void Transform::RotateAround(vec3 pivot, vec3 axis, float angleDegrees){
 
     axis = normalize(axis);
     quat orientation = quat(axis * glm::radians(angleDegrees));
-    this->eulerAngles += (axis * angleDegrees);
-    vec3 eulerAnglesRadians = vec3(radians(this->eulerAngles.x), radians(this->eulerAngles.y), radians(this->eulerAngles.z));
-    this->_quatRotation = quat(eulerAnglesRadians);
-    // this->_quatRotation += orientation;
-    // this->eulerAngles = glm::eulerAngles(this->_quatRotation);
+    this->_quatRotation = orientation * this->_quatRotation;
+    this->eulerAngles = glm::eulerAngles(this->_quatRotation);
+    this->eulerAngles.x = degrees(this->eulerAngles.x);
+    this->eulerAngles.y = degrees(this->eulerAngles.y);
+    this->eulerAngles.z = degrees(this->eulerAngles.z);
 
-    // this->position = pivot + (this->_quatRotation * (this->position - pivot));
-    // this->position = this->position + (orientation * (pivot - this->position));
     this->position = pivot + (orientation * (this->position - pivot));
-    // std::cout << "x : " << this->position.x << "y : " << this->position.y << "z : " << this->position.z << std::endl; 
 }
 
 vec3 Transform::RotatePointAround(vec3 pivot, vec3 point, vec3 axis, float angleDegrees){
@@ -217,37 +214,43 @@ vec3 Transform::GetDirection(){
 
 vec3 Transform::Up(){
     vec3 up;
-    up = glm::rotate(glm::inverse(this->_quatRotation), vec3_up);
+    // up = glm::rotate(glm::inverse(this->_quatRotation), vec3_up);
+    up = glm::rotate(this->_quatRotation, vec3_up);
     return normalize(up);
 }
 
 vec3 Transform::Down(){
     vec3 down;
-    down = glm::rotate(glm::inverse(this->_quatRotation), vec3_down);
+    // down = glm::rotate(glm::inverse(this->_quatRotation), vec3_down);
+    down = glm::rotate(this->_quatRotation, vec3_down);
     return normalize(down);
 }
 
 vec3 Transform::Left(){
     vec3 left;
-    left = glm::rotate(glm::inverse(this->_quatRotation), vec3_left);
+    // left = glm::rotate(glm::inverse(this->_quatRotation), vec3_left);
+    left = glm::rotate(this->_quatRotation, vec3_left);
     return normalize(left);
 }
 
 vec3 Transform::Right(){
     vec3 right;
-    right = glm::rotate(glm::inverse(this->_quatRotation), vec3_right);
-    return normalize(right) * vec3(1.0f, -1.0f, 1.0f);
+    // right = glm::rotate(glm::inverse(this->_quatRotation), vec3_right);
+    right = glm::rotate(this->_quatRotation, vec3_right);
+    return normalize(right);
 }
 
 vec3 Transform::Forward(){
     vec3 forward;
-    forward = glm::rotate(glm::inverse(this->_quatRotation), vec3_forward);
+    // forward = glm::rotate(glm::inverse(this->_quatRotation), vec3_forward);
+    forward = glm::rotate(this->_quatRotation, vec3_forward);
     return normalize(forward);
 }
 
 vec3 Transform::Back(){
     vec3 back;
-    back = glm::rotate(glm::inverse(this->_quatRotation), vec3_back);
+    // back = glm::rotate(glm::inverse(this->_quatRotation), vec3_back);
+    back = glm::rotate(this->_quatRotation, vec3_back);
     return normalize(back);
 }
 

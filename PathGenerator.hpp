@@ -20,6 +20,9 @@ private:
     Shader              *_shader;
     Object              pathForward;
     Object              pathTurn;
+    //temp variables
+    float               pathAngle;
+    bool                firstTimeIn;
 
     void                SetPositionFromParent(Object &chunk);
     Object              RandomChunkFromLast();
@@ -30,7 +33,7 @@ public:
     ~PathGenerator();
 
     void                SwapFirstToLast();
-    void                MovePath(float deltaTime);
+    void                MovePath(Object &player, float deltaTime);
     float               GetChunkLength();
     float               GetHalfChunkLength();
 
