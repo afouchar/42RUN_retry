@@ -1,6 +1,11 @@
 #include "Collider.hpp"
 
-Collider::~Collider(){}
+std::list<Collider *> Collider::_sceneColliders;
+#include <iostream>
+Collider::~Collider(){
+    Collider::_sceneColliders.remove(this);
+    std::cout << "REMOVE _ size : " << Collider::_sceneColliders.size() << std::endl;
+}
 
 Collider::Collider(const Collider & rhs){
     this->position = rhs.position;
@@ -8,6 +13,7 @@ Collider::Collider(const Collider & rhs){
     this->min = rhs.min;
     this->_size = rhs._size;
     this->transform = rhs.transform;
+    Collider::_sceneColliders.push_back(this);
 }
 
 Collider::Collider(const Collider & rhs, Transform & transform){
@@ -16,12 +22,14 @@ Collider::Collider(const Collider & rhs, Transform & transform){
     this->min = rhs.min;
     this->_size = rhs._size;
     this->transform = &transform;
+    Collider::_sceneColliders.push_back(this);
 }
 
 Collider::Collider(){
     this->position = vec3_zero;
     this->min = vec3_zero;
     this->max = vec3_zero;
+    Collider::_sceneColliders.push_back(this);
 }
 
 Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues){
@@ -30,6 +38,7 @@ Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues){
     this->min = minValues;
     this->max = maxValues;
     this->transform = &transform;
+    Collider::_sceneColliders.push_back(this);
 }
 
 Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues, vec3 offset){
@@ -38,6 +47,7 @@ Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues, vec3 o
     this->min = minValues;
     this->max = maxValues;
     this->transform = &transform;
+    Collider::_sceneColliders.push_back(this);
 }
 
 bool Collider::CheckCollision(Collider collider){

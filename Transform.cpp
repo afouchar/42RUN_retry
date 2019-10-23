@@ -182,9 +182,9 @@ void Transform::LocalToWorld(){
     glm::decompose(this->modelMatrix, d_matScale, d_quatRotation, d_matTranslation, d_skew, d_perspective);
 
     this->scale = d_matScale;
-    this->_quatRotation = glm::conjugate(d_quatRotation);
+    this->_quatRotation = d_quatRotation;
     this->position = d_matTranslation;
-    this->_matRotation = toMat4(this->_quatRotation);
+    this->_matRotation = toMat4(glm::inverse(this->_quatRotation));
     this->eulerAngles = glm::eulerAngles(this->_quatRotation);
     this->eulerAngles.x = glm::degrees(this->eulerAngles.x);
     this->eulerAngles.y = glm::degrees(this->eulerAngles.y);

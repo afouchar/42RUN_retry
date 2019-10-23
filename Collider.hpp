@@ -1,16 +1,21 @@
 #ifndef COLLIDER_HPP
 #define COLLIDER_HPP
+// #pragma once
+#include <list>
 
 #include "Transform.hpp"
 
+using namespace std;
 using namespace glm;
+
 
 class Collider {
 
 private:
 
-    vec3        _size;
-
+    vec3                    _size;
+    static list<Collider *> _sceneColliders;
+    list <Collider *>       _collidingWith;
 
 public:
     ~Collider();
@@ -30,6 +35,7 @@ public:
     void        UpdateCollider();
     vec3        GetSize();
     vec3        GetWorldPosition();
+
 };
 
 #endif

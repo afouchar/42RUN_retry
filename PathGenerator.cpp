@@ -55,27 +55,17 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
 
 void PathGenerator::SwapFirstToLast(){
 
-    string previousTag = this->chunks.begin()->transform.GetTag();
-    // next(this->chunks.begin(), 1)->transform.position += this->chunks.begin()->transform.position;
     RenderPipeline::ClearBuffers(this->chunks.begin()->shader, this->chunks.begin()->meshes, false);
     this->chunks.erase(this->chunks.begin());
 
     this->chunks.push_back(RandomChunkFromLast());
-    // this->chunks.begin()->transform.LocalToWorld();
-    // this->chunks.begin()->transform.LocalToWorldPosition();
-    // this->chunks.begin()->transform.Translate(vec3_back * GetHalfChunkLength());
+    this->chunks.begin()->transform.LocalToWorld();
 
     //parenting
     this->chunks.begin()->transform.parent = nullptr;
     next(this->chunks.end(), -2)->transform.child = & next(this->chunks.end(), -1)->transform; 
     next(this->chunks.end(), -1)->transform.parent = & next(this->chunks.end(), -2)->transform; 
     next(this->chunks.end(), -1)->transform.child = nullptr;
-
-    // this->chunks.begin()->transform.LocalToWorld();
-    // this->chunks.begin()->transform.ResetMatrix();
-    // if (previousTag != "turn")
-    //     this->chunks.begin()->transform.Translate(vec3_back * this->_chunkLength);
-    // this->chunks.begin()->transform.Rotate(vec3_forward, previousRotAngle);
 
     SetPositionFromParent((*next(this->chunks.end(), -1)));
 
@@ -94,6 +84,7 @@ void PathGenerator::MovePath(Object & player, float deltaTime){
     //OnColliderEnter
     //OnColliderStay
     //OnColliderExit
+    //!!! Check rotation parfaite sinon le vaiseau parait d'ecal'e par rapport au centre !!!
     if (it->collider.CheckCollision(player.collider) && it->transform.GetTag() == "turn"){
             if (this->firstTimeIn){
                 it->transform.pivot = it->transform.position + (it->transform.Right() * GetHalfChunkLength()) + (it->transform.Back() * GetHalfChunkLength());
@@ -105,19 +96,6 @@ void PathGenerator::MovePath(Object & player, float deltaTime){
         it->transform.Translate(vec3_back * this->speed * deltaTime);
         this->firstTimeIn = true;
     }
-
-    // if (it->transform.GetTag() == "turn" && this->pathAngle < 90.0f){
-
-    //     if (this->pathAngle == 0.0f){
-    //         it->transform.pivot = it->transform.position + (it->transform.Right() * GetHalfChunkLength()) + (it->transform.Back() * GetHalfChunkLength());
-    //     }
-    //     this->pathAngle += this->speed * deltaTime;
-    //     it->transform.RotateAround(it->transform.pivot, it->transform.Up(), this->speed * deltaTime);
-    // }
-    // else{
-    //     it->transform.Translate(vec3_back * this->speed * deltaTime);
-    //     this->pathAngle = 0.0f;
-    // }
 }
 
 float PathGenerator::GetChunkLength(){

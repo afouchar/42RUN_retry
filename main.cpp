@@ -92,6 +92,7 @@ int main(int argc, char **argv) {
 	    // if (pathGenerator.chunks.begin()->transform.position.z >= (pathGenerator.GetChunkLength())){
 	    // if (pathGenerator.chunks.begin()->transform.position.z >= ( 15 + pathGenerator.GetChunkLength())){
 	    if (pathGenerator.chunks.begin()->transform.position.z >= pathGenerator.GetHalfChunkLength()){
+			std::cout << "SWAP" << std::endl;
 			pathGenerator.SwapFirstToLast();
 		}
 
