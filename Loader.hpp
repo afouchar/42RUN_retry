@@ -24,7 +24,10 @@ public:
     Loader();
     ~Loader();
 
-    static vector<Mesh>     LoadModel(string path, vec3 &minVertexPosition, vec3 &maxVertexPosition);
+    static vec3             minVertexPosition;
+    static vec3             maxVertexPosition;
+
+    static vector<Mesh>     LoadModel(string path);
     static void             LoadNodes(vector<Mesh> *meshesNode, aiNode *node, const aiScene *scene, string directory);
     static Mesh             LoadMesh(aiMesh *mesh, const aiScene *scene, string directory);
     static Material         LoadMaterial(aiMaterial *mat);

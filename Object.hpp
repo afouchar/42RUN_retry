@@ -6,6 +6,7 @@
 
 #include <vector>
 
+#include "GameBehaviour.hpp"
 #include "Transform.hpp"
 #include "Collider.hpp"
 #include "Shader.hpp"
@@ -18,7 +19,7 @@
 using namespace std;
 using namespace glm;
 
-class Object {
+class Object : GameBehaviour {
 
 private:
 
@@ -40,6 +41,11 @@ public:
 
     string          GetTag();
     void            SetTag(string newTag);
+
+    //derived virtual methods
+    virtual void    OnColliderEnter(){};
+    virtual void    OnColliderStay(){};
+    virtual void    OnColliderExit(){};
 };
 
 #endif

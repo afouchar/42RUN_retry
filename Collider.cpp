@@ -1,10 +1,12 @@
 #include "Collider.hpp"
 
-std::list<Collider *> Collider::_sceneColliders;
+// std::list<Collider *> Collider::_sceneColliders;
+
 #include <iostream>
+
 Collider::~Collider(){
-    Collider::_sceneColliders.remove(this);
-    std::cout << "REMOVE _ size : " << Collider::_sceneColliders.size() << std::endl;
+    GameBehaviour::_sceneColliders.remove(this);
+    std::cout << "REMOVE _ size : " << GameBehaviour::_sceneColliders.size() << std::endl;
 }
 
 Collider::Collider(const Collider & rhs){
@@ -13,7 +15,8 @@ Collider::Collider(const Collider & rhs){
     this->min = rhs.min;
     this->_size = rhs._size;
     this->transform = rhs.transform;
-    Collider::_sceneColliders.push_back(this);
+    this->_sceneColliders.push_back(this);
+    GameBehaviour::_sceneColliders.push_back(this);
 }
 
 Collider::Collider(const Collider & rhs, Transform & transform){
@@ -22,14 +25,14 @@ Collider::Collider(const Collider & rhs, Transform & transform){
     this->min = rhs.min;
     this->_size = rhs._size;
     this->transform = &transform;
-    Collider::_sceneColliders.push_back(this);
+    GameBehaviour::_sceneColliders.push_back(this);
 }
 
 Collider::Collider(){
     this->position = vec3_zero;
     this->min = vec3_zero;
     this->max = vec3_zero;
-    Collider::_sceneColliders.push_back(this);
+    GameBehaviour::_sceneColliders.push_back(this);
 }
 
 Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues){
@@ -38,7 +41,7 @@ Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues){
     this->min = minValues;
     this->max = maxValues;
     this->transform = &transform;
-    Collider::_sceneColliders.push_back(this);
+    GameBehaviour::_sceneColliders.push_back(this);
 }
 
 Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues, vec3 offset){
@@ -47,7 +50,7 @@ Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues, vec3 o
     this->min = minValues;
     this->max = maxValues;
     this->transform = &transform;
-    Collider::_sceneColliders.push_back(this);
+    GameBehaviour::_sceneColliders.push_back(this);
 }
 
 bool Collider::CheckCollision(Collider collider){
@@ -55,6 +58,8 @@ bool Collider::CheckCollision(Collider collider){
     UpdateCollider();
     vec3 worldPosition = GetWorldPosition() - (this->_size / 2.0f);
     vec3 colliderWorldPosition = collider.GetWorldPosition() - (collider.GetSize() / 2.0f);
+
+    //rotate points
 
     bool collisionX = worldPosition.x + this->_size.x >= colliderWorldPosition.x &&
         colliderWorldPosition.x + collider.GetSize().x >= worldPosition.x;
@@ -70,10 +75,12 @@ bool Collider::CheckCollision(vec3 point){
 
     UpdateCollider();
     vec3 worldPosition = GetWorldPosition();
+    vec3 rotMax = this->transform->GetQuaternion() * this->max;
+    vec3 rotMin = this->transform->GetQuaternion() * this->min;
 
-    bool collisionX = point.x < worldPosition.x + this->max.x && point.x > worldPosition.x + this->min.x;
-    bool collisionY = point.y < worldPosition.y + this->max.y && point.y > worldPosition.y + this->min.y;
-    bool collisionZ = point.z < worldPosition.z + this->max.z && point.z > worldPosition.z + this->min.z;
+    bool collisionX = point.x < worldPosition.x + rotMax.x && point.x > worldPosition.x + rotMin.x;
+    bool collisionY = point.y < worldPosition.y + rotMax.y && point.y > worldPosition.y + rotMin.y;
+    bool collisionZ = point.z < worldPosition.z + rotMax.z && point.z > worldPosition.z + rotMin.z;
 
     return collisionX && collisionY && collisionZ;
 }
@@ -83,6 +90,7 @@ void Collider::UpdateCollider(){
     this->_size.x = glm::distance(this->max.x, this->min.x);
     this->_size.y = glm::distance(this->max.y, this->min.y);
     this->_size.z = glm::distance(this->max.z, this->min.z);
+    this->_size = this->transform->GetQuaternion() * this->_size;
 }
 
 vec3 Collider::GetSize(){

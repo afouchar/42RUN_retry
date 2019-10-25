@@ -1,12 +1,15 @@
 #include "Loader.hpp"
 
-vector<Mesh> Loader::LoadModel(string path, vec3 &minVertexPosition, vec3 &maxVertexPosition){
+glm::vec3 Loader::minVertexPosition;
+glm::vec3 Loader::maxVertexPosition;
+
+vector<Mesh> Loader::LoadModel(string path){
 
 	Assimp::Importer import;
 	string directory = path.substr(0, path.find_last_of('/'));
 	vector<Mesh> meshesNode;
-	minVertexPosition = vec3(numeric_limits<float>::max(), numeric_limits<float>::max(), numeric_limits<float>::max());
-	maxVertexPosition = vec3(numeric_limits<float>::min(), numeric_limits<float>::min(), numeric_limits<float>::min());
+	Loader::minVertexPosition = vec3(numeric_limits<float>::max(), numeric_limits<float>::max(), numeric_limits<float>::max());
+	Loader::maxVertexPosition = vec3(numeric_limits<float>::min(), numeric_limits<float>::min(), numeric_limits<float>::min());
 
 	const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -16,8 +19,8 @@ vector<Mesh> Loader::LoadModel(string path, vec3 &minVertexPosition, vec3 &maxVe
 		LoadNodes(&meshesNode, scene->mRootNode, scene, directory);
 
 	for (int i = 0; i < meshesNode.size(); i++){
-		minVertexPosition = MinVec3(meshesNode[i].minVertexPosition, minVertexPosition);
-		maxVertexPosition = MaxVec3(meshesNode[i].maxVertexPosition, maxVertexPosition);
+		Loader::minVertexPosition = MinVec3(meshesNode[i].minVertexPosition, Loader::minVertexPosition);
+		Loader::maxVertexPosition = MaxVec3(meshesNode[i].maxVertexPosition, Loader::maxVertexPosition);
 	}
 	return meshesNode;
 }

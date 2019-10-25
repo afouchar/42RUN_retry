@@ -19,11 +19,9 @@ Object::Object(const Object& rhs){
 Object::Object(Shader *shader, const char *objFile){
 
     this->shader = shader;
-    vec3 minVertexPosition;
-    vec3 maxVertexPosition;
-	this->meshes = Loader::LoadModel(objFile, minVertexPosition, maxVertexPosition);
+	this->meshes = Loader::LoadModel(objFile);
     this->transform = Transform(vec3_zero);
-    this->collider = Collider(this->transform, minVertexPosition, maxVertexPosition);
+    this->collider = Collider(this->transform, Loader::minVertexPosition, Loader::maxVertexPosition);
 
     RenderPipeline::GenVAO(this->meshes);
 	RenderPipeline::GenBuffers(this->meshes);

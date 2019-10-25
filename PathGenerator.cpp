@@ -56,7 +56,9 @@ PathGenerator::PathGenerator(Shader *shader, unsigned int chunksAmount, float sp
 void PathGenerator::SwapFirstToLast(){
 
     RenderPipeline::ClearBuffers(this->chunks.begin()->shader, this->chunks.begin()->meshes, false);
-    this->chunks.erase(this->chunks.begin());
+    // this->chunks.erase(this->chunks.begin());
+    list<Object>::iterator it_to_delete;
+    this->chunks.remove((*it_to_delete));
 
     this->chunks.push_back(RandomChunkFromLast());
     this->chunks.begin()->transform.LocalToWorld();

@@ -3,19 +3,19 @@
 // #pragma once
 #include <list>
 
+#include "GameBehaviour.hpp"
 #include "Transform.hpp"
 
 using namespace std;
 using namespace glm;
 
 
-class Collider {
+class Collider : GameBehaviour {
 
 private:
 
     vec3                    _size;
-    static list<Collider *> _sceneColliders;
-    list <Collider *>       _collidingWith;
+    // static list<Collider *> _sceneColliders;
 
 public:
     ~Collider();
@@ -35,6 +35,13 @@ public:
     void        UpdateCollider();
     vec3        GetSize();
     vec3        GetWorldPosition();
+
+    // static void UpdateCollisions();
+
+    //derived virtual methods
+    virtual void    OnColliderEnter(){};
+    virtual void    OnColliderStay(){};
+    virtual void    OnColliderExit(){};
 
 };
 
