@@ -61,6 +61,7 @@ void PathGenerator::SwapFirstToLast(){
     // delete &this->chunks.front();
     std::cout << "before" << std::endl;
     list<Object>::iterator it_to_delete = this->chunks.erase(this->chunks.begin());
+    // std::remove(it_to_delete);
     std::cout << "after" << std::endl;
     // it_to_delete->~Object();
 

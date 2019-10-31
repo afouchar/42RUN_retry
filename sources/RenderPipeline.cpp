@@ -156,8 +156,8 @@ void RenderPipeline::RemoveObject(Object & gameObject, bool clearTextures){
 
     RenderPipeline::ClearBuffers(gameObject.shader, gameObject.meshes, clearTextures);
     std::list<Object *>::iterator it = std::find(RenderPipeline::_gameObjects.begin(), RenderPipeline::_gameObjects.end(), &gameObject);
-    RenderPipeline::_gameObjects.erase(it);
-    // RenderPipeline::_gameObjects.remove(&gameObject);
+    if (it != RenderPipeline::_gameObjects.end())
+        RenderPipeline::_gameObjects.erase(it);
 }
 
 void RenderPipeline::AddLight(Light & mainLight){
