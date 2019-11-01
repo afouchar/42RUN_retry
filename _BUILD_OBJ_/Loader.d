@@ -1,5 +1,5 @@
-obj/Camera.o: sources/Camera.cpp includes/Camera.hpp \
-  includes/Transform.hpp \
+_BUILD_OBJ_/Loader.o: Sources/Loader.cpp Includes/Loader.hpp \
+  Includes/Mesh.hpp /Users/afouchar/.brew/opt/glew/include/GL/glew.h \
   /Users/afouchar/.brew/opt/glm/include/glm/glm.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/_fixes.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/setup.hpp \
@@ -141,102 +141,6 @@ obj/Camera.o: sources/Camera.cpp includes/Camera.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/vector_relational.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/integer.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/func_integer.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/matrix_transform.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../mat4x4.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../vec2.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../vec3.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../vec4.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/matrix_projection.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../gtc/constants.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/scalar_constants.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/scalar_constants.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/constants.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../geometric.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../trigonometric.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../matrix.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/matrix_projection.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/matrix_clip_space.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../ext/scalar_constants.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/matrix_clip_space.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/matrix_transform.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/matrix_transform.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/matrix_transform.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../geometric.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../trigonometric.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../matrix.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/matrix_decompose.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../mat4x4.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../vec3.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../vec4.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../geometric.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../gtc/quaternion.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../gtc/constants.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../gtc/matrix_transform.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/vector_relational.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../detail/qualifier.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/vector_relational.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../vector_relational.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../common.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../detail/type_float.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/quaternion_common.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../ext/quaternion_geometric.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../exponential.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../ext/vector_relational.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/quaternion_geometric.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/quaternion_common.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/quaternion_float.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/../detail/type_quat.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/../detail/type_mat3x3.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/../detail/type_mat4x4.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/../detail/type_vec3.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/../detail/type_vec4.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/../ext/vector_relational.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/../ext/quaternion_relational.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/quaternion_relational.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/../gtc/constants.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/../gtc/matrix_transform.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/type_quat.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/../trigonometric.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/../ext/quaternion_geometric.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/quaternion_float_precision.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/quaternion_double.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/quaternion_double_precision.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/quaternion_relational.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/quaternion_geometric.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/quaternion_trigonometric.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/scalar_constants.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/vector_relational.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/quaternion_trigonometric.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../ext/quaternion_transform.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/quaternion_transform.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../detail/type_mat3x3.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../detail/type_mat4x4.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../detail/type_vec3.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../detail/type_vec4.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/quaternion.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../exponential.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/epsilon.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../detail/setup.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../detail/qualifier.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/epsilon.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../vector_relational.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtc/../common.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../gtc/matrix_transform.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/matrix_decompose.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../gtc/constants.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../gtc/epsilon.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/quaternion.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../glm.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../ext/quaternion_exponential.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/./ext/quaternion_exponential.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../gtx/norm.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../gtx/quaternion.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/norm.inl \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/../detail/qualifier.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/quaternion.inl \
-  includes/RenderPipeline.hpp includes/Light.hpp includes/Object.hpp \
-  includes/Loader.hpp includes/Mesh.hpp \
-  /Users/afouchar/.brew/opt/glew/include/GL/glew.h \
   /Users/afouchar/.brew/opt/assimp/include/assimp/types.h \
   /Users/afouchar/.brew/opt/assimp/include/assimp/defs.h \
   /Users/afouchar/.brew/opt/assimp/include/assimp/config.h \
@@ -267,6 +171,4 @@ obj/Camera.o: sources/Camera.cpp includes/Camera.hpp \
   /Users/afouchar/.brew/opt/assimp/include/assimp/postprocess.h \
   /Users/afouchar/.brew/opt/devil/include/IL/il.h \
   /Users/afouchar/.brew/opt/devil/include/IL/ilu.h \
-  /Users/afouchar/.brew/opt/devil/include/IL/ilut.h includes/Shader.hpp \
-  includes/Collider.hpp \
-  /Users/afouchar/.brew/opt/glfw/include/GLFW/glfw3.h
+  /Users/afouchar/.brew/opt/devil/include/IL/ilut.h

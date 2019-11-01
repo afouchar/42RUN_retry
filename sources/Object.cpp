@@ -4,47 +4,38 @@
 #include <iostream>
 
 Object::~Object(){
-    // this->collider.~Collider();
-    std::cout << "Destroy" << std::endl;
+
+    // CHECK IF COLLIDERS ARE BUILD AND DESTROYED PROPERLY !!!!
+
+    std::cout << "Destroy OBJ [" << this->ID << "]" << std::endl;
     RenderPipeline::RemoveObject((*this), false);
 }
 
 Object::Object(){
 }
 
-Object::Object(const Object& rhs){
+Object::Object(const Object& rhs, bool render){
 
 	this->shader = rhs.shader;
 	this->transform = Transform(rhs.transform, (*this));
 	this->meshes = rhs.meshes;
     this->collider = Collider(rhs.collider, this->transform);
-    RenderPipeline::AddObject((*this));
-
-    // RenderPipeline::GenVAO(this->meshes);
-	// RenderPipeline::GenBuffers(this->meshes);
+    if (render)
+        RenderPipeline::AddObject((*this));
 }
 
-Object::Object(Shader *shader, const char *objFile){
+Object::Object(Shader & shader, const char *objFile, bool render){
 
-    this->shader = shader;
-	this->meshes = Loader::LoadModel(objFile);
+    this->shader = &shader;
+    vec3 minBoundPosition;
+    vec3 maxBoundPosition;
+	this->meshes = Loader::LoadModel(objFile, minBoundPosition, maxBoundPosition);
     this->transform = Transform(vec3_zero, (*this));
-    this->collider = Collider(this->transform, Loader::minVertexPosition, Loader::maxVertexPosition);
-    RenderPipeline::AddObject((*this));
+    this->collider = Collider(this->transform, minBoundPosition, maxBoundPosition);
+    if (render)
+        RenderPipeline::AddObject((*this));
 
-    // RenderPipeline::GenVAO(this->meshes);
-	// RenderPipeline::GenBuffers(this->meshes);
 }
-
-// void Object::Draw(Camera *camera, Light *light){
-    
-//     if (this->transform.parent == nullptr)
-//         this->transform.UpdateMatrix();
-
-//     RenderPipeline::UseProgram(this->shader);
-//     RenderPipeline::BindBuffers(this->shader, camera, light, this->transform.modelMatrix);
-//     RenderPipeline::Draw(this->shader, this->meshes);
-// }
 
 void Object::SetShader(Shader *shader){
     this->shader = shader;
@@ -55,7 +46,7 @@ mat4 Object::GetModelMatrix(){
 }
 
 void Object::ClearBuffers(){
-    RenderPipeline::ClearBuffers(this->shader, this->meshes);
+    RenderPipeline::ClearBuffers((*this));
 }
 
 string Object::GetTag(){

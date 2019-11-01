@@ -1,4 +1,5 @@
-obj/Light.o: sources/Light.cpp includes/Light.hpp includes/Transform.hpp \
+_BUILD_OBJ_/RenderPipeline.o: Sources/RenderPipeline.cpp \
+  Includes/RenderPipeline.hpp Includes/Light.hpp Includes/Transform.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/glm.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/_fixes.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/setup.hpp \
@@ -233,9 +234,8 @@ obj/Light.o: sources/Light.cpp includes/Light.hpp includes/Transform.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtx/norm.inl \
   /Users/afouchar/.brew/opt/glm/include/glm/gtx/../detail/qualifier.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtx/quaternion.inl \
-  includes/RenderPipeline.hpp includes/Camera.hpp includes/Object.hpp \
-  includes/Loader.hpp includes/Mesh.hpp \
-  /Users/afouchar/.brew/opt/glew/include/GL/glew.h \
+  Includes/Camera.hpp Includes/Object.hpp Includes/Loader.hpp \
+  Includes/Mesh.hpp /Users/afouchar/.brew/opt/glew/include/GL/glew.h \
   /Users/afouchar/.brew/opt/assimp/include/assimp/types.h \
   /Users/afouchar/.brew/opt/assimp/include/assimp/defs.h \
   /Users/afouchar/.brew/opt/assimp/include/assimp/config.h \
@@ -266,6 +266,6 @@ obj/Light.o: sources/Light.cpp includes/Light.hpp includes/Transform.hpp \
   /Users/afouchar/.brew/opt/assimp/include/assimp/postprocess.h \
   /Users/afouchar/.brew/opt/devil/include/IL/il.h \
   /Users/afouchar/.brew/opt/devil/include/IL/ilu.h \
-  /Users/afouchar/.brew/opt/devil/include/IL/ilut.h includes/Shader.hpp \
-  includes/Collider.hpp \
+  /Users/afouchar/.brew/opt/devil/include/IL/ilut.h Includes/Shader.hpp \
+  Includes/Collider.hpp \
   /Users/afouchar/.brew/opt/glfw/include/GLFW/glfw3.h

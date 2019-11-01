@@ -6,11 +6,11 @@ Text::Text(){
     //this->shader = Loader::DefaultTextShader();
 }
 
-Text::Text(Shader *shader, Window *window, const char *texturePath){
+Text::Text(Shader & shader, Window & window, const char *texturePath){
 
     this->_textureID = Loader::LoadTexture(texturePath);
-    this->window = window;
-    this->shader = shader;
+    this->window = &window;
+    this->shader = &shader;
     this->_texUniformID = this->shader->GetUniformLocation("texture_text");
     this->_aspectUniformID = this->shader->GetUniformLocation("aspectRatio");
 

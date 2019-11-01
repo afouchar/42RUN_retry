@@ -6,6 +6,7 @@
 // #include <iostream>
 
 Collider::~Collider(){
+    // std::cout << "Destroy COLLIDER (OBJ id : " << this->transform->gameObject->ID << ")" << std::endl;
     GameBehaviour::RemoveCollider((*this));
 }
 

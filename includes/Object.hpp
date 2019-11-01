@@ -9,9 +9,6 @@
 #include "Collider.hpp"
 #include "Transform.hpp"
 
-// #include <glew.h>
-// #include <glm.hpp>
-// #include <vector>
 
 using namespace std;
 using namespace glm;
@@ -21,16 +18,18 @@ class Object {
 
 private:
 
+
 public:
     Object();
-    Object(Shader *shader, const char *objFile);
-    Object(const Object& rhs);
+    Object(Shader & shader, const char *objFile, bool render = true);
+    Object(const Object& rhs, bool render = true);
     ~Object();
 
     Shader          *shader;
     Transform       transform;
     Collider        collider;
     vector<Mesh>    meshes;
+    unsigned int    ID;
 
     // void            Draw(Camera *camera, Light *light);
     void            SetShader(Shader *shader);
@@ -40,7 +39,7 @@ public:
     string          GetTag();
     void            SetTag(string newTag);
 
-    //derived virtual methods
+    //virtual methods
     virtual void    OnColliderEnter(Collider & collider){};
     virtual void    OnColliderStay(Collider & collider){};
     virtual void    OnColliderExit(Collider & collider){};

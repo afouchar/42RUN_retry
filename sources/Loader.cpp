@@ -1,42 +1,48 @@
 #include "Loader.hpp"
 
-glm::vec3 Loader::minVertexPosition;
-glm::vec3 Loader::maxVertexPosition;
 
 vector<Mesh> Loader::LoadModel(string path){
 
 	Assimp::Importer import;
 	string directory = path.substr(0, path.find_last_of('/'));
 	vector<Mesh> meshesNode;
-	Loader::minVertexPosition = vec3(numeric_limits<float>::max(), numeric_limits<float>::max(), numeric_limits<float>::max());
-	Loader::maxVertexPosition = vec3(numeric_limits<float>::min(), numeric_limits<float>::min(), numeric_limits<float>::min());
 
 	const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
 	if(!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		std::cerr << import.GetErrorString() << std::endl;
 	else
-		LoadNodes(&meshesNode, scene->mRootNode, scene, directory);
+		LoadNodes(meshesNode, (*scene->mRootNode), (*scene), directory);
+
+	return meshesNode;
+}
+
+vector<Mesh> Loader::LoadModel(string path, vec3 & minBoundPosition, vec3 & maxBoundPosition){
+
+	vector<Mesh> meshesNode = LoadModel(path);
+
+	minBoundPosition = vec3(numeric_limits<float>::max(), numeric_limits<float>::max(), numeric_limits<float>::max());
+	maxBoundPosition = vec3(numeric_limits<float>::min(), numeric_limits<float>::min(), numeric_limits<float>::min());
 
 	for (int i = 0; i < meshesNode.size(); i++){
-		Loader::minVertexPosition = MinVec3(meshesNode[i].minVertexPosition, Loader::minVertexPosition);
-		Loader::maxVertexPosition = MaxVec3(meshesNode[i].maxVertexPosition, Loader::maxVertexPosition);
+		minBoundPosition = MinVec3(meshesNode[i].minVertexPosition, minBoundPosition);
+		maxBoundPosition = MaxVec3(meshesNode[i].maxVertexPosition, maxBoundPosition);
 	}
 	return meshesNode;
 }
 
-void	Loader::LoadNodes(vector<Mesh> *meshesNode, aiNode *node, const aiScene *scene, string directory) {
+void	Loader::LoadNodes(vector<Mesh> & meshesNode, aiNode & node, const aiScene & scene, string directory) {
 
-	for(GLuint i = 0; i < node->mNumMeshes; i++) {
-		aiMesh *aimesh = scene->mMeshes[node->mMeshes[i]];
-		Mesh mesh = LoadMesh(aimesh, scene, directory);
-		meshesNode->push_back(mesh);
+	for(GLuint i = 0; i < node.mNumMeshes; i++) {
+		aiMesh *aimesh = scene.mMeshes[node.mMeshes[i]];
+		Mesh mesh = LoadMesh((*aimesh), scene, directory);
+		meshesNode.push_back(mesh);
 	}
-	for(GLuint i = 0; i < node->mNumChildren; i++)
-		LoadNodes(meshesNode, node->mChildren[i], scene, directory);
+	for(GLuint i = 0; i < node.mNumChildren; i++)
+		LoadNodes(meshesNode, (*node.mChildren[i]), scene, directory);
 }
 
-Mesh	Loader::LoadMesh(aiMesh *mesh, const aiScene *scene, string directory) {
+Mesh	Loader::LoadMesh(aiMesh & mesh, const aiScene & scene, string directory) {
 
 	vector<Vertex> vertices;
 	vector<GLuint> indices;
@@ -46,23 +52,23 @@ Mesh	Loader::LoadMesh(aiMesh *mesh, const aiScene *scene, string directory) {
 	vec3 meshMinVertPos = vec3(numeric_limits<float>::max(), numeric_limits<float>::max(), numeric_limits<float>::max());
 	vec3 meshMaxVertPos = vec3(numeric_limits<float>::min(), numeric_limits<float>::min(), numeric_limits<float>::min());
 
-	vertices.reserve(mesh->mNumVertices);
-	for(int i = 0; i < mesh->mNumVertices; i++) {
+	vertices.reserve(mesh.mNumVertices);
+	for(int i = 0; i < mesh.mNumVertices; i++) {
 
 		Vertex vertex;
 
-		vertex.position = vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-		vertex.normal = vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
-		if(mesh->mTextureCoords[0])
-			vertex.texCoords = vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+		vertex.position = vec3(mesh.mVertices[i].x, mesh.mVertices[i].y, mesh.mVertices[i].z);
+		vertex.normal = vec3(mesh.mNormals[i].x, mesh.mNormals[i].y, mesh.mNormals[i].z);
+		if(mesh.mTextureCoords[0])
+			vertex.texCoords = vec2(mesh.mTextureCoords[0][i].x, mesh.mTextureCoords[0][i].y);
 		else
 			vertex.texCoords = vec2(0.0f, 0.0f);
-		if (mesh->mTangents){
-			vertex.tangent = vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+		if (mesh.mTangents){
+			vertex.tangent = vec3(mesh.mTangents[i].x, mesh.mTangents[i].y, mesh.mTangents[i].z);
 			tangentAvailable = true;
 		}
-		if (mesh->mBitangents){
-			vertex.biTangent = vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+		if (mesh.mBitangents){
+			vertex.biTangent = vec3(mesh.mBitangents[i].x, mesh.mBitangents[i].y, mesh.mBitangents[i].z);
 			biTangentAvailable = true;
 		}
 		vertices.push_back(vertex);
@@ -87,30 +93,30 @@ Mesh	Loader::LoadMesh(aiMesh *mesh, const aiScene *scene, string directory) {
 		}
 	}
 
-	indices.reserve(3 * mesh->mNumFaces);
-	for(int i = 0; i < mesh->mNumFaces; i++) {
-		aiFace face = mesh->mFaces[i];
+	indices.reserve(3 * mesh.mNumFaces);
+	for(int i = 0; i < mesh.mNumFaces; i++) {
+		aiFace face = mesh.mFaces[i];
 		for(int j = 0; j < face.mNumIndices; j++)
 			indices.push_back(face.mIndices[j]);
     }
 
 	// Process materials
-	aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+	aiMaterial *material = scene.mMaterials[mesh.mMaterialIndex];
 	// Convention (N is the index):
 	// Diffuse: texture_diffuseN
 	// Specular: texture_specularN
 	// Normal: texture_normalN
 
-	vector<Texture> diffuseMaps = LoadTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", directory);
+	vector<Texture> diffuseMaps = LoadTextures((*material), aiTextureType_DIFFUSE, "texture_diffuse", directory);
 	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-	vector<Texture> specularMaps = LoadTextures(material, aiTextureType_SPECULAR, "texture_specular", directory);
+	vector<Texture> specularMaps = LoadTextures((*material), aiTextureType_SPECULAR, "texture_specular", directory);
 	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-	vector<Texture> normalMaps = LoadTextures(material, aiTextureType_NORMALS, "texture_normal", directory);
+	vector<Texture> normalMaps = LoadTextures((*material), aiTextureType_NORMALS, "texture_normal", directory);
 	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
-	Material mat = LoadMaterial(material);
+	Material mat = LoadMaterial((*material));
 
 	Mesh outMesh = Mesh(vertices, indices, textures, mat);
 	outMesh.minVertexPosition = meshMinVertPos;
@@ -162,7 +168,7 @@ vec3 Loader::ComputeBiTangent(vector<Vertex> vertices, int index){
 	return (deltaPos2 * deltaUV1.x   - deltaPos1 * deltaUV2.x) * r;
 }
 
-Material Loader::LoadMaterial(aiMaterial *mat){
+Material Loader::LoadMaterial(aiMaterial & mat){
 
 	Material newMat;
 	aiColor4D specularColor;
@@ -174,14 +180,14 @@ Material Loader::LoadMaterial(aiMaterial *mat){
 	float shininess;
 	float bumpScale;
 
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_SPECULAR, &specularColor);
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor);
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_AMBIENT, &ambientColor);
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_EMISSIVE, &emissiveColor);
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_REFLECTIVE, &reflectiveColor);
-	aiGetMaterialColor(mat, AI_MATKEY_COLOR_TRANSPARENT, &transparentColor);
-	aiGetMaterialFloat(mat, AI_MATKEY_SHININESS, &shininess);
-	aiGetMaterialFloat(mat, AI_MATKEY_BUMPSCALING, &bumpScale);
+	aiGetMaterialColor(&mat, AI_MATKEY_COLOR_SPECULAR, &specularColor);
+	aiGetMaterialColor(&mat, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor);
+	aiGetMaterialColor(&mat, AI_MATKEY_COLOR_AMBIENT, &ambientColor);
+	aiGetMaterialColor(&mat, AI_MATKEY_COLOR_EMISSIVE, &emissiveColor);
+	aiGetMaterialColor(&mat, AI_MATKEY_COLOR_REFLECTIVE, &reflectiveColor);
+	aiGetMaterialColor(&mat, AI_MATKEY_COLOR_TRANSPARENT, &transparentColor);
+	aiGetMaterialFloat(&mat, AI_MATKEY_SHININESS, &shininess);
+	aiGetMaterialFloat(&mat, AI_MATKEY_BUMPSCALING, &bumpScale);
 
 	newMat.specular = vec3(specularColor.r, specularColor.g, specularColor.b);
 	newMat.diffuse = vec3(diffuseColor.r, diffuseColor.g, diffuseColor.b);
@@ -209,16 +215,16 @@ Material Loader::LoadMaterial(aiMaterial *mat){
 
 }
 
-vector<Texture>	Loader::LoadTextures(aiMaterial *mat, aiTextureType type, string typeName, string directory) {
+vector<Texture>	Loader::LoadTextures(aiMaterial & mat, aiTextureType type, string typeName, string directory) {
 
 	vector<Texture> array_textures;
-	unsigned int textureCount = mat->GetTextureCount(type);
+	unsigned int textureCount = mat.GetTextureCount(type);
 
 	array_textures.reserve(textureCount);
 	for(GLuint i = 0; i < textureCount; i++) {
 
 		aiString str;
-		mat->GetTexture(type, i, &str);
+		mat.GetTexture(type, i, &str);
 		GLboolean skip = false;
 
 		Texture temp_tex;

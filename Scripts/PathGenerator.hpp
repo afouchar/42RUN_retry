@@ -1,10 +1,11 @@
 #ifndef PATHGENERATOR_HPP
 #define PATHGENERATOR_HPP
 
+#include "Chunk.hpp"
 #include "Object.hpp"
 
 #include <time.h>
-// #include <list>
+
 
 using namespace std;
 using namespace glm;
@@ -17,26 +18,26 @@ private:
     unsigned int        _chunksAmount;
     float               _chunkLength;
     Shader              *_shader;
-    Object              pathForward;
-    Object              pathTurn;
+    Chunk               *_pathForward;
+    Chunk               *_pathTurn;
     //temp variables
     float               pathAngle;
     bool                firstTimeIn;
 
-    void                SetPositionFromParent(Object &chunk);
-    Object              RandomChunkFromLast();
-    Object              RandomChunk(Object previousChunk);
+    void                SetPositionFromParent(Chunk & chunk);
+    Chunk              *RandomChunkFromLast();
+    Chunk              *RandomChunk(Chunk & previousChunk);
 
 public:
-    PathGenerator(Shader *shader, unsigned int chunksAmount, float speed);
+    PathGenerator(Shader & shader, unsigned int chunksAmount, float speed);
     ~PathGenerator();
 
     void                SwapFirstToLast();
-    void                MovePath(Object &player, float deltaTime);
+    void                MovePath(Object & player, float deltaTime);
     float               GetChunkLength();
     float               GetHalfChunkLength();
 
-    list<Object>        chunks;
+    list<Chunk *>      chunks;
     float               speed;
 
 };

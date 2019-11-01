@@ -1,5 +1,6 @@
-obj/GameBehaviour.o: sources/GameBehaviour.cpp includes/GameBehaviour.hpp \
-  includes/Object.hpp includes/Loader.hpp includes/Mesh.hpp \
+_BUILD_OBJ_/PathGenerator.o: Scripts/PathGenerator.cpp \
+  Scripts/PathGenerator.hpp Scripts/Chunk.hpp Includes/Object.hpp \
+  Includes/Loader.hpp Includes/Mesh.hpp \
   /Users/afouchar/.brew/opt/glew/include/GL/glew.h \
   /Users/afouchar/.brew/opt/glm/include/glm/glm.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/_fixes.hpp \
@@ -172,8 +173,8 @@ obj/GameBehaviour.o: sources/GameBehaviour.cpp includes/GameBehaviour.hpp \
   /Users/afouchar/.brew/opt/assimp/include/assimp/postprocess.h \
   /Users/afouchar/.brew/opt/devil/include/IL/il.h \
   /Users/afouchar/.brew/opt/devil/include/IL/ilu.h \
-  /Users/afouchar/.brew/opt/devil/include/IL/ilut.h includes/Shader.hpp \
-  includes/Collider.hpp includes/Transform.hpp \
+  /Users/afouchar/.brew/opt/devil/include/IL/ilut.h Includes/Shader.hpp \
+  Includes/Collider.hpp Includes/Transform.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtc/matrix_transform.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtc/../mat4x4.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtc/../vec2.hpp \
@@ -266,4 +267,6 @@ obj/GameBehaviour.o: sources/GameBehaviour.cpp includes/GameBehaviour.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtx/../gtx/quaternion.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtx/norm.inl \
   /Users/afouchar/.brew/opt/glm/include/glm/gtx/../detail/qualifier.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/quaternion.inl
+  /Users/afouchar/.brew/opt/glm/include/glm/gtx/quaternion.inl \
+  Includes/RenderPipeline.hpp Includes/Light.hpp Includes/Camera.hpp \
+  /Users/afouchar/.brew/opt/glfw/include/GLFW/glfw3.h

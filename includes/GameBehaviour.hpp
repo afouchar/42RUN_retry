@@ -1,7 +1,7 @@
 #ifndef GAMEBEHVIOUR_HPP
 #define GAMEBEHVIOUR_HPP
 
-// #include "Collider.hpp"
+
 #include "Object.hpp"
 
 #include <vector>

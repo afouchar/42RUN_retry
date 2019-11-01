@@ -30,7 +30,7 @@ private:
 
 public:
     Text();
-    Text(Shader *shader, Window *window, const char *texturePath);
+    Text(Shader & shader, Window & window, const char *texturePath);
     ~Text();
 
     Shader                  *shader;

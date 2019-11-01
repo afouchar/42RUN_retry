@@ -17,7 +17,7 @@ private:
 
 
 public:
-    Input(GLFWwindow *window);
+    Input(GLFWwindow & window);
     ~Input();
 
     float       speed;

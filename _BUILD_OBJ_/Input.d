@@ -1,5 +1,5 @@
-obj/Mesh.o: sources/Mesh.cpp includes/Mesh.hpp \
-  /Users/afouchar/.brew/opt/glew/include/GL/glew.h \
+_BUILD_OBJ_/Input.o: Sources/Input.cpp Includes/Input.hpp \
+  /Users/afouchar/.brew/opt/glfw/include/GLFW/glfw3.h \
   /Users/afouchar/.brew/opt/glm/include/glm/glm.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/_fixes.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/setup.hpp \
@@ -140,32 +140,4 @@ obj/Mesh.o: sources/Mesh.cpp includes/Mesh.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/matrix.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/vector_relational.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/integer.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/detail/func_integer.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/types.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/defs.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/config.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/vector3.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/vector2.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/./Compiler/pushpack1.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/./Compiler/poppack1.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/color4.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/matrix3x3.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/matrix4x4.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/quaternion.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/vector2.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/vector3.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/color4.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/quaternion.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/matrix3x3.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/matrix4x4.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/Importer.hpp \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/scene.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/texture.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/mesh.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/light.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/camera.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/material.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/material.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/anim.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/metadata.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/postprocess.h
+  /Users/afouchar/.brew/opt/glm/include/glm/detail/func_integer.inl

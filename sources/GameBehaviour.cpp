@@ -1,6 +1,4 @@
 #include "GameBehaviour.hpp"
-// #include "Object.hpp"
-
 
 //STATIC VARIABLES DEFINITIONS
 std::list<Collider *> GameBehaviour::_sceneColliders;
@@ -62,16 +60,3 @@ void GameBehaviour::RemoveCollider(Collider & collider){
         GameBehaviour::_collisionMap[i].erase(GameBehaviour::_collisionMap[i].begin() + position);
     }
 }
-
-
-// void GameBehaviour::OnColliderEnter(){
-
-// }
-
-// void GameBehaviour::OnColliderStay(){
-    
-// }
-
-// void GameBehaviour::OnColliderExit(){
-    
-// }

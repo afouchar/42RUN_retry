@@ -3,9 +3,9 @@
 
 Input::~Input(){}
 
-Input::Input(GLFWwindow *window){
+Input::Input(GLFWwindow & window){
 
-    this->_window = window;
+    this->_window = &window;
     this->speed = 3.0f;
     this->mouseSpeed = 0.005f;
     this->_lastTime = -1;
