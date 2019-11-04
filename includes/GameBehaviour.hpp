@@ -4,6 +4,7 @@
 
 #include "Object.hpp"
 
+#include <glfw3.h>
 #include <vector>
 #include <list>
 
@@ -13,6 +14,12 @@ class GameBehaviour {
 
 private:
 
+    static float _lastDeltaTime;
+    static float _deltaTime;
+    static float _FPS;
+
+    static void     ComputeDeltaTime();
+    static void     ComputeFPS();
 
 protected:
 
@@ -28,9 +35,11 @@ public:
     GameBehaviour();
     ~GameBehaviour();
 
-    static void UpdateCollisions();
-    static void AddCollider(Collider & collider);
-    static void RemoveCollider(Collider & collider);
+    static void     UpdateCollisions();
+    static void     AddCollider(Collider & collider);
+    static void     RemoveCollider(Collider & collider);
+    static void     Clock();
+    static float    DeltaTime();
 
 };
 

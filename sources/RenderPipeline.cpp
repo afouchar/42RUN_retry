@@ -149,11 +149,13 @@ void	RenderPipeline::DrawObjectMeshes(Shader & shader, Mesh & mesh) {
 
 void RenderPipeline::AddObject(Object & gameObject){
 
+    // if (RenderPipeline::_gameObjects.size() <= 0)
+    //     RenderPipeline::_IDCount = 0;
+
     RenderPipeline::_gameObjects.push_back(&gameObject);
     RenderPipeline::GenVAO(gameObject);
 	RenderPipeline::GenBuffers(gameObject);
-    gameObject.ID = RenderPipeline::_IDCount;
-    RenderPipeline::_IDCount++;
+    gameObject.ID = RenderPipeline::GenerateID();
 }
 
 void RenderPipeline::RemoveObject(Object & gameObject, bool clearTextures){
@@ -179,4 +181,8 @@ void RenderPipeline::AddCamera(Camera & mainCamera){
 
 void RenderPipeline::RemoveCamera(Camera & mainCamera){
     RenderPipeline::_mainCamera = nullptr;
+}
+
+unsigned int RenderPipeline::GenerateID(){
+    return RenderPipeline::_IDCount++;
 }

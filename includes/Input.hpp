@@ -13,7 +13,6 @@ private:
     Input();
 
     GLFWwindow      *_window;
-    double          _lastTime;
 
 
 public:
@@ -28,7 +27,6 @@ public:
     vec2        GetMousePosition();
     vec2        GetMouseDirection();
     void        ResetMousePosition();
-    float       DeltaTime();
     void        Terminate();
 };
 

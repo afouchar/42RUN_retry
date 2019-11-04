@@ -14,27 +14,32 @@ Object::~Object(){
 Object::Object(){
 }
 
-Object::Object(const Object& rhs, bool render){
+Object::Object(const Object & rhs, bool render, bool collide){
 
 	this->shader = rhs.shader;
 	this->transform = Transform(rhs.transform, (*this));
 	this->meshes = rhs.meshes;
-    this->collider = Collider(rhs.collider, this->transform);
+    this->collider = Collider(rhs.collider, this->transform, !collide);
     if (render)
         RenderPipeline::AddObject((*this));
+    else
+        this->ID = RenderPipeline::GenerateID();
+    std::cout << "Construct Object [" << this->GetTag() << " : " << this->ID << std::endl;
 }
 
-Object::Object(Shader & shader, const char *objFile, bool render){
+Object::Object(Shader & shader, const char *objFile, bool render, bool collide){
 
     this->shader = &shader;
     vec3 minBoundPosition;
     vec3 maxBoundPosition;
 	this->meshes = Loader::LoadModel(objFile, minBoundPosition, maxBoundPosition);
     this->transform = Transform(vec3_zero, (*this));
-    this->collider = Collider(this->transform, minBoundPosition, maxBoundPosition);
+    this->collider = Collider(this->transform, minBoundPosition, maxBoundPosition, !collide);
     if (render)
         RenderPipeline::AddObject((*this));
-
+    else
+        this->ID = RenderPipeline::GenerateID();
+    std::cout << "Construct Object [" << this->GetTag() << " : " << this->ID << std::endl;
 }
 
 void Object::SetShader(Shader *shader){

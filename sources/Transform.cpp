@@ -241,7 +241,7 @@ void Transform::ResetMatrix() {
     this->_matTranslation = mat4(1.0f);
 }
 
-vec3 Transform::LocalToWorldPosition(){
+vec3 Transform::WorldPosition(){
 
     return vec3(this->modelMatrix[3]);
 }

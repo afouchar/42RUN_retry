@@ -33,7 +33,7 @@ public:
     ~PathGenerator();
 
     void                SwapFirstToLast();
-    void                MovePath(Object & player, float deltaTime);
+    void                MovePath(Object & player);
     float               GetChunkLength();
     float               GetHalfChunkLength();
 

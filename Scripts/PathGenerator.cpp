@@ -1,5 +1,6 @@
 #include "PathGenerator.hpp"
 #include "RenderPipeline.hpp"
+#include "GameBehaviour.hpp"
 
 PathGenerator::~PathGenerator(){
     delete _pathForward;
@@ -20,10 +21,10 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     this->firstTimeIn = true;
 
 
-    this->_pathForward = new Chunk((*this->_shader), "Models/tubecube/tubecube.obj", false);
-    this->_pathForward->SetTag("forward");
-    this->_pathTurn = new Chunk((*this->_shader), "Models/tubecube/tubecube_turn.obj", false);
-    this->_pathTurn->SetTag("turn");
+    this->_pathForward = new Chunk((*this->_shader), "Models/tubecube/tubecube.obj", false, false);
+    this->_pathForward->SetTag("Forward");
+    this->_pathTurn = new Chunk((*this->_shader), "Models/tubecube/tubecube_turn.obj", false, false);
+    this->_pathTurn->SetTag("Turn");
 
 
     this->_chunkLength = this->_pathForward->collider.GetSize().z;
@@ -87,7 +88,7 @@ void PathGenerator::SwapFirstToLast(){
     std::cout << "==========================" << std::endl << std::endl;
 }
 
-void PathGenerator::MovePath(Object & player, float deltaTime){
+void PathGenerator::MovePath(Object & player){
 
     list<Chunk *>::iterator it = this->chunks.begin();
 
@@ -95,17 +96,17 @@ void PathGenerator::MovePath(Object & player, float deltaTime){
     //OnColliderStay
     //OnColliderExit
     //!!! Check rotation parfaite sinon le vaiseau parait d'ecal'e par rapport au centre !!!
-    if ((*it)->collider.CheckCollision(player.collider) && (*it)->transform.GetTag() == "turn"){
-            if (this->firstTimeIn){
-                (*it)->transform.pivot = (*it)->transform.position + ((*it)->transform.Right() * GetHalfChunkLength()) + ((*it)->transform.Back() * GetHalfChunkLength());
-                this->firstTimeIn = false;
-            }
-        (*it)->transform.RotateAround((*it)->transform.pivot, (*it)->transform.Up(), this->speed * deltaTime);
-    }
-    else{
-        (*it)->transform.Translate(vec3_back * this->speed * deltaTime);
+    // if ((*it)->collider).CheckCollision(player.collider) && (*it)->transform.GetTag() == "Turn"){
+    //         if (this->firstTimeIn){
+    //             (*it)->transform.pivot = (*it)->transform.position + ((*it)->transform.Right() * GetHalfChunkLength()) + ((*it)->transform.Back() * GetHalfChunkLength());
+    //             this->firstTimeIn = false;
+    //         }
+    //     (*it)->transform.RotateAround((*it)->transform.pivot, (*it)->transform.Up(), this->speed * GameBehaviour::DeltaTime());
+    // }
+    // else{
+        (*it)->transform.Translate(vec3_back * this->speed * GameBehaviour::DeltaTime());
         this->firstTimeIn = true;
-    }
+    // }
 }
 
 float PathGenerator::GetChunkLength(){
@@ -119,10 +120,10 @@ float PathGenerator::GetHalfChunkLength(){
 void PathGenerator::SetPositionFromParent(Chunk & chunk){
 
     chunk.transform.position = vec3_forward * this->_chunkLength;
-    if (chunk.transform.parent->GetTag() == "turn"){
+    if (chunk.transform.parent->GetTag() == "Turn"){
         chunk.transform.RotateAround(vec3_zero, vec3_up, -90.0f);
     }
-    if (chunk.transform.GetTag() == "turn"){
+    if (chunk.transform.GetTag() == "Turn"){
         chunk.transform.Rotate(vec3_forward, rand() % 360);
     }
 }
@@ -135,7 +136,7 @@ Chunk *PathGenerator::RandomChunkFromLast(){
 
 Chunk *PathGenerator::RandomChunk(Chunk & previousChunk){
 
-    if (previousChunk.GetTag() != "turn" && rand() % 100 < 15)
+    if (previousChunk.GetTag() == "Forward" && rand() % 100 < 15)
         return new Chunk((*this->_pathTurn));
     else
         return new Chunk((*this->_pathForward));

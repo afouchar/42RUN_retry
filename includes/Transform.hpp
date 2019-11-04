@@ -78,7 +78,7 @@ public:
     void        UpdateMatrix();
     void        ResetMatrix();
     void        Reset();
-    vec3        LocalToWorldPosition();
+    vec3        WorldPosition();
     void        LocalToWorld();
 
     void        UpdateDirection(vec2 mouseDirection);

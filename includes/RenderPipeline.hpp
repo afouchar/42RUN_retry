@@ -47,6 +47,8 @@ public:
     static void         RemoveLight(Light & mainLight);
     static void         AddCamera(Camera & mainCamera);
     static void         RemoveCamera(Camera & mainCamera);
+
+    static unsigned int GenerateID();
 };
 
 #endif

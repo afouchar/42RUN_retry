@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
 		objFile = argv[1];
 
 	Object *object = new Object((*shader), objFile.c_str());
+	object->SetTag("Player");
 	PathGenerator pathGenerator = PathGenerator((*shader), 6, 8.0f);
 
 	camera->transform.position = vec3(0, 0, 15);
@@ -44,40 +45,39 @@ int main(int argc, char **argv) {
 	while(!input.GetKeyPressed(GLFW_KEY_ESCAPE) && !window.IsClosed()){
 
 		window.Clear();
-
-		float deltaTime = input.DeltaTime();
+		GameBehaviour::Clock();
 
 		if (input.GetKeyPressed(GLFW_KEY_W)){
-			object->transform.Translate(vec3_up * input.speed * deltaTime);
+			object->transform.Translate(vec3_up * input.speed * GameBehaviour::DeltaTime());
 		}
 		if (input.GetKeyPressed(GLFW_KEY_S)){
-			object->transform.Translate(vec3_down * input.speed * deltaTime);
+			object->transform.Translate(vec3_down * input.speed * GameBehaviour::DeltaTime());
 		}
 		if (input.GetKeyPressed(GLFW_KEY_A)){
-			object->transform.Rotate(vec3_forward, input.speed * deltaTime);
+			object->transform.Rotate(vec3_forward, input.speed * GameBehaviour::DeltaTime());
 			// object->transform.RotateAround(vec3_zero);
 		}
 		if (input.GetKeyPressed(GLFW_KEY_D)){
-			object->transform.Rotate(vec3_forward, -input.speed * deltaTime);
+			object->transform.Rotate(vec3_forward, -input.speed * GameBehaviour::DeltaTime());
 			// object->transform.RotateAround(vec3_zero);
 		}
 		if (input.GetKeyPressed(GLFW_KEY_Q)){
-			object->transform.Scale(vec3_one * -(deltaTime / 100.0f));
+			object->transform.Scale(vec3_one * -(GameBehaviour::DeltaTime() / 100.0f));
 		}
 		if (input.GetKeyPressed(GLFW_KEY_E)){
-			object->transform.Scale(vec3_one * (deltaTime / 100.0f));
+			object->transform.Scale(vec3_one * (GameBehaviour::DeltaTime() / 100.0f));
 		}
 
 		if (input.GetKeyPressed(GLFW_KEY_UP)){
-			pathGenerator.speed += 10.0f * deltaTime;
+			pathGenerator.speed += 10.0f * GameBehaviour::DeltaTime();
 			// std::cout << "(+) tube speed : " << pathGenerator.speed << std::endl;
 		}
 		if (input.GetKeyPressed(GLFW_KEY_DOWN)){
-			pathGenerator.speed -= 10.0f * deltaTime;
+			pathGenerator.speed -= 10.0f * GameBehaviour::DeltaTime();
 			// std::cout << "(-) tube speed : " << pathGenerator.speed << std::endl;
 		}
 
-		pathGenerator.MovePath((*object), deltaTime);
+		pathGenerator.MovePath((*object));
 
 		camera->LookAt(object->transform.position, vec3_up);
 
@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
 		// }
 
 
-		// float fps = (1.0 / deltaTime);
+		// float fps = (1.0 / GameBehaviour::DeltaTime());
 		// ostringstream buff;
 		// buff << fps;
 

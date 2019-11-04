@@ -9,8 +9,8 @@ private:
 
 public:
     Chunk();
-    Chunk(const Object& rhs, bool render);
-    Chunk(Shader & shader, const char *objFile, bool render);
+    Chunk(const Object& rhs, bool render, bool collide);
+    Chunk(Shader & shader, const char *objFile, bool render, bool collide);
     ~Chunk();
 
     //derived virtual methods
