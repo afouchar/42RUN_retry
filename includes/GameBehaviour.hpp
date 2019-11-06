@@ -6,6 +6,7 @@
 
 #include <glfw3.h>
 #include <vector>
+#include <deque>
 #include <list>
 
 using namespace std;
@@ -24,7 +25,8 @@ private:
 protected:
 
     static list<Collider *> _sceneColliders;
-    static vector<vector<bool>> _collisionMap;
+    // static vector<vector<bool>> _collisionMap;
+    static deque<deque<bool>> _collisionMap;
 
     // virtual void    OnColliderEnter(Collider & collider);
     // virtual void    OnColliderStay(Collider & collider);
@@ -44,3 +46,18 @@ public:
 };
 
 #endif
+
+/*
+Collision Map
+
+  | A | B | C | D
+--+---+---+---+--
+D | 0 | 0 | 0 | .
+--+---+---+---+--
+C | 0 | 0 | . |  
+--+---+---+---+--
+B | 0 | . |   |  
+--+---+---+---+--
+A | . |   |   |  
+
+*/

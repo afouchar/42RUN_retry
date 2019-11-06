@@ -24,7 +24,6 @@ Object::Object(const Object & rhs, bool render, bool collide){
         RenderPipeline::AddObject((*this));
     else
         this->ID = RenderPipeline::GenerateID();
-    std::cout << "Construct Object [" << this->GetTag() << " : " << this->ID << std::endl;
 }
 
 Object::Object(Shader & shader, const char *objFile, bool render, bool collide){
@@ -39,7 +38,6 @@ Object::Object(Shader & shader, const char *objFile, bool render, bool collide){
         RenderPipeline::AddObject((*this));
     else
         this->ID = RenderPipeline::GenerateID();
-    std::cout << "Construct Object [" << this->GetTag() << " : " << this->ID << std::endl;
 }
 
 void Object::SetShader(Shader *shader){

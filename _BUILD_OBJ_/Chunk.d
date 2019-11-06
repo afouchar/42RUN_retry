@@ -173,7 +173,7 @@ _BUILD_OBJ_/Chunk.o: Scripts/Chunk.cpp Scripts/Chunk.hpp \
   /Users/afouchar/.brew/opt/devil/include/IL/il.h \
   /Users/afouchar/.brew/opt/devil/include/IL/ilu.h \
   /Users/afouchar/.brew/opt/devil/include/IL/ilut.h Includes/Shader.hpp \
-  Includes/Collider.hpp Includes/Transform.hpp \
+  Includes/Collider.hpp Includes/Bound.hpp Includes/Transform.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtc/matrix_transform.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtc/../mat4x4.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtc/../vec2.hpp \

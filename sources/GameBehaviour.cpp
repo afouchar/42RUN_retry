@@ -2,7 +2,8 @@
 
 //STATIC VARIABLES DEFINITIONS
 std::list<Collider *> GameBehaviour::_sceneColliders;
-std::vector<vector<bool>> GameBehaviour::_collisionMap;
+// std::vector<vector<bool>> GameBehaviour::_collisionMap;
+std::deque<deque<bool>> GameBehaviour::_collisionMap;
 float GameBehaviour::_deltaTime = 0.0f;
 float GameBehaviour::_lastDeltaTime = -1.0f;
 float GameBehaviour::_FPS = 0.0f;
@@ -44,28 +45,58 @@ void GameBehaviour::UpdateCollisions(){
     }
 }
 
+// void GameBehaviour::AddCollider(Collider & collider){
+
+//     GameBehaviour::_sceneColliders.push_back(&collider);
+//     GameBehaviour::_collisionMap.push_back(std::vector<bool>());
+//     for (int i = 0; i < GameBehaviour::_collisionMap.size(); i++){
+//         GameBehaviour::_collisionMap[GameBehaviour::_collisionMap.size() - 1].push_back(false);
+//         if (i < GameBehaviour::_collisionMap.size() - 1)
+//             GameBehaviour::_collisionMap[i].push_back(false);
+//     }
+// }
+
 void GameBehaviour::AddCollider(Collider & collider){
 
     GameBehaviour::_sceneColliders.push_back(&collider);
-    GameBehaviour::_collisionMap.push_back(std::vector<bool>());
+    GameBehaviour::_collisionMap.push_back(deque<bool>());
+
     for (int i = 0; i < GameBehaviour::_collisionMap.size(); i++){
-        GameBehaviour::_collisionMap[GameBehaviour::_collisionMap.size() - 1].push_back(false);
-        if (i < GameBehaviour::_collisionMap.size() - 1)
-            GameBehaviour::_collisionMap[i].push_back(false);
+        GameBehaviour::_collisionMap.at(i).push_front(false);
     }
 }
 
 void GameBehaviour::RemoveCollider(Collider & collider){
 
     std::list<Collider *>::iterator it = std::find(GameBehaviour::_sceneColliders.begin(), GameBehaviour::_sceneColliders.end(), &collider);
+    if (it == GameBehaviour::_sceneColliders.end())
+        return;
+
     int position = std::distance(GameBehaviour::_sceneColliders.begin(), it);
     GameBehaviour::_sceneColliders.erase(it);
-
     GameBehaviour::_collisionMap.erase(GameBehaviour::_collisionMap.begin() + position);
-    for (int i = 0; i < GameBehaviour::_collisionMap.size(); i++) {
-        GameBehaviour::_collisionMap[i].erase(GameBehaviour::_collisionMap[i].begin() + position);
-    }
+
+    //////////////////////////////////////////////
+    //// REPLACE MAP SLOTS PROPERLY HERE !!!! ////
+    //////////////////////////////////////////////
+
+
+    // for (int i = 0; i < GameBehaviour::_collisionMap.size(); i++) {
+    //     GameBehaviour::_collisionMap[i].erase(GameBehaviour::_collisionMap[i].end() - position);
+    // }
 }
+
+// void GameBehaviour::RemoveCollider(Collider & collider){
+
+//     std::list<Collider *>::iterator it = std::find(GameBehaviour::_sceneColliders.begin(), GameBehaviour::_sceneColliders.end(), &collider);
+//     int position = std::distance(GameBehaviour::_sceneColliders.begin(), it);
+//     GameBehaviour::_sceneColliders.erase(it);
+
+//     GameBehaviour::_collisionMap.erase(GameBehaviour::_collisionMap.begin() + position);
+//     for (int i = 0; i < GameBehaviour::_collisionMap.size(); i++) {
+//         GameBehaviour::_collisionMap[i].erase(GameBehaviour::_collisionMap[i].begin() + position);
+//     }
+// }
 
 void GameBehaviour::Clock(){
     GameBehaviour::ComputeDeltaTime();

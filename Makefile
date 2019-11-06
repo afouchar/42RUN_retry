@@ -26,6 +26,7 @@ CC_NEEDS		=	$(FRAMEWORKS) $(GLFW) $(GLEW) $(ASSIMP) $(DEVIL)
 
 SRC_FILE		=	Camera.cpp \
 					Collider.cpp \
+					Bound.cpp \
 					GameBehaviour.cpp \
 					Input.cpp \
 					Light.cpp \

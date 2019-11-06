@@ -30,7 +30,7 @@ Collider::Collider(bool isTrigger){
     this->position = vec3_zero;
     this->transform = nullptr;
     this->isTrigger = isTrigger;
-    this->bound = Bound(vec3_zero, vec3_zero);
+    this->bound = Bound(vec3_zero, vec3_zero, (*this->transform));
     GameBehaviour::AddCollider((*this));
 }
 
@@ -39,7 +39,7 @@ Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues, bool i
     this->position = vec3_zero;
     this->transform = &transform;
     this->isTrigger = isTrigger;
-    this->bound = Bound(minValues, maxValues);
+    this->bound = Bound(minValues, maxValues, (*this->transform));
     GameBehaviour::AddCollider((*this));
 }
 
@@ -48,36 +48,21 @@ Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues, vec3 o
     this->position = offset;
     this->transform = &transform;
     this->isTrigger = isTrigger;
-    this->bound = Bound(minValues, maxValues);
+    this->bound = Bound(minValues, maxValues, (*this->transform));
     GameBehaviour::AddCollider((*this));
 }
 
 bool Collider::CheckCollision(Collider & collider){
 
-    Bound bound1 = Collider::BoundToWorld(this->bound, (*this->transform));
-    Bound bound2 = Collider::BoundToWorld(collider.bound, (*collider.transform));
+    Bound bound1 = Collider::BoundToWorld(this->bound);
+    Bound bound2 = Collider::BoundToWorld(collider.bound);
 
     return Intersects(bound1, bound2);
-
-    // UpdateCollider();
-    // vec3 worldPosition = GetOffsetWorldPosition() - (this->bound.size / 2.0f);
-    // vec3 colliderWorldPosition = collider.GetOffsetWorldPosition() - (collider.GetSize() / 2.0f);
-
-    // //rotate points
-
-    // bool collisionX = worldPosition.x + this->bound.size.x >= colliderWorldPosition.x &&
-    //     colliderWorldPosition.x + collider.GetSize().x >= worldPosition.x;
-    // bool collisionY = worldPosition.y + this->bound.size.y >= colliderWorldPosition.y &&
-    //     colliderWorldPosition.y + collider.GetSize().y >= worldPosition.y;
-    // bool collisionZ = worldPosition.z + this->bound.size.z >= colliderWorldPosition.z &&
-    //     colliderWorldPosition.z + collider.GetSize().z >= worldPosition.z;
-
-    // return collisionX && collisionY && collisionZ;
 }
 
 bool Collider::CheckCollision(vec3 point){
 
-    //change to new collision/intersection detection
+    //change to new collision/intersection detection ?!
 
     UpdateCollider();
     vec3 worldPosition = GetOffsetWorldPosition();
@@ -112,15 +97,16 @@ bool Collider::OverlapTest(Bound bound1, Bound bound2){
 
     for(int i = 0 ; i < bound1.normals.size() ; i++) {
 
-    float shape1Min;
-    float shape1Max;
-    float shape2Min;
-    float shape2Max;
+        float shape1Min;
+        float shape1Max;
+        float shape2Min;
+        float shape2Max;
 
-    SATTest((*bound1.normals[i]), bound1.points, shape1Min, shape1Max);
-    SATTest((*bound1.normals[i]), bound2.points, shape2Min, shape2Max);
-    if(!Overlaps(shape1Min, shape1Max, shape2Min, shape2Max)) {
-      return false ; // NO INTERSECTION
+        SATTest((*bound1.normals[i]), bound1.points, shape1Min, shape1Max);
+        SATTest((*bound1.normals[i]), bound2.points, shape2Min, shape2Max);
+
+        if(!Overlaps(shape1Min, shape1Max, shape2Min, shape2Max)) {
+            return false ; // NO INTERSECTION
     }
   }
   return true;
@@ -154,10 +140,13 @@ vec3 Collider::GetSize(){
     return this->bound.size;
 }
 
-Bound Collider::BoundToWorld(Bound & bound, Transform & transform){
+Bound Collider::BoundToWorld(Bound & bound){
     
+    if (bound.transform == nullptr)
+        return bound;
+
     Bound tempBound = Bound(bound);
-    Collider *colPtr = &transform.gameObject->collider;
+    Collider *colPtr = &bound.transform->gameObject->collider;
 
     tempBound.frontLeftDown = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.frontLeftDown);
     tempBound.frontLeftUp = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.frontLeftUp);
@@ -168,12 +157,12 @@ Bound Collider::BoundToWorld(Bound & bound, Transform & transform){
     tempBound.backRightUp = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.backRightUp);
     tempBound.backRightDown = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.backRightDown);
 
-    tempBound.up = transform.Up();
-    tempBound.down = transform.Down();
-    tempBound.left = transform.Left();
-    tempBound.right = transform.Right();
-    tempBound.forward = transform.Forward();
-    tempBound.back = transform.Back();
+    tempBound.up = bound.transform->Up();
+    tempBound.down = bound.transform->Down();
+    tempBound.left = bound.transform->Left();
+    tempBound.right = bound.transform->Right();
+    tempBound.forward = bound.transform->Forward();
+    tempBound.back = bound.transform->Back();
 
     return tempBound;
 }

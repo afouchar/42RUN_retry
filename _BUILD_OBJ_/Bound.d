@@ -1,4 +1,4 @@
-_BUILD_OBJ_/Camera.o: Sources/Camera.cpp Includes/Camera.hpp \
+_BUILD_OBJ_/Bound.o: Sources/Bound.cpp Includes/Bound.hpp \
   Includes/Transform.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/glm.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/_fixes.hpp \
@@ -233,40 +233,4 @@ _BUILD_OBJ_/Camera.o: Sources/Camera.cpp Includes/Camera.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtx/../gtx/quaternion.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtx/norm.inl \
   /Users/afouchar/.brew/opt/glm/include/glm/gtx/../detail/qualifier.hpp \
-  /Users/afouchar/.brew/opt/glm/include/glm/gtx/quaternion.inl \
-  Includes/RenderPipeline.hpp Includes/Light.hpp Includes/Object.hpp \
-  Includes/Loader.hpp Includes/Mesh.hpp \
-  /Users/afouchar/.brew/opt/glew/include/GL/glew.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/types.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/defs.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/config.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/vector3.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/vector2.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/./Compiler/pushpack1.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/./Compiler/poppack1.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/color4.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/matrix3x3.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/matrix4x4.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/quaternion.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/vector2.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/vector3.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/color4.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/quaternion.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/matrix3x3.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/matrix4x4.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/Importer.hpp \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/scene.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/texture.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/mesh.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/light.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/camera.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/material.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/material.inl \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/anim.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/metadata.h \
-  /Users/afouchar/.brew/opt/assimp/include/assimp/postprocess.h \
-  /Users/afouchar/.brew/opt/devil/include/IL/il.h \
-  /Users/afouchar/.brew/opt/devil/include/IL/ilu.h \
-  /Users/afouchar/.brew/opt/devil/include/IL/ilut.h Includes/Shader.hpp \
-  Includes/Collider.hpp Includes/Bound.hpp \
-  /Users/afouchar/.brew/opt/glfw/include/GLFW/glfw3.h
+  /Users/afouchar/.brew/opt/glm/include/glm/gtx/quaternion.inl

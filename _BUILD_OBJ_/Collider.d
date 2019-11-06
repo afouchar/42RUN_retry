@@ -1,5 +1,5 @@
 _BUILD_OBJ_/Collider.o: Sources/Collider.cpp Includes/Collider.hpp \
-  Includes/Transform.hpp \
+  Includes/Bound.hpp Includes/Transform.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/glm.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/_fixes.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/setup.hpp \

@@ -269,5 +269,6 @@ _BUILD_OBJ_/main.o: Sources/main.cpp Includes/Window.hpp \
   /Users/afouchar/.brew/opt/devil/include/IL/il.h \
   /Users/afouchar/.brew/opt/devil/include/IL/ilu.h \
   /Users/afouchar/.brew/opt/devil/include/IL/ilut.h \
-  Includes/Collider.hpp Includes/Input.hpp Includes/Text.hpp \
-  Includes/GameBehaviour.hpp Scripts/PathGenerator.hpp Scripts/Chunk.hpp
+  Includes/Collider.hpp Includes/Bound.hpp Includes/Input.hpp \
+  Includes/Text.hpp Includes/GameBehaviour.hpp Scripts/PathGenerator.hpp \
+  Scripts/Chunk.hpp

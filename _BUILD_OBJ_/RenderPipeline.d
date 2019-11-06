@@ -267,5 +267,5 @@ _BUILD_OBJ_/RenderPipeline.o: Sources/RenderPipeline.cpp \
   /Users/afouchar/.brew/opt/devil/include/IL/il.h \
   /Users/afouchar/.brew/opt/devil/include/IL/ilu.h \
   /Users/afouchar/.brew/opt/devil/include/IL/ilut.h Includes/Shader.hpp \
-  Includes/Collider.hpp \
+  Includes/Collider.hpp Includes/Bound.hpp \
   /Users/afouchar/.brew/opt/glfw/include/GLFW/glfw3.h
