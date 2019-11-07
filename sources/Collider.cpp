@@ -169,7 +169,7 @@ Bound Collider::BoundToWorld(Bound & bound){
 
 Bound Collider::BoundToWorld(){
 
-    return Collider::BoundToWorld(this->bound, (*this->transform));
+    return Collider::BoundToWorld(this->bound);
 }
 
 vec3 Collider::GetOffsetLocalPosition(vec3 point){

@@ -48,7 +48,7 @@ public:
 #endif
 
 /*
-Collision Map
+Collision Map example
 
   | A | B | C | D
 --+---+---+---+--

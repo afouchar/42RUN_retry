@@ -14,47 +14,42 @@ GameBehaviour::GameBehaviour() {}
 
 void GameBehaviour::UpdateCollisions(){
 
-    for (list<Collider *>::iterator col_a = GameBehaviour::_sceneColliders.begin(); col_a != GameBehaviour::_sceneColliders.end(); col_a++){
-        for (list<Collider *>::iterator col_b = GameBehaviour::_sceneColliders.begin(); col_b != GameBehaviour::_sceneColliders.end(); col_b++){
-            if ((*col_a)->isTrigger || (*col_b)->isTrigger || (*col_a) == (*col_b))
-                continue;
-            bool collisionOccured = (*col_a)->CheckCollision((**col_b));
+    for (int pos_a = 0; pos_a < GameBehaviour::_collisionMap.size(); pos_a++){
 
-            int pos_a = std::distance(GameBehaviour::_sceneColliders.begin(), col_a);
-            int pos_b = std::distance(GameBehaviour::_sceneColliders.begin(), col_b);
+            list<Collider *>::iterator col_a = next(GameBehaviour::_sceneColliders.begin(), pos_a);
+
+            if ((*col_a)->isTrigger)
+                continue;
+
+        for (int pos_b = 0; pos_b < GameBehaviour::_collisionMap.at(pos_a).size(); pos_b++){
+
+            list<Collider *>::iterator col_b = prev(GameBehaviour::_sceneColliders.end(), pos_b + 1);
+            
+            if ((*col_b)->isTrigger || (*col_a) == (*col_b))
+                continue;
+
+            bool collisionOccured = (*col_a)->CheckCollision((**col_b));
+            std::cerr << "COLLISION : " << collisionOccured << std::endl;
 
             if (collisionOccured){
-                if (!GameBehaviour::_collisionMap[pos_a][pos_b] || !GameBehaviour::_collisionMap[pos_b][pos_a]){
+                if (!GameBehaviour::_collisionMap[pos_a][pos_b]){
                     (*col_a)->transform->gameObject->OnColliderEnter((**col_b));
                     (*col_b)->transform->gameObject->OnColliderEnter((**col_a));
                 }
-                else{
+                else {
                     (*col_a)->transform->gameObject->OnColliderStay((**col_b));
                     (*col_b)->transform->gameObject->OnColliderStay((**col_a));
                 }
             }
-            else{
-                if (GameBehaviour::_collisionMap[pos_a][pos_b] || GameBehaviour::_collisionMap[pos_b][pos_a])
+            else {
+                if (GameBehaviour::_collisionMap[pos_a][pos_b])
                     (*col_a)->transform->gameObject->OnColliderExit((**col_b));
                     (*col_b)->transform->gameObject->OnColliderExit((**col_a));
             }
-            //// !!! checking collision twice (not really optimized) !!! ////
             GameBehaviour::_collisionMap[pos_a][pos_b] = collisionOccured;
-            GameBehaviour::_collisionMap[pos_b][pos_a] = collisionOccured;
         }
     }
 }
-
-// void GameBehaviour::AddCollider(Collider & collider){
-
-//     GameBehaviour::_sceneColliders.push_back(&collider);
-//     GameBehaviour::_collisionMap.push_back(std::vector<bool>());
-//     for (int i = 0; i < GameBehaviour::_collisionMap.size(); i++){
-//         GameBehaviour::_collisionMap[GameBehaviour::_collisionMap.size() - 1].push_back(false);
-//         if (i < GameBehaviour::_collisionMap.size() - 1)
-//             GameBehaviour::_collisionMap[i].push_back(false);
-//     }
-// }
 
 void GameBehaviour::AddCollider(Collider & collider){
 
@@ -73,30 +68,17 @@ void GameBehaviour::RemoveCollider(Collider & collider){
         return;
 
     int position = std::distance(GameBehaviour::_sceneColliders.begin(), it);
+
+    int reversePosition = GameBehaviour::_sceneColliders.size() - position;
+
     GameBehaviour::_sceneColliders.erase(it);
     GameBehaviour::_collisionMap.erase(GameBehaviour::_collisionMap.begin() + position);
 
-    //////////////////////////////////////////////
-    //// REPLACE MAP SLOTS PROPERLY HERE !!!! ////
-    //////////////////////////////////////////////
-
-
-    // for (int i = 0; i < GameBehaviour::_collisionMap.size(); i++) {
-    //     GameBehaviour::_collisionMap[i].erase(GameBehaviour::_collisionMap[i].end() - position);
-    // }
+    for (int i = 0; i < GameBehaviour::_collisionMap.size(); i++) {
+        if (reversePosition < GameBehaviour::_collisionMap[i].size())
+            GameBehaviour::_collisionMap[i].erase(GameBehaviour::_collisionMap[i].begin() + reversePosition);
+    }
 }
-
-// void GameBehaviour::RemoveCollider(Collider & collider){
-
-//     std::list<Collider *>::iterator it = std::find(GameBehaviour::_sceneColliders.begin(), GameBehaviour::_sceneColliders.end(), &collider);
-//     int position = std::distance(GameBehaviour::_sceneColliders.begin(), it);
-//     GameBehaviour::_sceneColliders.erase(it);
-
-//     GameBehaviour::_collisionMap.erase(GameBehaviour::_collisionMap.begin() + position);
-//     for (int i = 0; i < GameBehaviour::_collisionMap.size(); i++) {
-//         GameBehaviour::_collisionMap[i].erase(GameBehaviour::_collisionMap[i].begin() + position);
-//     }
-// }
 
 void GameBehaviour::Clock(){
     GameBehaviour::ComputeDeltaTime();
