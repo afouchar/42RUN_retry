@@ -53,6 +53,7 @@ Bound::Bound(const Bound & rhs){
     this->back = rhs.back;
 
     this->size = rhs.size;
+    this->halfSize = rhs.halfSize;
     this->min = rhs.min;
     this->max = rhs.max;
 
@@ -81,6 +82,8 @@ void Bound::SetBound(vec3 min, vec3 max){
     this->size.x = glm::distance(this->max.x, this->min.x);
     this->size.y = glm::distance(this->max.y, this->min.y);
     this->size.z = glm::distance(this->max.z, this->min.z);
+
+    this->halfSize = this->size / 2.0f;
 
     this->backLeftDown = min;
     this->backLeftUp = this->backLeftDown + (this->size * vec3_up);

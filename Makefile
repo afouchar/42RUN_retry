@@ -2,11 +2,14 @@ NAME			=	42Run
 CC				=	g++ -std=c++11
 CFLAGS			=	-MMD#-Wall -Wextra -Werror -MMD
 
-GLFW_DIR		=	/Users/afouchar/.brew/opt/glfw
-GLEW_DIR		=	/Users/afouchar/.brew/opt/glew
-GLM_DIR			=	/Users/afouchar/.brew/opt/glm
-DEVIL_DIR		=	/Users/afouchar/.brew/opt/devil
-ASSIMP_DIR		=	/Users/afouchar/.brew/opt/assimp
+#BREW_DPD_DIR	=	/Users/afouchar/.brew/opt
+BREW_DPD_DIR	=	/usr/local/opt
+
+GLFW_DIR		=	$(BREW_DPD_DIR)/glfw
+GLEW_DIR		=	$(BREW_DPD_DIR)/glew
+GLM_DIR			=	$(BREW_DPD_DIR)/glm
+DEVIL_DIR		=	$(BREW_DPD_DIR)/devil
+ASSIMP_DIR		=	$(BREW_DPD_DIR)/assimp
 
 INCLUDE			=	-I $(GLEW_DIR)/include/GL \
 					-I $(GLFW_DIR)/include/GLFW \
@@ -18,8 +21,10 @@ INCLUDE			=	-I $(GLEW_DIR)/include/GL \
 
 GLEW			=	$(GLEW_DIR)/lib/libGLEW.dylib
 GLFW			=	$(GLFW_DIR)/lib/libglfw.dylib
-ASSIMP			=	/Users/afouchar/.brew/Cellar/assimp/4.1.0/lib/libassimp.4.1.0.dylib
-DEVIL			=	/Users/afouchar/.brew/Cellar/devil/1.8.0_1/lib/libI*.dylib
+#ASSIMP			=	/Users/afouchar/.brew/Cellar/assimp/4.1.0/lib/libassimp.4.1.0.dylib
+#DEVIL			=	/Users/afouchar/.brew/Cellar/devil/1.8.0_1/lib/libI*.dylib
+ASSIMP			=	$(BREW_DPD_DIR)/assimp/lib/libassimp.4.1.0.dylib
+DEVIL			=	$(BREW_DPD_DIR)/devil/lib/libI*.dylib
 
 FRAMEWORKS		=	-framework OpenGL #-framework Cocoa
 CC_NEEDS		=	$(FRAMEWORKS) $(GLFW) $(GLEW) $(ASSIMP) $(DEVIL)

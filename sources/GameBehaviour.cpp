@@ -29,7 +29,6 @@ void GameBehaviour::UpdateCollisions(){
                 continue;
 
             bool collisionOccured = (*col_a)->CheckCollision((**col_b));
-            std::cerr << "COLLISION : " << collisionOccured << std::endl;
 
             if (collisionOccured){
                 if (!GameBehaviour::_collisionMap[pos_a][pos_b]){
@@ -42,9 +41,10 @@ void GameBehaviour::UpdateCollisions(){
                 }
             }
             else {
-                if (GameBehaviour::_collisionMap[pos_a][pos_b])
+                if (GameBehaviour::_collisionMap[pos_a][pos_b]){
                     (*col_a)->transform->gameObject->OnColliderExit((**col_b));
                     (*col_b)->transform->gameObject->OnColliderExit((**col_a));
+                }
             }
             GameBehaviour::_collisionMap[pos_a][pos_b] = collisionOccured;
         }

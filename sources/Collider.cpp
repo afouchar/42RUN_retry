@@ -57,8 +57,44 @@ bool Collider::CheckCollision(Collider & collider){
     Bound bound1 = Collider::BoundToWorld(this->bound);
     Bound bound2 = Collider::BoundToWorld(collider.bound);
 
-    return Intersects(bound1, bound2);
+    //return Intersects(bound1, bound2);
+
+    vec3 RPos = collider.GetOffsetWorldPosition() - this->GetOffsetWorldPosition();
+    return GetCollision(bound1, bound2, RPos);
 }
+
+bool Collider::GetSeparatingPlane(const vec3 & RPos, const vec3 plane, const Bound & bound1, const Bound &bound2){
+
+    return glm::abs(glm::dot(RPos, plane)) > (glm::abs(glm::dot((bound1.right * bound1.halfSize.x), plane))
+                                            + glm::abs(glm::dot((bound1.up * bound1.halfSize.y), plane))
+                                            + glm::abs(glm::dot((bound1.back * bound1.halfSize.z), plane))
+                                            + glm::abs(glm::dot((bound2.right * bound2.halfSize.x), plane))
+                                            + glm::abs(glm::dot((bound2.up * bound2.halfSize.y), plane))
+                                            + glm::abs(glm::dot((bound2.back * bound2.halfSize.z), plane)));
+}
+
+bool Collider::GetCollision(const Bound & bound1, const Bound & bound2, const vec3 & RPos){
+
+    if (GetSeparatingPlane(RPos, bound1.right, bound1, bound2)
+        || GetSeparatingPlane(RPos, bound1.up, bound1, bound2)
+        || GetSeparatingPlane(RPos, bound1.back, bound1, bound2)
+        || GetSeparatingPlane(RPos, bound2.right, bound1, bound2)
+        || GetSeparatingPlane(RPos, bound2.up, bound1, bound2)
+        || GetSeparatingPlane(RPos, bound2.back, bound1, bound2)
+        || GetSeparatingPlane(RPos, glm::cross(bound1.right, bound2.right), bound1, bound2)
+        || GetSeparatingPlane(RPos, glm::cross(bound1.right, bound2.up), bound1, bound2)
+        || GetSeparatingPlane(RPos, glm::cross(bound1.right, bound2.back), bound1, bound2)
+        || GetSeparatingPlane(RPos, glm::cross(bound1.up, bound2.right), bound1, bound2)
+        || GetSeparatingPlane(RPos, glm::cross(bound1.up, bound2.up), bound1, bound2)
+        || GetSeparatingPlane(RPos, glm::cross(bound1.up, bound2.back), bound1, bound2)
+        || GetSeparatingPlane(RPos, glm::cross(bound1.back, bound2.right), bound1, bound2)
+        || GetSeparatingPlane(RPos, glm::cross(bound1.back, bound2.up), bound1, bound2)
+        || GetSeparatingPlane(RPos, glm::cross(bound1.back, bound2.back), bound1, bound2))
+        return false;
+
+    return true;
+}
+
 
 bool Collider::CheckCollision(vec3 point){
 
@@ -82,56 +118,7 @@ void Collider::UpdateCollider(){
     this->bound.size.y = glm::distance(this->bound.max.y, this->bound.min.y);
     this->bound.size.z = glm::distance(this->bound.max.z, this->bound.min.z);
     this->bound.size = this->transform->GetQuaternion() * this->bound.size;
-}
-
-bool Collider::Intersects(Bound bound1, Bound bound2) {
-
-    if (!OverlapTest(bound1, bound2))
-        return false;
-    if (!OverlapTest(bound2, bound1))
-        return false;
-  return true;
-}
-
-bool Collider::OverlapTest(Bound bound1, Bound bound2){
-
-    for(int i = 0 ; i < bound1.normals.size() ; i++) {
-
-        float shape1Min;
-        float shape1Max;
-        float shape2Min;
-        float shape2Max;
-
-        SATTest((*bound1.normals[i]), bound1.points, shape1Min, shape1Max);
-        SATTest((*bound1.normals[i]), bound2.points, shape2Min, shape2Max);
-
-        if(!Overlaps(shape1Min, shape1Max, shape2Min, shape2Max)) {
-            return false ; // NO INTERSECTION
-    }
-  }
-  return true;
-}
-
-void Collider::SATTest(const vec3 & axis, const vector<vec3 *> & pointsSet, float & minAlong, float & maxAlong) {
-
-  minAlong = HUGE;
-  maxAlong = -HUGE;
-
-  for( int i = 0 ; i < pointsSet.size() ; i++ ) {
-    float dotVal = glm::dot((*pointsSet[i]), axis);
-    if(dotVal < minAlong)
-        minAlong = dotVal;
-    if(dotVal > maxAlong)
-        maxAlong = dotVal;
-  }
-}
-
-bool Collider::Overlaps(float min1, float max1, float min2, float max2) {
-  return IsBetweenOrdered(min2, min1, max1) || IsBetweenOrdered(min1, min2, max2) ;
-}
-
-bool Collider::IsBetweenOrdered(float val, float lowerBound, float upperBound) {
-  return lowerBound <= val && val <= upperBound;
+    this->bound.halfSize = this->bound.size / 2.0f;
 }
 
 vec3 Collider::GetSize(){
@@ -148,14 +135,16 @@ Bound Collider::BoundToWorld(Bound & bound){
     Bound tempBound = Bound(bound);
     Collider *colPtr = &bound.transform->gameObject->collider;
 
-    tempBound.frontLeftDown = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.frontLeftDown);
-    tempBound.frontLeftUp = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.frontLeftUp);
-    tempBound.frontRightUp = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.frontRightUp);
-    tempBound.frontRightDown = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.frontRightDown);
-    tempBound.backLeftDown = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.backLeftDown);
-    tempBound.backLeftUp = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.backLeftUp);
-    tempBound.backRightUp = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.backRightUp);
-    tempBound.backRightDown = colPtr->GetOffsetWorldPosition() + colPtr->GetOffsetLocalPosition(bound.backRightDown);
+    vec3 worldPosition = colPtr->GetOffsetWorldPosition();
+
+    tempBound.frontLeftDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontLeftDown);
+    tempBound.frontLeftUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontLeftUp);
+    tempBound.frontRightUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontRightUp);
+    tempBound.frontRightDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontRightDown);
+    tempBound.backLeftDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backLeftDown);
+    tempBound.backLeftUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backLeftUp);
+    tempBound.backRightUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backRightUp);
+    tempBound.backRightDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backRightDown);
 
     tempBound.up = bound.transform->Up();
     tempBound.down = bound.transform->Down();

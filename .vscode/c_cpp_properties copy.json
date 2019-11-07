@@ -3,11 +3,11 @@
         {
             "name": "Mac",
             "includePath": [
-                "/usr/local/Cellar/glfw/3.3/include/GLFW/",
-                "/usr/local/Cellar/glm/0.9.9.5/include/glm/",
-                "/usr/local/Cellar/glew/2.1.0/include/GL/",
-                "/usr/local/Cellar/assimp/4.1.0/include/",
-                "/usr/local/Cellar/devil/1.8.0_1/include/",
+                "/Users/afouchar/.brew/Cellar/glfw/3.3/include/GLFW/",
+                "/Users/afouchar/.brew/Cellar/glm/0.9.9.5/include/glm/",
+                "/Users/afouchar/.brew/Cellar/glew/2.1.0/include/GL/",
+                "/Users/afouchar/.brew/Cellar/assimp/4.1.0/include/",
+                "/Users/afouchar/.brew/Cellar/devil/1.8.0_1/include/",
                 "${workspaceFolder}/**"
             ],
             "defines": [],

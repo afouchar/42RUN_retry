@@ -25,7 +25,7 @@ void Chunk::OnColliderStay(Collider & collider){
 }
 
 void Chunk::OnColliderExit(Collider & collider){
-    // std::cout << "Collision Exit : [" << this->GetTag() << " : " << this->ID << "] -> [" << collider.transform->gameObject->GetTag() << " : " << collider.transform->gameObject->ID << "]" << std::endl;
+    std::cout << "Collision Exit : [" << this->GetTag() << " : " << this->ID << "] -> [" << collider.transform->gameObject->GetTag() << " : " << collider.transform->gameObject->ID << "]" << std::endl;
     if (this->GetTag() == "Turn" && collider.transform->GetTag() == "Player"){
         //End Rotation
     }

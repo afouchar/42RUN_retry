@@ -27,6 +27,7 @@ struct Bound {
     vec3            back;
 
     vec3            size;
+    vec3            halfSize;
     vec3            min;
     vec3            max;
 
