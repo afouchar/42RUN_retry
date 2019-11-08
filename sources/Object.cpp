@@ -1,14 +1,15 @@
 #include "Object.hpp"
 #include "RenderPipeline.hpp"
+#include "GameBehaviour.hpp"
+
 
 #include <iostream>
 
 Object::~Object(){
 
-    // CHECK IF COLLIDERS ARE BUILD AND DESTROYED PROPERLY !!!!
-
     std::cout << "Destroy OBJ [" << this->ID << "]" << std::endl;
     RenderPipeline::RemoveObject((*this), false);
+    GameBehaviour::RemoveObject((*this));
 }
 
 Object::Object(){
@@ -20,6 +21,7 @@ Object::Object(const Object & rhs, bool render, bool collide){
 	this->transform = Transform(rhs.transform, (*this));
 	this->meshes = rhs.meshes;
     this->collider = Collider(rhs.collider, this->transform, !collide);
+    GameBehaviour::AddObject((*this));
     if (render)
         RenderPipeline::AddObject((*this));
     else
@@ -34,6 +36,7 @@ Object::Object(Shader & shader, const char *objFile, bool render, bool collide){
 	this->meshes = Loader::LoadModel(objFile, minBoundPosition, maxBoundPosition);
     this->transform = Transform(vec3_zero, (*this));
     this->collider = Collider(this->transform, minBoundPosition, maxBoundPosition, !collide);
+    GameBehaviour::AddObject((*this));
     if (render)
         RenderPipeline::AddObject((*this));
     else

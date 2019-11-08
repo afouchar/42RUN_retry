@@ -37,8 +37,8 @@ public:
     float               GetChunkLength();
     float               GetHalfChunkLength();
 
-    list<Chunk *>      chunks;
-    float               speed;
+    list<Chunk *>       chunks;
+    static float        speed;
 
 };
 

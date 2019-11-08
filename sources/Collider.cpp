@@ -57,9 +57,14 @@ bool Collider::CheckCollision(Collider & collider){
     Bound bound1 = Collider::BoundToWorld(this->bound);
     Bound bound2 = Collider::BoundToWorld(collider.bound);
 
-    //return Intersects(bound1, bound2);
+    vec3 bound1Pos = this->GetOffsetWorldPosition();
+    vec3 bound2Pos = collider.GetOffsetWorldPosition();
+    float boundsMagnitude = glm::abs(glm::length(bound1.size)) + glm::abs(glm::length(bound2.size));
 
-    vec3 RPos = collider.GetOffsetWorldPosition() - this->GetOffsetWorldPosition();
+    if (glm::distance(bound2Pos, bound1Pos) > boundsMagnitude)
+        return false;
+
+    vec3 RPos = bound2Pos - bound1Pos;
     return GetCollision(bound1, bound2, RPos);
 }
 
@@ -135,16 +140,25 @@ Bound Collider::BoundToWorld(Bound & bound){
     Bound tempBound = Bound(bound);
     Collider *colPtr = &bound.transform->gameObject->collider;
 
-    vec3 worldPosition = colPtr->GetOffsetWorldPosition();
+    // vec3 worldPosition = colPtr->GetOffsetWorldPosition();
 
-    tempBound.frontLeftDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontLeftDown);
-    tempBound.frontLeftUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontLeftUp);
-    tempBound.frontRightUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontRightUp);
-    tempBound.frontRightDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontRightDown);
-    tempBound.backLeftDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backLeftDown);
-    tempBound.backLeftUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backLeftUp);
-    tempBound.backRightUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backRightUp);
-    tempBound.backRightDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backRightDown);
+    // tempBound.frontLeftDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontLeftDown);
+    // tempBound.frontLeftUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontLeftUp);
+    // tempBound.frontRightUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontRightUp);
+    // tempBound.frontRightDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.frontRightDown);
+    // tempBound.backLeftDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backLeftDown);
+    // tempBound.backLeftUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backLeftUp);
+    // tempBound.backRightUp = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backRightUp);
+    // tempBound.backRightDown = worldPosition + colPtr->GetOffsetLocalPosition(tempBound.backRightDown);
+
+    tempBound.frontLeftDown = colPtr->GetOffsetLocalPosition(tempBound.frontLeftDown);
+    tempBound.frontLeftUp = colPtr->GetOffsetLocalPosition(tempBound.frontLeftUp);
+    tempBound.frontRightUp = colPtr->GetOffsetLocalPosition(tempBound.frontRightUp);
+    tempBound.frontRightDown = colPtr->GetOffsetLocalPosition(tempBound.frontRightDown);
+    tempBound.backLeftDown = colPtr->GetOffsetLocalPosition(tempBound.backLeftDown);
+    tempBound.backLeftUp = colPtr->GetOffsetLocalPosition(tempBound.backLeftUp);
+    tempBound.backRightUp = colPtr->GetOffsetLocalPosition(tempBound.backRightUp);
+    tempBound.backRightDown = colPtr->GetOffsetLocalPosition(tempBound.backRightDown);
 
     tempBound.up = bound.transform->Up();
     tempBound.down = bound.transform->Down();

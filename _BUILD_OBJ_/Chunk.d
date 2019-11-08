@@ -208,4 +208,6 @@ _BUILD_OBJ_/Chunk.o: Scripts/Chunk.cpp Scripts/Chunk.hpp \
   /usr/local/opt/glm/include/glm/./ext/quaternion_exponential.inl \
   /usr/local/opt/glm/include/glm/gtx/../gtx/norm.hpp \
   /usr/local/opt/glm/include/glm/gtx/norm.inl \
-  /usr/local/opt/glm/include/glm/gtx/quaternion.inl
+  /usr/local/opt/glm/include/glm/gtx/quaternion.inl \
+  Scripts/PathGenerator.hpp Includes/GameBehaviour.hpp \
+  /usr/local/opt/glfw/include/GLFW/glfw3.h

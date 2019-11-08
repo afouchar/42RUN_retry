@@ -65,6 +65,7 @@
         "__errc": "cpp",
         "__node_handle": "cpp",
         "optional": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "deque": "cpp"
     }
 }

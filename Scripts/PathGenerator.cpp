@@ -2,6 +2,8 @@
 #include "RenderPipeline.hpp"
 #include "GameBehaviour.hpp"
 
+float PathGenerator::speed = 0.0f;
+
 PathGenerator::~PathGenerator(){
     delete _pathForward;
     delete _pathTurn;
@@ -21,9 +23,9 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     this->firstTimeIn = true;
 
 
-    this->_pathForward = new Chunk((*this->_shader), "Models/tubecube/tubecube.obj", false, false);
+    this->_pathForward = new Chunk((*this), (*this->_shader), "Models/tubecube/tubecube.obj", false, false);
     this->_pathForward->SetTag("Forward");
-    this->_pathTurn = new Chunk((*this->_shader), "Models/tubecube/tubecube_turn.obj", false, false);
+    this->_pathTurn = new Chunk((*this), (*this->_shader), "Models/tubecube/tubecube_turn.obj", false, false);
     this->_pathTurn->SetTag("Turn");
 
 
@@ -34,7 +36,7 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     for (int i = 0; i < this->_chunksAmount; i++){
 
         if (i == 0)
-            this->chunks.push_back(new Chunk((*this->_pathForward)));
+            this->chunks.push_back(new Chunk((*this), (*this->_pathForward)));
         else
             this->chunks.push_back(RandomChunkFromLast());
     }
@@ -57,6 +59,7 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     }
 
     (*this->chunks.begin())->transform.UpdateMatrix();
+    // Chunk::isMoving = true;
 }
 
 void PathGenerator::SwapFirstToLast(){
@@ -71,6 +74,7 @@ void PathGenerator::SwapFirstToLast(){
     list<Chunk *>::iterator beforeEndChunk = next(this->chunks.end(), -2);
 
     (*firstChunk)->transform.LocalToWorld();
+    // (*firstChunk)->transform.Translate((*firstChunk)->transform.Back() * this->_chunkLength);
 
     //parenting
     (*firstChunk)->transform.parent = nullptr;
@@ -82,7 +86,7 @@ void PathGenerator::SwapFirstToLast(){
 
     int i = 0;
     for (list<Chunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); it++){
-        std::cout << "[" << i << "] " << (*it)->transform.GetTag() << std::endl;
+        std::cout << "[" << (*it)->ID << "] " << (*it)->transform.GetTag() << std::endl;
         i++;
     }
     std::cout << "==========================" << std::endl << std::endl;
@@ -90,7 +94,7 @@ void PathGenerator::SwapFirstToLast(){
 
 void PathGenerator::MovePath(Object & player){
 
-    list<Chunk *>::iterator it = this->chunks.begin();
+    // list<Chunk *>::iterator it = this->chunks.begin();
 
     //OnColliderEnter
     //OnColliderStay
@@ -104,8 +108,8 @@ void PathGenerator::MovePath(Object & player){
     //     (*it)->transform.RotateAround((*it)->transform.pivot, (*it)->transform.Up(), this->speed * GameBehaviour::DeltaTime());
     // }
     // else{
-        (*it)->transform.Translate(vec3_back * this->speed * GameBehaviour::DeltaTime());
-        this->firstTimeIn = true;
+        // (*it)->transform.Translate(vec3_back * this->speed * GameBehaviour::DeltaTime());
+        // this->firstTimeIn = true;
     // }
 }
 
@@ -137,7 +141,7 @@ Chunk *PathGenerator::RandomChunkFromLast(){
 Chunk *PathGenerator::RandomChunk(Chunk & previousChunk){
 
     if (previousChunk.GetTag() == "Forward" && rand() % 100 < 15)
-        return new Chunk((*this->_pathTurn));
+        return new Chunk((*this), (*this->_pathTurn));
     else
-        return new Chunk((*this->_pathForward));
+        return new Chunk((*this), (*this->_pathForward));
 }

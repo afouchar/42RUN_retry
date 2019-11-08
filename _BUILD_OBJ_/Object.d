@@ -210,4 +210,4 @@ _BUILD_OBJ_/Object.o: Sources/Object.cpp Includes/Object.hpp \
   /usr/local/opt/glm/include/glm/gtx/norm.inl \
   /usr/local/opt/glm/include/glm/gtx/quaternion.inl \
   Includes/RenderPipeline.hpp Includes/Light.hpp Includes/Camera.hpp \
-  /usr/local/opt/glfw/include/GLFW/glfw3.h
+  /usr/local/opt/glfw/include/GLFW/glfw3.h Includes/GameBehaviour.hpp

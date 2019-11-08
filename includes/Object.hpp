@@ -43,6 +43,7 @@ public:
     virtual void    OnColliderEnter(Collider & collider){};
     virtual void    OnColliderStay(Collider & collider){};
     virtual void    OnColliderExit(Collider & collider){};
+    virtual void    Update(){};
 };
 
 #endif

@@ -336,30 +336,12 @@ void Transform::SetTag(string newTag){
 }
 
 Transform *Transform::GetRoot(){
-    if (this->parent != nullptr)
+    if (this->parent != nullptr){
         return this->parent->GetRoot();
+    }
     return this;
 }
 
 quat Transform::GetQuaternion(){
     return this->_quatRotation;
 }
-
-// void Transform::SetChild(Transform *child){
-//     this->_child = child;
-
-//     if (this->_child != nullptr && this->_child->parent != this)
-//         this->_child->SetParent(this);
-// }
-
-// void Transform::SetParent(Transform *parent){
-
-//     this->parent = parent;
-
-
-//     if (this->parent == nullptr)
-//         this->position = LocalToWorldPosition();
-
-//     if (this->parent != nullptr && this->parent->_child != this)
-//         this->parent->SetChild(this);
-// }

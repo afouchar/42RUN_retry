@@ -24,19 +24,18 @@ private:
 
 protected:
 
+    static list<Object *> _sceneObjects;
     static list<Collider *> _sceneColliders;
-    // static vector<vector<bool>> _collisionMap;
     static deque<deque<bool>> _collisionMap;
-
-    // virtual void    OnColliderEnter(Collider & collider);
-    // virtual void    OnColliderStay(Collider & collider);
-    // virtual void    OnColliderExit(Collider & collider);
 
 public:
 
     GameBehaviour();
     ~GameBehaviour();
 
+    static void     UpdateObjectScripts();
+    static void     AddObject(Object & object);
+    static void     RemoveObject(Object & object);
     static void     UpdateCollisions();
     static void     AddCollider(Collider & collider);
     static void     RemoveCollider(Collider & collider);

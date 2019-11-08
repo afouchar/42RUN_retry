@@ -1,8 +1,8 @@
 #include "GameBehaviour.hpp"
 
 //STATIC VARIABLES DEFINITIONS
+std::list<Object *> GameBehaviour::_sceneObjects;
 std::list<Collider *> GameBehaviour::_sceneColliders;
-// std::vector<vector<bool>> GameBehaviour::_collisionMap;
 std::deque<deque<bool>> GameBehaviour::_collisionMap;
 float GameBehaviour::_deltaTime = 0.0f;
 float GameBehaviour::_lastDeltaTime = -1.0f;
@@ -49,6 +49,27 @@ void GameBehaviour::UpdateCollisions(){
             GameBehaviour::_collisionMap[pos_a][pos_b] = collisionOccured;
         }
     }
+}
+
+void GameBehaviour::UpdateObjectScripts(){
+
+    for (std::list<Object *>::iterator it = GameBehaviour::_sceneObjects.begin();  it != GameBehaviour::_sceneObjects.end(); it++){
+        (*it)->Update();
+    }
+}
+
+void GameBehaviour::AddObject(Object & object){
+
+    GameBehaviour::_sceneObjects.push_back(&object);
+}
+
+void GameBehaviour::RemoveObject(Object & object){
+
+    std::list<Object *>::iterator it = std::find(GameBehaviour::_sceneObjects.begin(), GameBehaviour::_sceneObjects.end(), &object);
+    if (it == GameBehaviour::_sceneObjects.end())
+        return;
+
+    GameBehaviour::_sceneObjects.erase(it);
 }
 
 void GameBehaviour::AddCollider(Collider & collider){

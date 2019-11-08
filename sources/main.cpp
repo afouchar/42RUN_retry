@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
 
 		window.Clear();
 		GameBehaviour::Clock();
+		GameBehaviour::UpdateObjectScripts();
 
 		if (input.GetKeyPressed(GLFW_KEY_W)){
 			object->transform.Translate(vec3_up * input.speed * GameBehaviour::DeltaTime());
@@ -77,17 +78,11 @@ int main(int argc, char **argv) {
 			// std::cout << "(-) tube speed : " << pathGenerator.speed << std::endl;
 		}
 
-		pathGenerator.MovePath((*object));
+		//pathGenerator.MovePath((*object));
 
 		camera->LookAt(object->transform.position, vec3_up);
 
 		RenderPipeline::Draw();
-
-	    // if ((*pathGenerator.chunks.begin())->transform.position.z >= pathGenerator.GetHalfChunkLength()){
-		// 	std::cout << "SWAP" << std::endl;
-		// 	pathGenerator.SwapFirstToLast();
-		// }
-
 
 		// float fps = (1.0 / GameBehaviour::DeltaTime());
 		// ostringstream buff;

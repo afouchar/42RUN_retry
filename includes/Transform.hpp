@@ -94,6 +94,10 @@ public:
     void        SetTag(string newTag);
     Transform   *GetRoot();
     quat        GetQuaternion();
+
+    bool        operator == (const Transform & rhs) const {
+        return &rhs == &(*this);
+    }
 };
 
 #endif
