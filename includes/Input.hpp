@@ -19,7 +19,6 @@ public:
     Input(GLFWwindow & window);
     ~Input();
 
-    float       speed;
     float       mouseSpeed;
 
     void        PollEvents();

@@ -17,10 +17,9 @@ Transform::Transform(){
     this->_matScale = mat4(1.0f);
     this->_quatRotation = toQuat(this->_matRotation);
 
-    this->child = nullptr;
+    // this->child = nullptr;
     this->parent = nullptr;
     this->_tag = "";
-    this->pivot = vec3_zero;
     this->gameObject = nullptr;
 }
 
@@ -38,10 +37,9 @@ Transform::Transform(Object & gameObject){
     this->_matScale = mat4(1.0f);
     this->_quatRotation = toQuat(this->_matRotation);
 
-    this->child = nullptr;
+    // this->child = nullptr;
     this->parent = nullptr;
     this->_tag = "";
-    this->pivot = vec3_zero;
     this->gameObject = &gameObject;
 }
 
@@ -64,9 +62,8 @@ Transform::Transform(const Transform& rhs){
     this->_quatRotation = rhs._quatRotation;
 
     this->parent = nullptr;
-    this->child = nullptr;
+    // this->child = nullptr;
     this->_tag = rhs._tag;
-    this->pivot = rhs.pivot;
     this->gameObject = nullptr;
 }
 
@@ -89,9 +86,8 @@ Transform::Transform(const Transform& rhs, Object & gameObject){
     this->_quatRotation = rhs._quatRotation;
 
     this->parent = nullptr;
-    this->child = nullptr;
+    // this->child = nullptr;
     this->_tag = rhs._tag;
-    this->pivot = rhs.pivot;
     this->gameObject = &gameObject;
 }
 
@@ -109,10 +105,9 @@ Transform::Transform(vec3 pos){
     this->_matScale = mat4(1.0f);
     this->_quatRotation = toQuat(this->_matRotation);
 
-    this->child = nullptr;
+    // this->child = nullptr;
     this->parent = nullptr;
     this->_tag = "";
-    this->pivot = vec3_zero;
     this->gameObject = nullptr;
 }
 
@@ -130,11 +125,56 @@ Transform::Transform(vec3 pos, Object & gameObject){
     this->_matScale = mat4(1.0f);
     this->_quatRotation = toQuat(this->_matRotation);
 
-    this->child = nullptr;
+    // this->child = nullptr;
     this->parent = nullptr;
     this->_tag = "";
-    this->pivot = vec3_zero;
     this->gameObject = &gameObject;
+}
+
+void Transform::AddChild(Transform & child){
+    if (child.parent != nullptr)
+        child.parent->RemoveChild(child);
+    this->child.push_back(&child);
+    child.parent = this;
+}
+
+void Transform::RemoveChild(Transform & child){
+
+    std::list<Transform *>::iterator it = std::find(this->child.begin(), this->child.end(), &child);
+    if (it == this->child.end())
+        return;
+    this->child.erase(it);
+    child.parent = nullptr;
+}
+
+void Transform::AddParent(Transform & parent){
+    parent.AddChild((*this));
+}
+
+void Transform::RemoveParent(){
+
+    if (this->parent != nullptr)
+        this->parent->RemoveChild((*this));
+    this->parent = nullptr;    
+}
+
+void Transform::ClearParenting(){
+    RemoveParent();
+    if (this->child.size() > 0){
+        for (list<Transform *>::iterator it = this->child.begin(); it != this->child.end(); it++) {
+            RemoveChild((**it));
+        }
+    }
+}
+
+void Transform::ClearParenting(Transform & newParent){
+    RemoveParent();
+    if (this->child.size() > 0){
+        for (list<Transform *>::iterator it = this->child.begin(); it != this->child.end(); it++) {
+            RemoveChild((**it));
+        }
+    }
+    AddParent(newParent);
 }
 
 mat4 Transform::LookAt(vec3 target, vec3 up){
@@ -220,8 +260,12 @@ void Transform::UpdateMatrixFromRoot(){
 
     this->modelMatrix = parentModelMatrix * (this->_matScale * this->_matTranslation * this->_matRotation);
 
-    if (this->child != nullptr)
-        this->child->UpdateMatrixFromRoot();
+    if (this->child.size() > 0){
+        for (list<Transform *>::iterator it = this->child.begin(); it != this->child.end(); it++) {
+            (*it)->UpdateMatrixFromRoot();
+        }
+        //this->child->UpdateMatrixFromRoot();
+    }
 }
 
 void Transform::Reset(){

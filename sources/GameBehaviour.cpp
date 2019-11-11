@@ -7,10 +7,39 @@ std::deque<deque<bool>> GameBehaviour::_collisionMap;
 float GameBehaviour::_deltaTime = 0.0f;
 float GameBehaviour::_lastDeltaTime = -1.0f;
 float GameBehaviour::_FPS = 0.0f;
+Input *GameBehaviour::input = nullptr;
+Window *GameBehaviour::window = nullptr;
 
 GameBehaviour::~GameBehaviour() {}
 
 GameBehaviour::GameBehaviour() {}
+
+void  GameBehaviour::CreateContext(const char *windowTitle, vec2 windowSize){
+
+    if (GameBehaviour::window == nullptr)
+        GameBehaviour::window = new Window(windowTitle, windowSize);
+    if (GameBehaviour::input == nullptr)
+        GameBehaviour::input = new Input((*GameBehaviour::window->GetWindow()));
+}
+
+void GameBehaviour::BeginFrame(){
+    if (GameBehaviour::window != nullptr)
+        GameBehaviour::window->Clear();
+}
+
+void GameBehaviour::EndFrame(){
+    if (GameBehaviour::window != nullptr)
+        GameBehaviour::window->SwapBuffer();
+    if (GameBehaviour::input != nullptr)
+        GameBehaviour::input->PollEvents();
+}
+
+void GameBehaviour::Terminate(){
+    if (GameBehaviour::input != nullptr)
+    	GameBehaviour::input->Terminate();
+    if (GameBehaviour::window != nullptr)
+    	GameBehaviour::window->Terminate();   
+}
 
 void GameBehaviour::UpdateCollisions(){
 
@@ -68,7 +97,7 @@ void GameBehaviour::RemoveObject(Object & object){
     std::list<Object *>::iterator it = std::find(GameBehaviour::_sceneObjects.begin(), GameBehaviour::_sceneObjects.end(), &object);
     if (it == GameBehaviour::_sceneObjects.end())
         return;
-
+    GameBehaviour:: RemoveCollider(object.collider);
     GameBehaviour::_sceneObjects.erase(it);
 }
 

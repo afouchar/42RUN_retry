@@ -13,14 +13,15 @@
 #include "GameBehaviour.hpp"
 
 #include "PathGenerator.hpp"
+#include "Ship.hpp"
 
 
 int main(int argc, char **argv) {
 
-	Window window = Window(argv[0], vec2(1024, 768));
-	Input input = Input((*window.GetWindow()));
+	GameBehaviour::CreateContext(argv[0], vec2(1024, 768));
+
 	Shader *shader = new Shader("Shaders/Standard.vert", "Shaders/Standard.frag");
-	Camera *camera = new Camera(70.0f, window.GetRatio(), 0.1f, 1000.0f);
+	Camera *camera = new Camera(70.0f, GameBehaviour::window->GetRatio(), 0.1f, 1000.0f);
 	Light *light = new Light(vec3(4, 4, 4));
 
 	// Shader *textShader = new Shader("Shaders/StandardText.vert", "Shaders/StandardText.frag");
@@ -30,57 +31,34 @@ int main(int argc, char **argv) {
 	if (argc > 1)
 		objFile = argv[1];
 
-	Object *object = new Object((*shader), objFile.c_str());
-	object->SetTag("Player");
-	PathGenerator pathGenerator = PathGenerator((*shader), 6, 8.0f);
+	Ship *ship = new Ship((*shader), objFile.c_str());
+	ship->SetTag("Player");
+	ship->transform.Translate(vec3(0, -20, 0));
 
-	camera->transform.position = vec3(0, 0, 15);
-	// camera->transform.position = vec3(35, 45, 55);
-	camera->LookAt(object->transform.position, vec3_up);
+
+	PathGenerator pathGenerator = PathGenerator((*shader), 16, 8.0f);
+
+	camera->transform.position = vec3(0, 0, 20);
+	camera->LookAt(ship->transform.position, vec3_up);
 	light->intensity = 15.0f;
 
-	input.speed = 18.0f;
 	// textFPS->fontSize = 32;
 
-	while(!input.GetKeyPressed(GLFW_KEY_ESCAPE) && !window.IsClosed()){
+	while(!GameBehaviour::input->GetKeyPressed(GLFW_KEY_ESCAPE) && !GameBehaviour::window->IsClosed()){
 
-		window.Clear();
+		GameBehaviour::BeginFrame();
 		GameBehaviour::Clock();
 		GameBehaviour::UpdateObjectScripts();
 
-		if (input.GetKeyPressed(GLFW_KEY_W)){
-			object->transform.Translate(vec3_up * input.speed * GameBehaviour::DeltaTime());
-		}
-		if (input.GetKeyPressed(GLFW_KEY_S)){
-			object->transform.Translate(vec3_down * input.speed * GameBehaviour::DeltaTime());
-		}
-		if (input.GetKeyPressed(GLFW_KEY_A)){
-			object->transform.Rotate(vec3_forward, input.speed * GameBehaviour::DeltaTime());
-			// object->transform.RotateAround(vec3_zero);
-		}
-		if (input.GetKeyPressed(GLFW_KEY_D)){
-			object->transform.Rotate(vec3_forward, -input.speed * GameBehaviour::DeltaTime());
-			// object->transform.RotateAround(vec3_zero);
-		}
-		if (input.GetKeyPressed(GLFW_KEY_Q)){
-			object->transform.Scale(vec3_one * -(GameBehaviour::DeltaTime() / 100.0f));
-		}
-		if (input.GetKeyPressed(GLFW_KEY_E)){
-			object->transform.Scale(vec3_one * (GameBehaviour::DeltaTime() / 100.0f));
-		}
-
-		if (input.GetKeyPressed(GLFW_KEY_UP)){
+		if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_UP)){
 			pathGenerator.speed += 10.0f * GameBehaviour::DeltaTime();
 			// std::cout << "(+) tube speed : " << pathGenerator.speed << std::endl;
 		}
-		if (input.GetKeyPressed(GLFW_KEY_DOWN)){
+		if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_DOWN)){
 			pathGenerator.speed -= 10.0f * GameBehaviour::DeltaTime();
 			// std::cout << "(-) tube speed : " << pathGenerator.speed << std::endl;
 		}
-
-		//pathGenerator.MovePath((*object));
-
-		camera->LookAt(object->transform.position, vec3_up);
+		camera->LookAt(ship->transform.position, vec3_up);
 
 		RenderPipeline::Draw();
 
@@ -90,8 +68,7 @@ int main(int argc, char **argv) {
 
 		// textFPS->Draw(string("FPS : " + buff.str()).c_str());
 
-		window.SwapBuffer();
-		input.PollEvents();
+		GameBehaviour::EndFrame();
 		GameBehaviour::UpdateCollisions();
 	}
 
@@ -104,9 +81,7 @@ int main(int argc, char **argv) {
 	// delete shader;
 
 	// textFPS->Clear();
-
-	input.Terminate();
-	window.Terminate();
+	GameBehaviour::Terminate();
 	return 0;
 }
 

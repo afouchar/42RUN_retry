@@ -43,29 +43,26 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     
     //parenting
     for (list<Chunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); it++){
-        if (it != this->chunks.begin()){
-            list<Chunk *>::iterator it_previous = prev(it);
-            (*it)->transform.parent = &(*it_previous)->transform;
-        }
-        if (it != prev(this->chunks.end())){
-            list<Chunk*>::iterator it_next = next(it, +1);
-            (*it)->transform.child = &(*it_next)->transform;
-        }
+        if (it == this->chunks.begin())
+            continue;
+        list<Chunk*>::iterator it_prev = prev(it, 1);
+        (*it)->transform.AddParent((*it_prev)->transform);
     }
 
     //position relative to parent
+    // (*this->chunks.begin())->transform.Translate(vec3(0, 0, 40));
     for (list<Chunk *>::iterator it = next(this->chunks.begin(), 1); it != this->chunks.end(); it++){
         SetPositionFromParent((**it));
     }
 
     (*this->chunks.begin())->transform.UpdateMatrix();
-    // Chunk::isMoving = true;
 }
 
 void PathGenerator::SwapFirstToLast(){
 
-    list<Chunk *>::iterator it_to_delete = this->chunks.erase(this->chunks.begin());
-    delete (*it_to_delete);
+
+    delete (*this->chunks.begin());
+    this->chunks.erase(this->chunks.begin());
 
     this->chunks.push_back(RandomChunkFromLast());
 
@@ -74,13 +71,8 @@ void PathGenerator::SwapFirstToLast(){
     list<Chunk *>::iterator beforeEndChunk = next(this->chunks.end(), -2);
 
     (*firstChunk)->transform.LocalToWorld();
-    // (*firstChunk)->transform.Translate((*firstChunk)->transform.Back() * this->_chunkLength);
 
-    //parenting
-    (*firstChunk)->transform.parent = nullptr;
-    (*beforeEndChunk)->transform.child = & (*endChunk)->transform; 
-    (*endChunk)->transform.parent = & (*beforeEndChunk)->transform; 
-    (*endChunk)->transform.child = nullptr;
+    (*endChunk)->transform.AddParent((*beforeEndChunk)->transform);
 
     SetPositionFromParent((**endChunk));
 
@@ -90,27 +82,6 @@ void PathGenerator::SwapFirstToLast(){
         i++;
     }
     std::cout << "==========================" << std::endl << std::endl;
-}
-
-void PathGenerator::MovePath(Object & player){
-
-    // list<Chunk *>::iterator it = this->chunks.begin();
-
-    //OnColliderEnter
-    //OnColliderStay
-    //OnColliderExit
-    //!!! Check rotation parfaite sinon le vaiseau parait d'ecal'e par rapport au centre !!!
-    // if ((*it)->collider).CheckCollision(player.collider) && (*it)->transform.GetTag() == "Turn"){
-    //         if (this->firstTimeIn){
-    //             (*it)->transform.pivot = (*it)->transform.position + ((*it)->transform.Right() * GetHalfChunkLength()) + ((*it)->transform.Back() * GetHalfChunkLength());
-    //             this->firstTimeIn = false;
-    //         }
-    //     (*it)->transform.RotateAround((*it)->transform.pivot, (*it)->transform.Up(), this->speed * GameBehaviour::DeltaTime());
-    // }
-    // else{
-        // (*it)->transform.Translate(vec3_back * this->speed * GameBehaviour::DeltaTime());
-        // this->firstTimeIn = true;
-    // }
 }
 
 float PathGenerator::GetChunkLength(){

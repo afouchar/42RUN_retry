@@ -11,38 +11,33 @@ Chunk::Chunk(){}
 Chunk::Chunk(PathGenerator & generator, const Object& rhs, bool render, bool collide) : Object(rhs, render, collide){
     this->_generator = &generator;
     this->isTurning = false;
+    this->_totalRotation = 0.0f;
+    this->_pivot = vec3_zero;
 }
 
 Chunk::Chunk(PathGenerator & generator, Shader & shader, const char *objFile, bool render, bool collide) : Object(shader, objFile, render, collide){
     this->_generator = &generator;
     this->isTurning = false;
+    this->_totalRotation = 0.0f;
+    this->_pivot = vec3_zero;
 }
 
 
 void Chunk::OnColliderEnter(Collider & collider){
 
     if (this->GetTag() == "Turn" && collider.transform->GetTag() == "Player"){
-        // std::cout << "Collision Enter : [" << this->GetTag() << " : " << this->ID << "] -> [" << collider.transform->gameObject->GetTag() << " : " << collider.transform->gameObject->ID << "]" << std::endl;
         SetPivot();
+        this->_totalRotation = 0.0f;
         this->isTurning = true;
         Chunk::isMoving = false;
     }
     else if (this->GetTag() == "Forward" && collider.transform->GetTag() == "Player"){
-        //place chunk properly
         this->isTurning = false;
         Chunk::isMoving = true;
     }
 }
 
 void Chunk::OnColliderStay(Collider & collider){
-
-    // if (this->GetTag() == "Turn" && collider.transform->GetTag() == "Player"){
-    //     this->transform.RotateAround(this->transform.pivot, this->transform.Up(), this->_generator->speed * GameBehaviour::DeltaTime());
-    // }
-    // else if (this->GetTag() == "Forward" && collider.transform->GetTag() == "Player"){
-    //     //this->transform.Translate(vec3_back * PathGenerator::speed * GameBehaviour::DeltaTime());
-    //     this->transform.GetRoot()->Translate(vec3_back * this->_generator->speed * GameBehaviour::DeltaTime());
-    // }
 }
 
 void Chunk::OnColliderExit(Collider & collider){
@@ -50,8 +45,8 @@ void Chunk::OnColliderExit(Collider & collider){
     if (collider.transform->GetTag() == "Player"){
         if (this->GetTag() == "Turn"){
             this->isTurning = false;
+            std::cerr << "Swap [" << this->ID << "] " << this->transform.GetTag() << std::endl;
         }
-        std::cerr << "Swap " << this->transform.GetTag() << std::endl;
         this->_generator->SwapFirstToLast();
     }
 }
@@ -68,7 +63,7 @@ void Chunk::Update(){
 
 void Chunk::SetPivot(){
     float halfChunkLength = this->collider.bound.halfSize.z;
-    this->transform.pivot = this->transform.position + (this->transform.Right() * halfChunkLength) + (this->transform.Back() * halfChunkLength);
+    this->_pivot = this->transform.position + (this->transform.Right() * halfChunkLength) + (this->transform.Back() * halfChunkLength);
 }
 
 void Chunk::Move(){
@@ -76,5 +71,13 @@ void Chunk::Move(){
 }
 
 void Chunk::Turn(){
-    this->transform.RotateAround(this->transform.pivot, this->transform.Up(), this->_generator->speed * GameBehaviour::DeltaTime());
+    float angleRotation = this->_generator->speed * GameBehaviour::DeltaTime();
+    this->_totalRotation += angleRotation;
+    if (this->_totalRotation > 90.0f){
+
+        angleRotation -= (this->_totalRotation - 90.0f);
+        this->isTurning = false;
+        Chunk::isMoving = true;
+    }
+    this->transform.RotateAround(this->_pivot, this->transform.Up(), angleRotation);
 }

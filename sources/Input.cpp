@@ -6,7 +6,6 @@ Input::~Input(){}
 Input::Input(GLFWwindow & window){
 
     this->_window = &window;
-    this->speed = 3.0f;
     this->mouseSpeed = 0.005f;
 	glfwSetInputMode(this->_window, GLFW_STICKY_KEYS, GL_TRUE);
     glfwSetInputMode(this->_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

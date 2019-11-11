@@ -2,8 +2,10 @@ NAME			=	42Run
 CC				=	g++ -std=c++11
 CFLAGS			=	-MMD#-Wall -Wextra -Werror -MMD
 
-#BREW_DPD_DIR	=	/Users/afouchar/.brew/opt
-BREW_DPD_DIR	=	/usr/local/opt
+#SCHOOL
+BREW_DPD_DIR	=	/Users/afouchar/.brew/opt
+#HOME
+#BREW_DPD_DIR	=	/usr/local/opt
 
 GLFW_DIR		=	$(BREW_DPD_DIR)/glfw
 GLEW_DIR		=	$(BREW_DPD_DIR)/glew
@@ -21,8 +23,6 @@ INCLUDE			=	-I $(GLEW_DIR)/include/GL \
 
 GLEW			=	$(GLEW_DIR)/lib/libGLEW.dylib
 GLFW			=	$(GLFW_DIR)/lib/libglfw.dylib
-#ASSIMP			=	/Users/afouchar/.brew/Cellar/assimp/4.1.0/lib/libassimp.4.1.0.dylib
-#DEVIL			=	/Users/afouchar/.brew/Cellar/devil/1.8.0_1/lib/libI*.dylib
 ASSIMP			=	$(BREW_DPD_DIR)/assimp/lib/libassimp.4.1.0.dylib
 DEVIL			=	$(BREW_DPD_DIR)/devil/lib/libI*.dylib
 
@@ -46,7 +46,8 @@ SRC_FILE		=	Camera.cpp \
 					main.cpp
 
 SCRIPT_FILE		=	PathGenerator.cpp \
-					Chunk.cpp
+					Chunk.cpp \
+					Ship.cpp
 
 SRC_DIR			=	Sources
 SCRIPT_DIR		=	Scripts
@@ -58,7 +59,7 @@ OBJ				=	$(patsubst %.cpp, $(OBJ_DIR)/%.o, $(SRC_FILE))
 SCRIPT_OBJ		=	$(patsubst %.cpp, $(OBJ_DIR)/%.o, $(SCRIPT_FILE))
 DPD				=	$(patsubst %.cpp, $(OBJ_DIR)/%.d, $(SRC_FILE))
 SCRIPT_DPD		=	$(patsubst %.cpp, $(OBJ_DIR)/%.d, $(SCRIPT_FILE))
-# HDR			=	$(addprefix $(HDR_DIR)/, $(HDR_FILE))
+
 
 DEPENDS			=	$(OBJ:.o=.d)
 SCRIPT_DEPENDS	=	$(SCRIPT_OBJ:.o=.d)

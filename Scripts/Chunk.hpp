@@ -12,6 +12,8 @@ private:
     PathGenerator   *_generator;
 
     void            SetPivot();
+    float           _totalRotation;
+    vec3            _pivot;
 
 public:
     Chunk();

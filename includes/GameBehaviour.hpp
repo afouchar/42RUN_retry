@@ -3,6 +3,8 @@
 
 
 #include "Object.hpp"
+#include "Input.hpp"
+#include "Window.hpp"
 
 #include <glfw3.h>
 #include <vector>
@@ -33,6 +35,13 @@ public:
     GameBehaviour();
     ~GameBehaviour();
 
+    static Input    *input;
+    static Window   *window;
+
+    static void     CreateContext(const char *windowTitle, vec2 windowSize);
+    static void     BeginFrame();
+    static void     EndFrame();
+    static void     Terminate();
     static void     UpdateObjectScripts();
     static void     AddObject(Object & object);
     static void     RemoveObject(Object & object);
