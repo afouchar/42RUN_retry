@@ -20,9 +20,11 @@ private:
     Shader              *_shader;
     Chunk               *_pathForward;
     Chunk               *_pathTurn;
+    int                 _chunksSwapped;
+
     //temp variables
-    float               pathAngle;
-    bool                firstTimeIn;
+    // float               pathAngle;
+    // bool                firstTimeIn;
 
     void                SetPositionFromParent(Chunk & chunk);
     Chunk              *RandomChunkFromLast();
@@ -37,8 +39,8 @@ public:
     float               GetHalfChunkLength();
 
     list<Chunk *>       chunks;
-    static float        speed;
-
+    float               speed;
+    int                 chunksBeforeSwap;
 };
 
 #endif

@@ -23,6 +23,8 @@ public:
 
     bool            isTurning;
     static bool     isMoving;
+    static bool     allowSwap;
+
 
     void            Move();
     void            Turn();

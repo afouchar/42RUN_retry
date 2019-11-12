@@ -70,6 +70,7 @@ public:
     void                ClearParenting();
     void                ClearParenting(Transform & newParent);
     mat4                LookAt(vec3 target, vec3 up);
+    void                LookAtTarget(vec3 target, vec3 up);
     void                Translate(const vec3 &axis);
     void                Rotate(vec3 axis, float angleDegrees);
     void                Scale(vec3 axis);
@@ -83,6 +84,9 @@ public:
     void                Reset();
     vec3                WorldPosition();
     void                LocalToWorld();
+    // void                SetTransformRelativeTo(Transform & newParent);
+    void                AddTransformTo(Transform & newParent);
+    void                RemoveTransformFromParent();
 
     void                UpdateDirection(vec2 mouseDirection);
     vec3                GetDirection();

@@ -3,6 +3,8 @@
 #include "GameBehaviour.hpp"
 
 bool Chunk::isMoving = true;
+bool Chunk::allowSwap = false;
+
 
 Chunk::~Chunk(){}
 
@@ -26,14 +28,23 @@ Chunk::Chunk(PathGenerator & generator, Shader & shader, const char *objFile, bo
 void Chunk::OnColliderEnter(Collider & collider){
 
     if (this->GetTag() == "Turn" && collider.transform->GetTag() == "Player"){
+        if (this->transform.parent != nullptr){
+            this->transform.parent->ClearParenting(this->transform);
+        }
         SetPivot();
         this->_totalRotation = 0.0f;
         this->isTurning = true;
         Chunk::isMoving = false;
+        Chunk::allowSwap = true;
+
     }
     else if (this->GetTag() == "Forward" && collider.transform->GetTag() == "Player"){
+        if (this->transform.parent != nullptr){
+            this->transform.parent->ClearParenting(this->transform);
+        }
         this->isTurning = false;
         Chunk::isMoving = true;
+        Chunk::allowSwap = true;
     }
 }
 
@@ -45,9 +56,12 @@ void Chunk::OnColliderExit(Collider & collider){
     if (collider.transform->GetTag() == "Player"){
         if (this->GetTag() == "Turn"){
             this->isTurning = false;
-            std::cerr << "Swap [" << this->ID << "] " << this->transform.GetTag() << std::endl;
+            // std::cerr << "Swap [" << this->ID << "] " << this->transform.GetTag() << std::endl;
         }
-        this->_generator->SwapFirstToLast();
+        if (Chunk::allowSwap){
+            Chunk::allowSwap = false;
+            this->_generator->SwapFirstToLast();
+        }
     }
 }
 

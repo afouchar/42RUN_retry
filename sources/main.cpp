@@ -36,9 +36,11 @@ int main(int argc, char **argv) {
 	ship->transform.Translate(vec3(0, -20, 0));
 
 
-	PathGenerator pathGenerator = PathGenerator((*shader), 16, 8.0f);
+	// PathGenerator pathGenerator = PathGenerator((*shader), 16, 8.0f);
+	PathGenerator pathGenerator = PathGenerator((*shader), 6, 8.0f);
 
-	camera->transform.position = vec3(0, 0, 20);
+	// camera->transform.position = vec3(0, 0, 20);
+	camera->transform.position = vec3(0, 0, 50);
 	camera->LookAt(ship->transform.position, vec3_up);
 	light->intensity = 15.0f;
 
