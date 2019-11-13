@@ -33,14 +33,14 @@ int main(int argc, char **argv) {
 
 	Ship *ship = new Ship((*shader), objFile.c_str());
 	ship->SetTag("Player");
-	ship->transform.Translate(vec3(0, -20, 0));
+	ship->transform.Translate(vec3(0, -19, 0));
 
 
-	// PathGenerator pathGenerator = PathGenerator((*shader), 16, 8.0f);
-	PathGenerator pathGenerator = PathGenerator((*shader), 6, 8.0f);
+	PathGenerator pathGenerator = PathGenerator((*shader), 16, 8.0f);
+	// PathGenerator pathGenerator = PathGenerator((*shader), 6, 8.0f);
 
-	// camera->transform.position = vec3(0, 0, 20);
-	camera->transform.position = vec3(0, 0, 50);
+	camera->transform.position = vec3(0, 0, 30);
+	// camera->transform.position = vec3(50, 50, 0);
 	camera->LookAt(ship->transform.position, vec3_up);
 	light->intensity = 15.0f;
 

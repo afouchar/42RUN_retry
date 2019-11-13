@@ -170,6 +170,7 @@ void Transform::ClearParenting(){
             RemoveChild((**it));
         }
     }
+    UpdateMatrix();
 }
 
 void Transform::ClearParenting(Transform & newParent){
@@ -182,6 +183,14 @@ void Transform::ClearParenting(Transform & newParent){
     AddParent(newParent);
     // SetTransformRelativeTo(newParent);
     AddTransformTo(newParent);
+    UpdateMatrix();
+}
+
+void Transform::ClearParentingRecursively(Transform & newParent){
+
+    if (this->parent != nullptr)
+        this->parent->ClearParentingRecursively((*this));
+        ClearParenting(newParent);
 }
 
 mat4 Transform::LookAt(vec3 target, vec3 up){

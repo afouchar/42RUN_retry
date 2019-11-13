@@ -69,6 +69,7 @@ public:
     void                RemoveParent();
     void                ClearParenting();
     void                ClearParenting(Transform & newParent);
+    void                ClearParentingRecursively(Transform & newParent);
     mat4                LookAt(vec3 target, vec3 up);
     void                LookAtTarget(vec3 target, vec3 up);
     void                Translate(const vec3 &axis);
@@ -84,7 +85,6 @@ public:
     void                Reset();
     vec3                WorldPosition();
     void                LocalToWorld();
-    // void                SetTransformRelativeTo(Transform & newParent);
     void                AddTransformTo(Transform & newParent);
     void                RemoveTransformFromParent();
 

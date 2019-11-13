@@ -12,8 +12,10 @@ private:
     PathGenerator   *_generator;
 
     void            SetPivot();
-    float           _totalRotation;
-    vec3            _pivot;
+    static vec3     _pivot;
+    static vec3     _upAxis;
+    static float    _totalRotation;
+    static bool     _allowSwap;
 
 public:
     Chunk();
@@ -21,9 +23,10 @@ public:
     Chunk(PathGenerator & generator, Shader & shader, const char *objFile, bool render = true, bool collide = true);
     ~Chunk();
 
-    bool            isTurning;
+    static bool     isTurning;
     static bool     isMoving;
-    static bool     allowSwap;
+    bool            isSelfTurning;
+    vec3            cleanPosition;
 
 
     void            Move();

@@ -20,6 +20,7 @@ private:
     Shader              *_shader;
     Chunk               *_pathForward;
     Chunk               *_pathTurn;
+    Object              *_colliderCenter;
     int                 _chunksSwapped;
 
     //temp variables

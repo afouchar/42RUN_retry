@@ -20,8 +20,10 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     this->speed = speed;
     this->_shader = &shader;
     this->_chunksSwapped = 0;
-    this->chunksBeforeSwap = 2;
+    this->chunksBeforeSwap = 1;
 
+    this->_colliderCenter = new Object((*this->_shader), "Models/Colliders/small_collider.obj", true, true);
+    this->_colliderCenter->SetTag("Cursor");
 
     this->_pathForward = new Chunk((*this), (*this->_shader), "Models/tubecube/tubecube.obj", false, false);
     this->_pathForward->SetTag("Forward");
@@ -35,7 +37,7 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
 
     for (int i = 0; i < this->_chunksAmount; i++){
 
-        if (i == 0)
+        if (i == 0 || i == 1)
             this->chunks.push_back(new Chunk((*this), (*this->_pathForward)));
         else
             this->chunks.push_back(RandomChunkFromLast());
@@ -50,7 +52,7 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     }
 
     //position relative to parent
-    (*this->chunks.begin())->transform.Translate(vec3(0, 0, 40));
+    // (*this->chunks.begin())->transform.Translate(vec3(0, 0, this->_chunkLength + this->GetHalfChunkLength()));
     for (list<Chunk *>::iterator it = next(this->chunks.begin(), 1); it != this->chunks.end(); it++){
         SetPositionFromParent((**it));
     }
@@ -65,7 +67,7 @@ void PathGenerator::SwapFirstToLast(){
         return;
     }
 
-    for (int j = this->chunks.size(); j <= this->_chunksAmount; j++) {
+    // for (int j = this->chunks.size(); j <= this->_chunksAmount; j++) {
 
         delete (*this->chunks.begin());
         this->chunks.erase(this->chunks.begin());
@@ -75,8 +77,6 @@ void PathGenerator::SwapFirstToLast(){
         list<Chunk *>::iterator firstChunk = this->chunks.begin();
         list<Chunk *>::iterator endChunk = next(this->chunks.end(), -1);
         list<Chunk *>::iterator beforeEndChunk = next(this->chunks.end(), -2);
-
-        //Position offsets in time !!!!!!
  
         (*endChunk)->transform.AddParent((*beforeEndChunk)->transform);
         SetPositionFromParent((**endChunk));
@@ -87,7 +87,7 @@ void PathGenerator::SwapFirstToLast(){
             i++;
         }
         std::cout << "==========================" << std::endl << std::endl;
-    }
+    // }
 }
 
 float PathGenerator::GetChunkLength(){
