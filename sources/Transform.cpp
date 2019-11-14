@@ -136,8 +136,7 @@ void Transform::AddChild(Transform & child){
         child.parent->RemoveChild(child);
     this->child.push_back(&child);
     child.parent = this;
-    // child.SetTransformRelativeTo((*this)); // should work but break rotation and position
-    // child.AddTransformTo((*this));
+    child.AddTransformTo((*this));
 }
 
 void Transform::RemoveChild(Transform & child){
@@ -181,8 +180,7 @@ void Transform::ClearParenting(Transform & newParent){
         }
     }
     AddParent(newParent);
-    // SetTransformRelativeTo(newParent);
-    AddTransformTo(newParent);
+    // AddTransformTo(newParent);
     UpdateMatrix();
 }
 

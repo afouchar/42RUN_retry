@@ -103,15 +103,30 @@ void PathGenerator::SetPositionFromParent(Chunk & chunk){
     if (chunk.transform.parent == nullptr)
         return;
 
-    chunk.transform.position = vec3_forward * this->_chunkLength;
+    chunk.transform.position = chunk.transform.parent->Forward() * this->_chunkLength;
     if (chunk.transform.parent->GetTag() == "Turn"){
-        chunk.transform.RotateAround(vec3_zero, vec3_up, -90.0f);
+        chunk.transform.RotateAround(chunk.transform.parent->WorldPosition(), chunk.transform.parent->Up(), -90.0f);
     }
     if (chunk.transform.GetTag() == "Turn"){
-        chunk.transform.Rotate(vec3_forward, rand() % 360);
+        chunk.transform.Rotate(chunk.transform.parent->Forward(), rand() % 360);
     }
     chunk.transform.UpdateMatrix();
 }
+
+// void PathGenerator::SetPositionFromParent(Chunk & chunk){
+
+//     if (chunk.transform.parent == nullptr)
+//         return;
+
+//     chunk.transform.position = vec3_forward * this->_chunkLength;
+//     if (chunk.transform.parent->GetTag() == "Turn"){
+//         chunk.transform.RotateAround(vec3_zero, vec3_up, -90.0f);
+//     }
+//     if (chunk.transform.GetTag() == "Turn"){
+//         chunk.transform.Rotate(vec3_forward, rand() % 360);
+//     }
+//     chunk.transform.UpdateMatrix();
+// }
 
 Chunk *PathGenerator::RandomChunkFromLast(){
 
