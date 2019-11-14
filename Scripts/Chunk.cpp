@@ -29,23 +29,24 @@ void Chunk::OnColliderEnter(Collider & collider){
 
     if (collider.transform->GetTag() == "Cursor"){
         if (this->transform.parent != nullptr){
-            Transform * oldParent = this->transform.parent;
+            // Transform * oldParent = this->transform.parent;
             this->transform.parent->ClearParentingRecursively(this->transform);
-            oldParent->position = vec3_back * this->collider.bound.size.z;
+            // oldParent->position = vec3_back * this->collider.bound.size.z;
         }
         if (this->GetTag() == "Turn"){
             SetPivot();
             this->isSelfTurning = true;
             Chunk::isMoving = false;
             Chunk::isTurning = true;
+            Chunk::_allowSwap = false;
         }
         // else if (this->GetTag() == "Forward"){
         //     this->transform.position = vec3(0, 0, this->transform.position.z);
         //     this->transform.LookAtTarget(vec3_forward * 100.0f, this->transform.Up());
         //     this->transform.UpdateMatrix();
         // }
-
-        Chunk::_allowSwap = true;
+        else
+            Chunk::_allowSwap = true;
     }
 }
 

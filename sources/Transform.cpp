@@ -146,8 +146,8 @@ void Transform::RemoveChild(Transform & child){
         return;
     this->child.erase(it);
     child.parent = nullptr;
-    child.RemoveTransformFromParent();
-    // child.LocalToWorld();
+    // child.RemoveTransformFromParent();
+    child.LocalToWorld();
 }
 
 void Transform::AddParent(Transform & parent){
@@ -186,9 +186,10 @@ void Transform::ClearParenting(Transform & newParent){
 
 void Transform::ClearParentingRecursively(Transform & newParent){
 
-    if (this->parent != nullptr)
+    if (this->parent != nullptr){
         this->parent->ClearParentingRecursively((*this));
-        ClearParenting(newParent);
+    }
+    ClearParenting(newParent);
 }
 
 mat4 Transform::LookAt(vec3 target, vec3 up){
@@ -338,9 +339,26 @@ void Transform::AddTransformTo(Transform & newParent){
     vec4 child_perspective;
     glm::decompose(this->modelMatrix, child_scale, child_quatRotation, child_translation, child_skew, child_perspective);
 
-    this->scale = child_scale / parent_scale;
-    this->_quatRotation = glm::inverse(parent_quatRotation) * child_quatRotation;
-    this->position = child_translation - parent_translation;
+    this->scale = child_scale;
+    this->_quatRotation = child_quatRotation - parent_quatRotation;
+    // this->_quatRotation = child_quatRotation;
+    // this->_quatRotation = quat();
+    this->position = child_translation;
+
+
+    // newParent.UpdateMatrix();
+    // this->scale = child_scale / parent_scale;
+    // this->_quatRotation = glm::inverse(parent_quatRotation) * child_quatRotation;
+    // this->_quatRotation = parent_quatRotation * glm::inverse(child_quatRotation);
+    // this->_quatRotation = glm::inverse(child_quatRotation) * parent_quatRotation;
+    // this->_quatRotation = child_quatRotation * glm::inverse(parent_quatRotation);
+    // this->_quatRotation = quat();
+    // this->position = child_translation - parent_translation;
+    // this->_matRotation = toMat4(glm::inverse(this->_quatRotation));
+    // this->eulerAngles = glm::eulerAngles(this->_quatRotation);
+    // this->eulerAngles.x = glm::degrees(this->eulerAngles.x);
+    // this->eulerAngles.y = glm::degrees(this->eulerAngles.y);
+    // this->eulerAngles.z = glm::degrees(this->eulerAngles.z);
 
     UpdateMatrix();
 }
