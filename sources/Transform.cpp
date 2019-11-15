@@ -131,12 +131,14 @@ Transform::Transform(vec3 pos, Object & gameObject){
     this->gameObject = &gameObject;
 }
 
-void Transform::AddChild(Transform & child){
-    if (child.parent != nullptr)
+void Transform::AddChild(Transform & child, bool setCoordinates){
+    if (child.parent != nullptr){
         child.parent->RemoveChild(child);
+    }
     this->child.push_back(&child);
     child.parent = this;
-    child.AddTransformTo((*this));
+    if (setCoordinates)
+        child.SetCoordinatesToLocal((*this));
 }
 
 void Transform::RemoveChild(Transform & child){
@@ -146,20 +148,30 @@ void Transform::RemoveChild(Transform & child){
         return;
     this->child.erase(it);
     child.parent = nullptr;
-    // child.RemoveTransformFromParent();
     child.LocalToWorld();
 }
 
-void Transform::AddParent(Transform & parent){
-    parent.AddChild((*this));
+void Transform::AddParent(Transform & parent, bool setCoordinates){
+    parent.AddChild((*this), setCoordinates);
 }
 
 void Transform::RemoveParent(){
 
-    if (this->parent != nullptr)
+    if (this->parent != nullptr){
         this->parent->RemoveChild((*this));
-    this->parent = nullptr;
-    LocalToWorld();
+        this->parent = nullptr;
+    }
+}
+
+void Transform::SetParentAsChild(){
+
+    if (this->parent == nullptr)
+        return;
+    Transform *oldParent = this->parent;  
+    oldParent->RemoveParent();
+    oldParent->RemoveChild((*this));
+    AddChild((*oldParent));
+    UpdateMatrix();
 }
 
 void Transform::ClearParenting(){
@@ -180,7 +192,6 @@ void Transform::ClearParenting(Transform & newParent){
         }
     }
     AddParent(newParent);
-    // AddTransformTo(newParent);
     UpdateMatrix();
 }
 
@@ -318,49 +329,37 @@ void Transform::LocalToWorld(){
     this->eulerAngles.x = glm::degrees(this->eulerAngles.x);
     this->eulerAngles.y = glm::degrees(this->eulerAngles.y);
     this->eulerAngles.z = glm::degrees(this->eulerAngles.z);
+
+    this->_matScale = glm::scale(mat4(1.0f), this->scale);
+    this->_matRotation = toMat4(this->_quatRotation);
+    this->_matTranslation = glm::translate(mat4(1.0f), this->position);
+
+    this->modelMatrix = mat4(1.0f) * (this->_matScale * this->_matTranslation * this->_matRotation);
 }
 
-void Transform::AddTransformTo(Transform & newParent){
+void Transform::SetCoordinatesToLocal(Transform & newParent){
 
-    // this->LocalToWorld();
-    // UpdateMatrix();
+    if (this->modelMatrix != mat4(1.0f)){
+        vec3 parent_scale;
+        quat parent_quatRotation;
+        vec3 parent_translation;
+        vec3 parent_skew;
+        vec4 parent_perspective;
+        glm::decompose(newParent.modelMatrix, parent_scale, parent_quatRotation, parent_translation, parent_skew, parent_perspective);
 
-    vec3 parent_scale;
-    quat parent_quatRotation;
-    vec3 parent_translation;
-    vec3 parent_skew;
-    vec4 parent_perspective;
-    glm::decompose(newParent.modelMatrix, parent_scale, parent_quatRotation, parent_translation, parent_skew, parent_perspective);
+        vec3 child_scale;
+        quat child_quatRotation;
+        vec3 child_translation;
+        vec3 child_skew;
+        vec4 child_perspective;
+        glm::decompose(this->modelMatrix, child_scale, child_quatRotation, child_translation, child_skew, child_perspective);
 
-    vec3 child_scale;
-    quat child_quatRotation;
-    vec3 child_translation;
-    vec3 child_skew;
-    vec4 child_perspective;
-    glm::decompose(this->modelMatrix, child_scale, child_quatRotation, child_translation, child_skew, child_perspective);
+        this->scale = child_scale / parent_scale;
+        this->_quatRotation = glm::inverse(parent_quatRotation) * child_quatRotation;
+        this->position = child_translation - parent_translation;
 
-    this->scale = child_scale;
-    this->_quatRotation = child_quatRotation - parent_quatRotation;
-    // this->_quatRotation = child_quatRotation;
-    // this->_quatRotation = quat();
-    this->position = child_translation;
-
-
-    // newParent.UpdateMatrix();
-    // this->scale = child_scale / parent_scale;
-    // this->_quatRotation = glm::inverse(parent_quatRotation) * child_quatRotation;
-    // this->_quatRotation = parent_quatRotation * glm::inverse(child_quatRotation);
-    // this->_quatRotation = glm::inverse(child_quatRotation) * parent_quatRotation;
-    // this->_quatRotation = child_quatRotation * glm::inverse(parent_quatRotation);
-    // this->_quatRotation = quat();
-    // this->position = child_translation - parent_translation;
-    // this->_matRotation = toMat4(glm::inverse(this->_quatRotation));
-    // this->eulerAngles = glm::eulerAngles(this->_quatRotation);
-    // this->eulerAngles.x = glm::degrees(this->eulerAngles.x);
-    // this->eulerAngles.y = glm::degrees(this->eulerAngles.y);
-    // this->eulerAngles.z = glm::degrees(this->eulerAngles.z);
-
-    UpdateMatrix();
+        UpdateMatrix();
+    }
 }
 
 void Transform::RemoveTransformFromParent(){

@@ -31,7 +31,6 @@ public:
     vector<Mesh>    meshes;
     unsigned int    ID;
 
-    // void            Draw(Camera *camera, Light *light);
     void            SetShader(Shader *shader);
     mat4            GetModelMatrix();
     void            ClearBuffers();

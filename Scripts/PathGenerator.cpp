@@ -20,7 +20,7 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     this->speed = speed;
     this->_shader = &shader;
     this->_chunksSwapped = 0;
-    this->chunksBeforeSwap = 1;
+    this->chunksBeforeSwap = 2;
 
     this->_colliderCenter = new Object((*this->_shader), "Models/Colliders/small_collider.obj", true, true);
     this->_colliderCenter->SetTag("Cursor");
@@ -58,7 +58,6 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     }
 
     //position relative to parent
-    // (*this->chunks.begin())->transform.Translate(vec3(0, 0, this->_chunkLength + this->GetHalfChunkLength()));
     for (list<Chunk *>::iterator it = next(this->chunks.begin(), 1); it != this->chunks.end(); it++){
         SetPositionFromParent((**it));
     }
@@ -73,28 +72,29 @@ void PathGenerator::SwapFirstToLast(){
         return;
     }
 
-    // for (int j = this->chunks.size(); j <= this->_chunksAmount; j++) {
+    delete (*this->chunks.begin());
+    this->chunks.erase(this->chunks.begin());
 
-        delete (*this->chunks.begin());
-        this->chunks.erase(this->chunks.begin());
+    this->chunks.push_back(RandomChunkFromLast());
 
-        this->chunks.push_back(RandomChunkFromLast());
+    list<Chunk *>::iterator firstChunk = this->chunks.begin();
+    list<Chunk *>::iterator endChunk = next(this->chunks.end(), -1);
+    list<Chunk *>::iterator beforeEndChunk = next(this->chunks.end(), -2);
 
-        list<Chunk *>::iterator firstChunk = this->chunks.begin();
-        list<Chunk *>::iterator endChunk = next(this->chunks.end(), -1);
-        list<Chunk *>::iterator beforeEndChunk = next(this->chunks.end(), -2);
- 
-        // ((*beforeEndChunk))->transform.AddChild((*endChunk)->transform);
-        (*endChunk)->transform.AddParent((*beforeEndChunk)->transform);
-        SetPositionFromParent((**endChunk));
+    (*endChunk)->transform.AddParent((*beforeEndChunk)->transform, true);
+    SetPositionFromParent((**endChunk));
 
-        int i = 0;
-        for (list<Chunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); it++){
-            std::cout << "[" << (*it)->ID << "] " << (*it)->transform.GetTag() << std::endl;
-            i++;
-        }
-        std::cout << "==========================" << std::endl << std::endl;
+    // (*firstChunk)->transform.SetRotation(quat());
+
+    // int i = 0;
+    // for (list<Chunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); it++){
+    //     if ((*it)->transform.parent != nullptr)
+    //         std::cout << "[" << (*it)->ID << "] " << (*it)->transform.GetTag() << " -> parent ["<< (*it)->transform.parent->gameObject->ID << "]" << std::endl;
+    //     else
+    //         std::cout << "[" << (*it)->ID << "] " << (*it)->transform.GetTag() << " -> parent [NULL]" << std::endl;
+    //     i++;
     // }
+    // std::cout << "==========================" << std::endl << std::endl;
 }
 
 float PathGenerator::GetChunkLength(){
@@ -111,30 +111,17 @@ void PathGenerator::SetPositionFromParent(Chunk & chunk){
         return;
 
     chunk.transform.position = vec3_forward * this->_chunkLength;
-    // chunk.transform.position = chunk.transform.parent->Forward() * this->_chunkLength;
+
     if (chunk.transform.parent->GetTag() == "Turn"){
         chunk.transform.RotateAround(vec3_zero, vec3_up, -90.0f);
     }
     if (chunk.transform.GetTag() == "Turn"){
-        chunk.transform.Rotate(chunk.transform.parent->Forward(), rand() % 360);
+        // chunk.transform.Rotate(vec3_forward, rand() % 360);
+        int r = rand() % 3;
+        chunk.transform.Rotate(vec3_forward, 90 * r);
     }
     chunk.transform.UpdateMatrix();
 }
-
-// void PathGenerator::SetPositionFromParent(Chunk & chunk){
-
-//     if (chunk.transform.parent == nullptr)
-//         return;
-
-//     chunk.transform.position = vec3_forward * this->_chunkLength;
-//     if (chunk.transform.parent->GetTag() == "Turn"){
-//         chunk.transform.RotateAround(vec3_zero, vec3_up, -90.0f);
-//     }
-//     if (chunk.transform.GetTag() == "Turn"){
-//         chunk.transform.Rotate(vec3_forward, rand() % 360);
-//     }
-//     chunk.transform.UpdateMatrix();
-// }
 
 Chunk *PathGenerator::RandomChunkFromLast(){
 

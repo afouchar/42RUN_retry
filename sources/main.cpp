@@ -36,8 +36,8 @@ int main(int argc, char **argv) {
 	ship->transform.Translate(vec3(0, -19, 0));
 
 
-	// PathGenerator pathGenerator = PathGenerator((*shader), 16, 8.0f);
-	PathGenerator pathGenerator = PathGenerator((*shader), 6, 8.0f);
+	PathGenerator pathGenerator = PathGenerator((*shader), 16, 8.0f);
+	// PathGenerator pathGenerator = PathGenerator((*shader), 6, 8.0f);
 
 	// camera->transform.position = vec3(0, 0, 30);
 	camera->transform.position = vec3(50, 50, 30);

@@ -63,10 +63,11 @@ public:
     vec3                scale;
     mat4                modelMatrix;
 
-    void                AddChild(Transform & child);
+    void                AddChild(Transform & child, bool setCoordinates = true);
     void                RemoveChild(Transform & child);
-    void                AddParent(Transform & parent);
+    void                AddParent(Transform & parent, bool setCoordinates = true);
     void                RemoveParent();
+    void                SetParentAsChild();
     void                ClearParenting();
     void                ClearParenting(Transform & newParent);
     void                ClearParentingRecursively(Transform & newParent);
@@ -85,7 +86,7 @@ public:
     void                Reset();
     vec3                WorldPosition();
     void                LocalToWorld();
-    void                AddTransformTo(Transform & newParent);
+    void                SetCoordinatesToLocal(Transform & newParent);
     void                RemoveTransformFromParent();
 
     void                UpdateDirection(vec2 mouseDirection);
