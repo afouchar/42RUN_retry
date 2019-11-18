@@ -85,6 +85,7 @@ public:
     void                ResetMatrix();
     void                Reset();
     vec3                WorldPosition();
+    vec3                LocalPosition(vec3 worldPosition);
     void                LocalToWorld();
     void                SetCoordinatesToLocal(Transform & newParent);
     void                RemoveTransformFromParent();

@@ -3,11 +3,11 @@
         {
             "name": "Mac",
             "includePath": [
-                "/Users/afouchar/.brew/opt/glfw/include/GLFW/",
-                "/Users/afouchar/.brew/opt/glm/include/glm/",
-                "/Users/afouchar/.brew/opt/glew/include/GL/",
-                "/Users/afouchar/.brew/opt/assimp/include/",
-                "/Users/afouchar/.brew/opt/devil/include/",
+                "/usr/local/opt/glfw/include/GLFW/",
+                "/usr/local/opt/glm/include/glm/",
+                "/usr/local/opt/glew/include/GL/",
+                "/usr/local/opt/assimp/include/",
+                "/usr/local/opt/devil/include/",
                 "${workspaceFolder}/**"
             ],
             "defines": [],

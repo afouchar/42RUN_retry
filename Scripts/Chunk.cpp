@@ -7,6 +7,8 @@ bool Chunk::isMoving = true;
 bool Chunk::isTurning = false;
 vec3 Chunk::_pivot = vec3_zero;
 vec3 Chunk::_upAxis = vec3_up;
+vec3 Chunk::_leftAxis = vec3_left;
+vec3 Chunk::_endPosition = vec3_zero;
 float Chunk::_totalRotation = 0.0f;
 
 
@@ -28,7 +30,8 @@ Chunk::Chunk(PathGenerator & generator, Shader & shader, const char *objFile, bo
 void Chunk::OnColliderEnter(Collider & collider){
 
     if (collider.transform->GetTag() == "Cursor"){
-        this->transform.SetParentAsChild();
+        if (this->transform.parent != nullptr && this->transform.parent->GetTag() != "Turn")
+            this->transform.SetParentAsChild();
         if (this->GetTag() == "Turn"){
             SetPivot();
             this->isSelfTurning = true;
@@ -45,14 +48,6 @@ void Chunk::OnColliderExit(Collider & collider){
 
     if (collider.transform->GetTag() == "Cursor"){
         Chunk::_allowSwap = true;
-        if (this->GetTag() == "Turn"){
-
-            // vec3 right = this->transform.Right();
-            // std::cerr << right.x << " | " << right.y << " | " << right.z << std::endl;
-            // this->transform.SetRotation(quat());
-            // this->transform.LookAtTarget(vec3_right, this->transform.Up());
-            // this->transform.UpdateMatrix();
-        }
     }
 }
 
@@ -79,14 +74,15 @@ void Chunk::SetPivot(){
     float halfChunkLength = this->collider.bound.halfSize.z;
     Chunk::_pivot = this->transform.WorldPosition()  + (this->transform.Right() * halfChunkLength) + (this->transform.Back() * halfChunkLength);
     Chunk::_upAxis = this->transform.Up();
+    Chunk::_leftAxis = this->transform.Left();
+    Chunk::_endPosition = this->transform.WorldPosition() + (this->transform.Back() * this->transform.gameObject->collider.bound.size.z);
     Chunk::_totalRotation = 0.0f;
-
 }
 
 void Chunk::Move(){
     this->transform.Translate(vec3_back * this->_generator->speed * GameBehaviour::DeltaTime());
-    // this->transform.position = vec3(0, 0, this->transform.position.z);
 }
+
 
 void Chunk::Turn(){
     float angleRotation = this->_generator->speed * GameBehaviour::DeltaTime() * 2;
@@ -96,15 +92,22 @@ void Chunk::Turn(){
 
     if (Chunk::_totalRotation >= 90.0f){
 
-        // float diff = (Chunk::_totalRotation - 90.0f);
-        // angleRotation -= diff;
-        // Chunk::_totalRotation -= diff;
         angleRotation -= (Chunk::_totalRotation - 90.0f);
+
+        this->transform.position = Chunk::_endPosition;
+        this->transform.LookAtTarget(Chunk::_endPosition + (Chunk::_leftAxis * 100.0f), Chunk::_upAxis);
+        this->transform.UpdateMatrix();
+
+        // std::cerr << "TOTAL ROTATION DONE : " << Chunk::_totalRotation << " ___ Added angle : " << angleRotation << std::endl;        
+
+        if (this->transform.child.size() > 0)
+            (*this->transform.child.begin())->SetParentAsChild();
+
         Chunk::isMoving = true;
         Chunk::isTurning = false;
         this->isSelfTurning = false;
-
-        // std::cerr << "TOTAL ROTATION DONE : " << Chunk::_totalRotation << " ___ Added angle : " << angleRotation << std::endl;        
     }
-    this->transform.RotateAround(Chunk::_pivot, Chunk::_upAxis, angleRotation);
+    else{
+        this->transform.RotateAround(Chunk::_pivot, Chunk::_upAxis, angleRotation);
+    }
 }

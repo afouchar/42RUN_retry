@@ -37,16 +37,15 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
 
     for (int i = 0; i < this->_chunksAmount; i++){
 
-        if (i == 2)
-            this->chunks.push_back(new Chunk((*this), (*this->_pathTurn)));
-        else
-            this->chunks.push_back(new Chunk((*this), (*this->_pathForward)));
-
-
-        // if (i == 0 || i == 1)
-        //     this->chunks.push_back(new Chunk((*this), (*this->_pathForward)));
+        // if (i == 2)
+        //     this->chunks.push_back(new Chunk((*this), (*this->_pathTurn)));
         // else
-        //     this->chunks.push_back(RandomChunkFromLast());
+        //     this->chunks.push_back(new Chunk((*this), (*this->_pathForward)));
+
+        if (i < 2)
+            this->chunks.push_back(new Chunk((*this), (*this->_pathForward)));
+        else
+            this->chunks.push_back(RandomChunkFromLast());
     }
     
     //parenting
@@ -84,8 +83,6 @@ void PathGenerator::SwapFirstToLast(){
     (*endChunk)->transform.AddParent((*beforeEndChunk)->transform, true);
     SetPositionFromParent((**endChunk));
 
-    // (*firstChunk)->transform.SetRotation(quat());
-
     // int i = 0;
     // for (list<Chunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); it++){
     //     if ((*it)->transform.parent != nullptr)
@@ -116,9 +113,7 @@ void PathGenerator::SetPositionFromParent(Chunk & chunk){
         chunk.transform.RotateAround(vec3_zero, vec3_up, -90.0f);
     }
     if (chunk.transform.GetTag() == "Turn"){
-        // chunk.transform.Rotate(vec3_forward, rand() % 360);
-        int r = rand() % 3;
-        chunk.transform.Rotate(vec3_forward, 90 * r);
+        chunk.transform.Rotate(vec3_forward, rand() % 360);
     }
     chunk.transform.UpdateMatrix();
 }

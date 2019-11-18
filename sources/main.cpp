@@ -39,8 +39,8 @@ int main(int argc, char **argv) {
 	PathGenerator pathGenerator = PathGenerator((*shader), 16, 8.0f);
 	// PathGenerator pathGenerator = PathGenerator((*shader), 6, 8.0f);
 
-	// camera->transform.position = vec3(0, 0, 30);
-	camera->transform.position = vec3(50, 50, 30);
+	camera->transform.position = vec3(0, 0, 30);
+	// camera->transform.position = vec3(50, 50, 30);
 	camera->LookAt(ship->transform.position, vec3_up);
 	light->intensity = 15.0f;
 

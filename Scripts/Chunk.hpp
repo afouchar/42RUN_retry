@@ -14,6 +14,8 @@ private:
     void            SetPivot();
     static vec3     _pivot;
     static vec3     _upAxis;
+    static vec3     _leftAxis;
+    static vec3     _endPosition;
     static float    _totalRotation;
     static bool     _allowSwap;
 

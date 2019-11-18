@@ -208,7 +208,7 @@ mat4 Transform::LookAt(vec3 target, vec3 up){
 }
 
 void Transform::LookAtTarget(vec3 target, vec3 up){
-	this->_quatRotation = toQuat(glm::lookAt(this->position, target, up));
+	this->_quatRotation = glm::conjugate(toQuat(glm::lookAt(this->position, target, up)));
 }
 
 void Transform::Translate(const vec3 &axis){
@@ -310,6 +310,11 @@ void Transform::ResetMatrix() {
 vec3 Transform::WorldPosition(){
 
     return vec3(this->modelMatrix[3]);
+}
+
+vec3 Transform::LocalPosition(vec3 worldPosition){
+
+    return worldPosition - this->WorldPosition();
 }
 
 void Transform::LocalToWorld(){
