@@ -1,5 +1,6 @@
 _BUILD_OBJ_/Camera.o: Sources/Camera.cpp Includes/Camera.hpp \
-  Includes/Transform.hpp /usr/local/opt/glm/include/glm/glm.hpp \
+  Includes/ScriptableBehaviour.hpp Includes/Transform.hpp \
+  /usr/local/opt/glm/include/glm/glm.hpp \
   /usr/local/opt/glm/include/glm/detail/_fixes.hpp \
   /usr/local/opt/glm/include/glm/detail/setup.hpp \
   /usr/local/opt/glm/include/glm/detail/../simd/platform.h \
@@ -210,4 +211,5 @@ _BUILD_OBJ_/Camera.o: Sources/Camera.cpp Includes/Camera.hpp \
   /usr/local/opt/devil/include/IL/ilu.h \
   /usr/local/opt/devil/include/IL/ilut.h Includes/Shader.hpp \
   Includes/Collider.hpp Includes/Bound.hpp \
-  /usr/local/opt/glfw/include/GLFW/glfw3.h
+  /usr/local/opt/glfw/include/GLFW/glfw3.h Includes/GameBehaviour.hpp \
+  Includes/Input.hpp Includes/Window.hpp

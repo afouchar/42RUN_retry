@@ -37,11 +37,10 @@ int main(int argc, char **argv) {
 
 
 	PathGenerator pathGenerator = PathGenerator((*shader), 16, 8.0f);
-	// PathGenerator pathGenerator = PathGenerator((*shader), 6, 8.0f);
 
-	camera->transform.position = vec3(0, 0, 30);
-	// camera->transform.position = vec3(50, 50, 30);
+	camera->transform.position = vec3(0, 0, 15);
 	camera->LookAt(ship->transform.position, vec3_up);
+	camera->SetTarget(ship->transform);
 	light->intensity = 15.0f;
 
 	// textFPS->fontSize = 32;
@@ -51,17 +50,7 @@ int main(int argc, char **argv) {
 		GameBehaviour::BeginFrame();
 		GameBehaviour::Clock();
 		GameBehaviour::UpdateObjectScripts();
-
-		if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_UP)){
-			pathGenerator.speed += 10.0f * GameBehaviour::DeltaTime();
-			// std::cout << "(+) tube speed : " << pathGenerator.speed << std::endl;
-		}
-		if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_DOWN)){
-			pathGenerator.speed -= 10.0f * GameBehaviour::DeltaTime();
-			// std::cout << "(-) tube speed : " << pathGenerator.speed << std::endl;
-		}
-		camera->LookAt(ship->transform.position, vec3_up);
-
+		GameBehaviour::LateUpdateObjectScripts();
 		RenderPipeline::Draw();
 
 		// float fps = (1.0 / GameBehaviour::DeltaTime());

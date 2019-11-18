@@ -8,12 +8,12 @@ Ship::Ship(){
 }
 
 Ship::Ship(const Object& rhs, bool render, bool collide) : Object(rhs, render, collide){
-    this->_speed = 100.0f;
+    this->_speed = 50.0f;
     // this->collider.position = this->transform.Up() * 20.0f;
 }
 
 Ship::Ship(Shader & shader, const char *objFile, bool render, bool collide) : Object(shader, objFile, render, collide){
-    this->_speed = 100.0f;
+    this->_speed = 50.0f;
     // this->collider.position = this->transform.Up() * 20.0f;
 }
 

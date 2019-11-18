@@ -208,5 +208,6 @@ _BUILD_OBJ_/GameBehaviour.o: Sources/GameBehaviour.cpp \
   /usr/local/opt/glm/include/glm/./ext/quaternion_exponential.inl \
   /usr/local/opt/glm/include/glm/gtx/../gtx/norm.hpp \
   /usr/local/opt/glm/include/glm/gtx/norm.inl \
-  /usr/local/opt/glm/include/glm/gtx/quaternion.inl Includes/Input.hpp \
+  /usr/local/opt/glm/include/glm/gtx/quaternion.inl \
+  Includes/ScriptableBehaviour.hpp Includes/Input.hpp \
   /usr/local/opt/glfw/include/GLFW/glfw3.h Includes/Window.hpp

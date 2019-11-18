@@ -3,6 +3,7 @@
 
 
 #include "Object.hpp"
+// #include "ScriptableBehaviour.hpp"
 #include "Input.hpp"
 #include "Window.hpp"
 
@@ -26,7 +27,8 @@ private:
 
 protected:
 
-    static list<Object *> _sceneObjects;
+    // static list<Object *> _sceneObjects;
+    static list<ScriptableBehaviour *> _sceneObjects;
     static list<Collider *> _sceneColliders;
     static deque<deque<bool>> _collisionMap;
 
@@ -43,8 +45,10 @@ public:
     static void     EndFrame();
     static void     Terminate();
     static void     UpdateObjectScripts();
-    static void     AddObject(Object & object);
-    static void     RemoveObject(Object & object);
+    static void     LateUpdateObjectScripts();
+    static void     AddObject(ScriptableBehaviour & object);
+    static void     RemoveObject(ScriptableBehaviour & object);
+
     static void     UpdateCollisions();
     static void     AddCollider(Collider & collider);
     static void     RemoveCollider(Collider & collider);

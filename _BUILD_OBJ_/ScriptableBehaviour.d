@@ -1,5 +1,7 @@
-_BUILD_OBJ_/Collider.o: Sources/Collider.cpp Includes/Collider.hpp \
-  Includes/Bound.hpp Includes/Transform.hpp \
+_BUILD_OBJ_/ScriptableBehaviour.o: Sources/ScriptableBehaviour.cpp \
+  Includes/ScriptableBehaviour.hpp Includes/GameBehaviour.hpp \
+  Includes/Object.hpp Includes/Loader.hpp Includes/Mesh.hpp \
+  /usr/local/opt/glew/include/GL/glew.h \
   /usr/local/opt/glm/include/glm/glm.hpp \
   /usr/local/opt/glm/include/glm/detail/_fixes.hpp \
   /usr/local/opt/glm/include/glm/detail/setup.hpp \
@@ -132,6 +134,38 @@ _BUILD_OBJ_/Collider.o: Sources/Collider.cpp Includes/Collider.hpp \
   /usr/local/opt/glm/include/glm/detail/type_half.inl \
   /usr/local/opt/glm/include/glm/integer.hpp \
   /usr/local/opt/glm/include/glm/detail/func_integer.inl \
+  /usr/local/opt/assimp/include/assimp/types.h \
+  /usr/local/opt/assimp/include/assimp/defs.h \
+  /usr/local/opt/assimp/include/assimp/config.h \
+  /usr/local/opt/assimp/include/assimp/vector3.h \
+  /usr/local/opt/assimp/include/assimp/vector2.h \
+  /usr/local/opt/assimp/include/assimp/./Compiler/pushpack1.h \
+  /usr/local/opt/assimp/include/assimp/./Compiler/poppack1.h \
+  /usr/local/opt/assimp/include/assimp/color4.h \
+  /usr/local/opt/assimp/include/assimp/matrix3x3.h \
+  /usr/local/opt/assimp/include/assimp/matrix4x4.h \
+  /usr/local/opt/assimp/include/assimp/quaternion.h \
+  /usr/local/opt/assimp/include/assimp/vector2.inl \
+  /usr/local/opt/assimp/include/assimp/vector3.inl \
+  /usr/local/opt/assimp/include/assimp/color4.inl \
+  /usr/local/opt/assimp/include/assimp/quaternion.inl \
+  /usr/local/opt/assimp/include/assimp/matrix3x3.inl \
+  /usr/local/opt/assimp/include/assimp/matrix4x4.inl \
+  /usr/local/opt/assimp/include/assimp/Importer.hpp \
+  /usr/local/opt/assimp/include/assimp/scene.h \
+  /usr/local/opt/assimp/include/assimp/texture.h \
+  /usr/local/opt/assimp/include/assimp/mesh.h \
+  /usr/local/opt/assimp/include/assimp/light.h \
+  /usr/local/opt/assimp/include/assimp/camera.h \
+  /usr/local/opt/assimp/include/assimp/material.h \
+  /usr/local/opt/assimp/include/assimp/material.inl \
+  /usr/local/opt/assimp/include/assimp/anim.h \
+  /usr/local/opt/assimp/include/assimp/metadata.h \
+  /usr/local/opt/assimp/include/assimp/postprocess.h \
+  /usr/local/opt/devil/include/IL/il.h \
+  /usr/local/opt/devil/include/IL/ilu.h \
+  /usr/local/opt/devil/include/IL/ilut.h Includes/Shader.hpp \
+  Includes/Collider.hpp Includes/Bound.hpp Includes/Transform.hpp \
   /usr/local/opt/glm/include/glm/gtc/matrix_transform.hpp \
   /usr/local/opt/glm/include/glm/gtc/../ext/matrix_projection.hpp \
   /usr/local/opt/glm/include/glm/./ext/../gtc/constants.hpp \
@@ -175,39 +209,5 @@ _BUILD_OBJ_/Collider.o: Sources/Collider.cpp Includes/Collider.hpp \
   /usr/local/opt/glm/include/glm/./ext/quaternion_exponential.inl \
   /usr/local/opt/glm/include/glm/gtx/../gtx/norm.hpp \
   /usr/local/opt/glm/include/glm/gtx/norm.inl \
-  /usr/local/opt/glm/include/glm/gtx/quaternion.inl \
-  Includes/GameBehaviour.hpp Includes/Object.hpp Includes/Loader.hpp \
-  Includes/Mesh.hpp /usr/local/opt/glew/include/GL/glew.h \
-  /usr/local/opt/assimp/include/assimp/types.h \
-  /usr/local/opt/assimp/include/assimp/defs.h \
-  /usr/local/opt/assimp/include/assimp/config.h \
-  /usr/local/opt/assimp/include/assimp/vector3.h \
-  /usr/local/opt/assimp/include/assimp/vector2.h \
-  /usr/local/opt/assimp/include/assimp/./Compiler/pushpack1.h \
-  /usr/local/opt/assimp/include/assimp/./Compiler/poppack1.h \
-  /usr/local/opt/assimp/include/assimp/color4.h \
-  /usr/local/opt/assimp/include/assimp/matrix3x3.h \
-  /usr/local/opt/assimp/include/assimp/matrix4x4.h \
-  /usr/local/opt/assimp/include/assimp/quaternion.h \
-  /usr/local/opt/assimp/include/assimp/vector2.inl \
-  /usr/local/opt/assimp/include/assimp/vector3.inl \
-  /usr/local/opt/assimp/include/assimp/color4.inl \
-  /usr/local/opt/assimp/include/assimp/quaternion.inl \
-  /usr/local/opt/assimp/include/assimp/matrix3x3.inl \
-  /usr/local/opt/assimp/include/assimp/matrix4x4.inl \
-  /usr/local/opt/assimp/include/assimp/Importer.hpp \
-  /usr/local/opt/assimp/include/assimp/scene.h \
-  /usr/local/opt/assimp/include/assimp/texture.h \
-  /usr/local/opt/assimp/include/assimp/mesh.h \
-  /usr/local/opt/assimp/include/assimp/light.h \
-  /usr/local/opt/assimp/include/assimp/camera.h \
-  /usr/local/opt/assimp/include/assimp/material.h \
-  /usr/local/opt/assimp/include/assimp/material.inl \
-  /usr/local/opt/assimp/include/assimp/anim.h \
-  /usr/local/opt/assimp/include/assimp/metadata.h \
-  /usr/local/opt/assimp/include/assimp/postprocess.h \
-  /usr/local/opt/devil/include/IL/il.h \
-  /usr/local/opt/devil/include/IL/ilu.h \
-  /usr/local/opt/devil/include/IL/ilut.h Includes/Shader.hpp \
-  Includes/ScriptableBehaviour.hpp Includes/Input.hpp \
+  /usr/local/opt/glm/include/glm/gtx/quaternion.inl Includes/Input.hpp \
   /usr/local/opt/glfw/include/GLFW/glfw3.h Includes/Window.hpp

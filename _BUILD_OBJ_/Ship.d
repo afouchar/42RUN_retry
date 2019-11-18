@@ -209,5 +209,6 @@ _BUILD_OBJ_/Ship.o: Scripts/Ship.cpp Scripts/Ship.hpp Includes/Object.hpp \
   /usr/local/opt/glm/include/glm/gtx/../gtx/norm.hpp \
   /usr/local/opt/glm/include/glm/gtx/norm.inl \
   /usr/local/opt/glm/include/glm/gtx/quaternion.inl \
-  Includes/GameBehaviour.hpp Includes/Input.hpp \
-  /usr/local/opt/glfw/include/GLFW/glfw3.h Includes/Window.hpp
+  Includes/ScriptableBehaviour.hpp Includes/GameBehaviour.hpp \
+  Includes/Input.hpp /usr/local/opt/glfw/include/GLFW/glfw3.h \
+  Includes/Window.hpp

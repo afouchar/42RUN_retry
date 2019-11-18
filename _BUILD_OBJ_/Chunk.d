@@ -1,6 +1,6 @@
 _BUILD_OBJ_/Chunk.o: Scripts/Chunk.cpp Scripts/Chunk.hpp \
-  Includes/Object.hpp Includes/Loader.hpp Includes/Mesh.hpp \
-  /usr/local/opt/glew/include/GL/glew.h \
+  Scripts/Obstacle.hpp Includes/Object.hpp Includes/Loader.hpp \
+  Includes/Mesh.hpp /usr/local/opt/glew/include/GL/glew.h \
   /usr/local/opt/glm/include/glm/glm.hpp \
   /usr/local/opt/glm/include/glm/detail/_fixes.hpp \
   /usr/local/opt/glm/include/glm/detail/setup.hpp \
@@ -209,6 +209,6 @@ _BUILD_OBJ_/Chunk.o: Scripts/Chunk.cpp Scripts/Chunk.hpp \
   /usr/local/opt/glm/include/glm/gtx/../gtx/norm.hpp \
   /usr/local/opt/glm/include/glm/gtx/norm.inl \
   /usr/local/opt/glm/include/glm/gtx/quaternion.inl \
-  Scripts/PathGenerator.hpp Includes/GameBehaviour.hpp \
-  Includes/Input.hpp /usr/local/opt/glfw/include/GLFW/glfw3.h \
-  Includes/Window.hpp
+  Includes/ScriptableBehaviour.hpp Scripts/PathGenerator.hpp \
+  Includes/GameBehaviour.hpp Includes/Input.hpp \
+  /usr/local/opt/glfw/include/GLFW/glfw3.h Includes/Window.hpp

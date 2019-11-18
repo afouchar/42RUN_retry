@@ -29,7 +29,8 @@ DEVIL			=	$(BREW_DPD_DIR)/devil/lib/libI*.dylib
 FRAMEWORKS		=	-framework OpenGL #-framework Cocoa
 CC_NEEDS		=	$(FRAMEWORKS) $(GLFW) $(GLEW) $(ASSIMP) $(DEVIL)
 
-SRC_FILE		=	Camera.cpp \
+SRC_FILE		=	ScriptableBehaviour.cpp \
+					Camera.cpp \
 					Collider.cpp \
 					Bound.cpp \
 					GameBehaviour.cpp \
@@ -47,6 +48,7 @@ SRC_FILE		=	Camera.cpp \
 
 SCRIPT_FILE		=	PathGenerator.cpp \
 					Chunk.cpp \
+					Obstacle.cpp \
 					Ship.cpp
 
 SRC_DIR			=	Sources

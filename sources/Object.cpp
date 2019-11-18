@@ -10,7 +10,7 @@ Object::~Object(){
     std::cerr << "Destroy OBJ [" << this->ID << "]" << std::endl;
     this->transform.ClearParenting();
     RenderPipeline::RemoveObject((*this), false);
-    GameBehaviour::RemoveObject((*this));
+    // GameBehaviour::RemoveObject((*this));
 }
 
 Object::Object(){
@@ -22,7 +22,7 @@ Object::Object(const Object & rhs, bool render, bool collide){
 	this->transform = Transform(rhs.transform, (*this));
 	this->meshes = rhs.meshes;
     this->collider = Collider(rhs.collider, this->transform, !collide);
-    GameBehaviour::AddObject((*this));
+    // GameBehaviour::AddObject((*this));
     if (render)
         RenderPipeline::AddObject((*this));
     else
@@ -62,4 +62,8 @@ string Object::GetTag(){
 
 void Object::SetTag(string newTag){
     this->transform.SetTag(newTag);
+}
+
+Collider    *Object::GetCollider(){
+    return &this->collider;
 }

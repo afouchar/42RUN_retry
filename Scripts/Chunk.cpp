@@ -85,10 +85,9 @@ void Chunk::Move(){
 
 
 void Chunk::Turn(){
+
     float angleRotation = this->_generator->speed * GameBehaviour::DeltaTime() * 2;
     Chunk::_totalRotation += angleRotation;
-
-    // std::cerr << "TOTAL ROTATION : " << Chunk::_totalRotation << " ___ Added angle : " << angleRotation << std::endl;
 
     if (Chunk::_totalRotation >= 90.0f){
 
@@ -97,8 +96,6 @@ void Chunk::Turn(){
         this->transform.position = Chunk::_endPosition;
         this->transform.LookAtTarget(Chunk::_endPosition + (Chunk::_leftAxis * 100.0f), Chunk::_upAxis);
         this->transform.UpdateMatrix();
-
-        // std::cerr << "TOTAL ROTATION DONE : " << Chunk::_totalRotation << " ___ Added angle : " << angleRotation << std::endl;        
 
         if (this->transform.child.size() > 0)
             (*this->transform.child.begin())->SetParentAsChild();
@@ -110,4 +107,34 @@ void Chunk::Turn(){
     else{
         this->transform.RotateAround(Chunk::_pivot, Chunk::_upAxis, angleRotation);
     }
+}
+
+void Chunk::GenerateObstacles(unsigned int min, unsigned int max){
+
+    int obstaclesCount = rand() % (max - min + 1) + min;
+
+    for (int i = 0; i < obstaclesCount; i++) {
+
+        Obstacle *obs = new Obstacle((*this->shader), "Models/Colliders/small_collider.obj", true, true);
+        obs->SetTag("Obstacle");
+        obs->transform.AddParent(this->transform, false);
+
+        float halfBoundSize = this->transform.gameObject->collider.bound.halfSize.z;
+        float zPos = -halfBoundSize + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX / (halfBoundSize - -halfBoundSize)));
+        float yPos = halfBoundSize - 1.0f;
+        obs->transform.position = vec3(0, yPos, zPos);
+        obs->transform.RotateAround(vec3_zero, vec3_forward, rand() % 360);
+        // obs->transform.Scale(vec3_one * 5.0f);
+        //random size ?
+
+        this->obstacles.push_back(obs);
+    }
+}
+
+void Chunk::ClearObstacles(){
+
+    for (list<Obstacle *>::iterator it = this->obstacles.begin(); it != this->obstacles.end(); it++){
+        delete (*it);
+        // this->chunks.erase(this->chunks.begin());
+    }   
 }

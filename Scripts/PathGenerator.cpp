@@ -22,7 +22,7 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     this->_chunksSwapped = 0;
     this->chunksBeforeSwap = 2;
 
-    this->_colliderCenter = new Object((*this->_shader), "Models/Colliders/small_collider.obj", true, true);
+    this->_colliderCenter = new Object((*this->_shader), "Models/Colliders/small_collider.obj", false, true);
     this->_colliderCenter->SetTag("Cursor");
 
     this->_pathForward = new Chunk((*this), (*this->_shader), "Models/tubecube/tubecube.obj", false, false);
@@ -36,11 +36,6 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     srand(time(0));
 
     for (int i = 0; i < this->_chunksAmount; i++){
-
-        // if (i == 2)
-        //     this->chunks.push_back(new Chunk((*this), (*this->_pathTurn)));
-        // else
-        //     this->chunks.push_back(new Chunk((*this), (*this->_pathForward)));
 
         if (i < 2)
             this->chunks.push_back(new Chunk((*this), (*this->_pathForward)));
@@ -64,6 +59,16 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     (*this->chunks.begin())->transform.UpdateMatrix();
 }
 
+void PathGenerator::Update(){
+
+    if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_UP)){
+        this->speed += 10.0f * GameBehaviour::DeltaTime();
+    }
+    if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_DOWN)){
+        this->speed -= 10.0f * GameBehaviour::DeltaTime();
+    }
+}
+
 void PathGenerator::SwapFirstToLast(){
 
     if (this->_chunksSwapped < this->chunksBeforeSwap){
@@ -71,6 +76,7 @@ void PathGenerator::SwapFirstToLast(){
         return;
     }
 
+    (*this->chunks.begin())->ClearObstacles();
     delete (*this->chunks.begin());
     this->chunks.erase(this->chunks.begin());
 
@@ -114,6 +120,9 @@ void PathGenerator::SetPositionFromParent(Chunk & chunk){
     }
     if (chunk.transform.GetTag() == "Turn"){
         chunk.transform.Rotate(vec3_forward, rand() % 360);
+    }
+    if (chunk.transform.GetTag() == "Forward" && chunk.transform.parent->GetTag() == "Forward"){
+        chunk.GenerateObstacles(1, 3);
     }
     chunk.transform.UpdateMatrix();
 }

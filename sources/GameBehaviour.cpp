@@ -1,7 +1,9 @@
 #include "GameBehaviour.hpp"
+#include "ScriptableBehaviour.hpp"
 
 //STATIC VARIABLES DEFINITIONS
-std::list<Object *> GameBehaviour::_sceneObjects;
+// std::list<Object *> GameBehaviour::_sceneObjects;
+std::list<ScriptableBehaviour *> GameBehaviour::_sceneObjects;
 std::list<Collider *> GameBehaviour::_sceneColliders;
 std::deque<deque<bool>> GameBehaviour::_collisionMap;
 float GameBehaviour::_deltaTime = 0.0f;
@@ -82,22 +84,33 @@ void GameBehaviour::UpdateCollisions(){
 
 void GameBehaviour::UpdateObjectScripts(){
 
-    for (std::list<Object *>::iterator it = GameBehaviour::_sceneObjects.begin();  it != GameBehaviour::_sceneObjects.end(); it++){
+    for (std::list<ScriptableBehaviour *>::iterator it = GameBehaviour::_sceneObjects.begin();  it != GameBehaviour::_sceneObjects.end(); it++){
         (*it)->Update();
     }
 }
 
-void GameBehaviour::AddObject(Object & object){
+void GameBehaviour::LateUpdateObjectScripts(){
+
+    for (std::list<ScriptableBehaviour *>::iterator it = GameBehaviour::_sceneObjects.begin();  it != GameBehaviour::_sceneObjects.end(); it++){
+        (*it)->LateUpdate();
+    }
+}
+
+void GameBehaviour::AddObject(ScriptableBehaviour & object){
 
     GameBehaviour::_sceneObjects.push_back(&object);
 }
 
-void GameBehaviour::RemoveObject(Object & object){
+void GameBehaviour::RemoveObject(ScriptableBehaviour & object){
 
-    std::list<Object *>::iterator it = std::find(GameBehaviour::_sceneObjects.begin(), GameBehaviour::_sceneObjects.end(), &object);
+    std::list<ScriptableBehaviour *>::iterator it = std::find(GameBehaviour::_sceneObjects.begin(), GameBehaviour::_sceneObjects.end(), &object);
     if (it == GameBehaviour::_sceneObjects.end())
         return;
-    GameBehaviour:: RemoveCollider(object.collider);
+
+    Collider *col = object.GetCollider();
+    if (col != nullptr){
+        GameBehaviour::RemoveCollider((*col));
+    }
     GameBehaviour::_sceneObjects.erase(it);
 }
 

@@ -176,7 +176,8 @@ _BUILD_OBJ_/RenderPipeline.o: Sources/RenderPipeline.cpp \
   /usr/local/opt/glm/include/glm/gtx/../gtx/norm.hpp \
   /usr/local/opt/glm/include/glm/gtx/norm.inl \
   /usr/local/opt/glm/include/glm/gtx/quaternion.inl Includes/Camera.hpp \
-  Includes/Object.hpp Includes/Loader.hpp Includes/Mesh.hpp \
+  Includes/ScriptableBehaviour.hpp Includes/Object.hpp \
+  Includes/Loader.hpp Includes/Mesh.hpp \
   /usr/local/opt/glew/include/GL/glew.h \
   /usr/local/opt/assimp/include/assimp/types.h \
   /usr/local/opt/assimp/include/assimp/defs.h \

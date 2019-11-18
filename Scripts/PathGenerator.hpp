@@ -1,6 +1,7 @@
 #ifndef PATHGENERATOR_HPP
 #define PATHGENERATOR_HPP
 
+#include "ScriptableBehaviour.hpp"
 #include "Chunk.hpp"
 #include "Object.hpp"
 
@@ -10,7 +11,7 @@
 using namespace std;
 using namespace glm;
 
-class PathGenerator {
+class PathGenerator : public ScriptableBehaviour{
 
 private:
     PathGenerator();
@@ -42,6 +43,13 @@ public:
     list<Chunk *>       chunks;
     float               speed;
     int                 chunksBeforeSwap;
+
+    //derived virtual methods
+    virtual void    OnColliderEnter(Collider & collider){};
+    virtual void    OnColliderStay(Collider & collider){};
+    virtual void    OnColliderExit(Collider & collider){};
+    virtual void    Update();
+    virtual void    LateUpdate(){};
 };
 
 #endif

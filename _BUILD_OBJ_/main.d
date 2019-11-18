@@ -178,9 +178,9 @@ _BUILD_OBJ_/main.o: Sources/main.cpp Includes/Window.hpp \
   /usr/local/opt/glm/include/glm/gtx/../gtx/norm.hpp \
   /usr/local/opt/glm/include/glm/gtx/norm.inl \
   /usr/local/opt/glm/include/glm/gtx/quaternion.inl Includes/Camera.hpp \
-  Includes/RenderPipeline.hpp Includes/Light.hpp Includes/Object.hpp \
-  Includes/Loader.hpp Includes/Mesh.hpp \
-  /usr/local/opt/assimp/include/assimp/types.h \
+  Includes/ScriptableBehaviour.hpp Includes/RenderPipeline.hpp \
+  Includes/Light.hpp Includes/Object.hpp Includes/Loader.hpp \
+  Includes/Mesh.hpp /usr/local/opt/assimp/include/assimp/types.h \
   /usr/local/opt/assimp/include/assimp/defs.h \
   /usr/local/opt/assimp/include/assimp/config.h \
   /usr/local/opt/assimp/include/assimp/vector3.h \
@@ -213,4 +213,4 @@ _BUILD_OBJ_/main.o: Sources/main.cpp Includes/Window.hpp \
   /usr/local/opt/devil/include/IL/ilut.h Includes/Collider.hpp \
   Includes/Bound.hpp Includes/Input.hpp Includes/Text.hpp \
   Includes/GameBehaviour.hpp Scripts/PathGenerator.hpp Scripts/Chunk.hpp \
-  Scripts/Ship.hpp
+  Scripts/Obstacle.hpp Scripts/Ship.hpp

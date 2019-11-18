@@ -7,6 +7,7 @@
 #include "Mesh.hpp"
 #include "Shader.hpp"
 #include "Collider.hpp"
+#include "ScriptableBehaviour.hpp"
 #include "Transform.hpp"
 
 
@@ -14,7 +15,7 @@ using namespace std;
 using namespace glm;
 
 
-class Object {
+class Object : public ScriptableBehaviour {
 
 private:
 
@@ -25,24 +26,26 @@ public:
     Object(const Object & rhs, bool render = true, bool collide = true);
     ~Object();
 
-    Shader          *shader;
-    Transform       transform;
-    Collider        collider;
-    vector<Mesh>    meshes;
-    unsigned int    ID;
+    Shader              *shader;
+    Transform           transform;
+    Collider            collider;
+    vector<Mesh>        meshes;
+    unsigned int        ID;
 
-    void            SetShader(Shader *shader);
-    mat4            GetModelMatrix();
-    void            ClearBuffers();
+    void                SetShader(Shader *shader);
+    mat4                GetModelMatrix();
+    void                ClearBuffers();
 
-    string          GetTag();
-    void            SetTag(string newTag);
+    string              GetTag();
+    void                SetTag(string newTag);
 
     //virtual methods
-    virtual void    OnColliderEnter(Collider & collider){};
-    virtual void    OnColliderStay(Collider & collider){};
-    virtual void    OnColliderExit(Collider & collider){};
-    virtual void    Update(){};
+    virtual void        OnColliderEnter(Collider & collider){};
+    virtual void        OnColliderStay(Collider & collider){};
+    virtual void        OnColliderExit(Collider & collider){};
+    virtual void        Update(){};
+    virtual void        LateUpdate(){};
+    virtual Collider    *GetCollider();
 };
 
 #endif

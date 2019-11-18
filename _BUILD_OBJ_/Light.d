@@ -175,7 +175,8 @@ _BUILD_OBJ_/Light.o: Sources/Light.cpp Includes/Light.hpp \
   /usr/local/opt/glm/include/glm/gtx/../gtx/norm.hpp \
   /usr/local/opt/glm/include/glm/gtx/norm.inl \
   /usr/local/opt/glm/include/glm/gtx/quaternion.inl \
-  Includes/RenderPipeline.hpp Includes/Camera.hpp Includes/Object.hpp \
+  Includes/RenderPipeline.hpp Includes/Camera.hpp \
+  Includes/ScriptableBehaviour.hpp Includes/Object.hpp \
   Includes/Loader.hpp Includes/Mesh.hpp \
   /usr/local/opt/glew/include/GL/glew.h \
   /usr/local/opt/assimp/include/assimp/types.h \

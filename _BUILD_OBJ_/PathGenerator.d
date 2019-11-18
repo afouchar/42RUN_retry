@@ -1,5 +1,6 @@
 _BUILD_OBJ_/PathGenerator.o: Scripts/PathGenerator.cpp \
-  Scripts/PathGenerator.hpp Scripts/Chunk.hpp Includes/Object.hpp \
+  Scripts/PathGenerator.hpp Includes/ScriptableBehaviour.hpp \
+  Scripts/Chunk.hpp Scripts/Obstacle.hpp Includes/Object.hpp \
   Includes/Loader.hpp Includes/Mesh.hpp \
   /usr/local/opt/glew/include/GL/glew.h \
   /usr/local/opt/glm/include/glm/glm.hpp \
