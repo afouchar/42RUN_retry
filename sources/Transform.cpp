@@ -227,6 +227,10 @@ void Transform::Scale(vec3 axis){
     this->scale += axis;
 }
 
+void Transform::SetScale(vec3 axis){
+    this->scale = axis;
+}
+
 void Transform::RotateAround(vec3 pivot, vec3 axis, float angleDegrees){
 
     axis = normalize(axis);
@@ -281,7 +285,8 @@ void Transform::UpdateMatrixFromRoot(){
     this->_matRotation = toMat4(this->_quatRotation);
     this->_matTranslation = glm::translate(mat4(1.0f), this->position);
 
-    this->modelMatrix = parentModelMatrix * (this->_matScale * this->_matTranslation * this->_matRotation);
+    // this->modelMatrix = parentModelMatrix * (this->_matScale * this->_matTranslation * this->_matRotation);
+    this->modelMatrix = parentModelMatrix * (this->_matTranslation * this->_matRotation * this->_matScale);
 
     if (this->child.size() > 0){
         for (list<Transform *>::iterator it = this->child.begin(); it != this->child.end(); it++) {
@@ -339,7 +344,8 @@ void Transform::LocalToWorld(){
     this->_matRotation = toMat4(this->_quatRotation);
     this->_matTranslation = glm::translate(mat4(1.0f), this->position);
 
-    this->modelMatrix = mat4(1.0f) * (this->_matScale * this->_matTranslation * this->_matRotation);
+    // this->modelMatrix = mat4(1.0f) * (this->_matScale * this->_matTranslation * this->_matRotation);
+    this->modelMatrix = mat4(1.0f) * (this->_matTranslation * this->_matRotation * this->_matScale);
 }
 
 void Transform::SetCoordinatesToLocal(Transform & newParent){
@@ -452,4 +458,12 @@ Transform *Transform::GetRoot(){
 
 quat Transform::GetQuaternion(){
     return this->_quatRotation;
+}
+
+float Transform::RandomBetween(float min, float max){
+    return min + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX / (max - min)));
+}
+
+int Transform::RandomBetween(int min, int max){
+    return rand() % (max - min + 1) + min;
 }

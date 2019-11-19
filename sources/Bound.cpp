@@ -1,4 +1,5 @@
 #include "Bound.hpp"
+#include <iostream>
 
 Bound::~Bound(){}
 Bound::Bound(){}
@@ -52,6 +53,7 @@ Bound::Bound(const Bound & rhs){
     this->forward = rhs.forward;
     this->back = rhs.back;
 
+    this->scale = rhs.scale;
     this->size = rhs.size;
     this->halfSize = rhs.halfSize;
     this->min = rhs.min;
@@ -79,19 +81,43 @@ void Bound::SetBound(vec3 min, vec3 max){
     this->min = min;
     this->max = max;
 
+    UpdateBoundValues();
+}
+void Bound::UpdateBoundValues(Transform & transform) {
+
+    this->transform = &transform;
+    UpdateBoundValues();
+}
+
+void Bound::UpdateBoundValues() {
+
+    if (this->transform != nullptr)
+        this->scale = this->transform->scale;
+    else
+        this->scale = vec3_one;
+
     this->size.x = glm::distance(this->max.x, this->min.x);
     this->size.y = glm::distance(this->max.y, this->min.y);
     this->size.z = glm::distance(this->max.z, this->min.z);
 
     this->halfSize = this->size / 2.0f;
 
-    this->backLeftDown = min;
+    this->backLeftDown = this->min;
     this->backLeftUp = this->backLeftDown + (this->size * vec3_up);
     this->backRightDown = this->backLeftDown + (this->size * vec3_right);
     this->backRightUp = this->backLeftUp + (this->size * vec3_right);
 
-    this->frontRightUp = max;
+    this->frontRightUp = this->max;
     this->frontRightDown = this->frontRightUp + (this->size * vec3_down);
     this->frontLeftUp = this->frontRightUp + (this->size * vec3_left);
     this->frontLeftDown = this->frontRightDown + (this->size * vec3_left);
+
+    this->frontLeftDown *= this->scale;
+    this->frontLeftUp *= this->scale;
+    this->frontRightUp *= this->scale;
+    this->frontRightDown *= this->scale;
+    this->backLeftDown *= this->scale;
+    this->backLeftUp *= this->scale;
+    this->backRightUp *= this->scale;
+    this->backRightDown *= this->scale;
 }

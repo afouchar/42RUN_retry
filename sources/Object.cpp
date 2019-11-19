@@ -7,7 +7,7 @@
 
 Object::~Object(){
 
-    std::cerr << "Destroy OBJ [" << this->ID << "]" << std::endl;
+    // std::cerr << "Destroy OBJ [" << this->ID << "]" << std::endl;
     this->transform.ClearParenting();
     RenderPipeline::RemoveObject((*this), false);
     // GameBehaviour::RemoveObject((*this));
@@ -37,7 +37,7 @@ Object::Object(Shader & shader, const char *objFile, bool render, bool collide){
 	this->meshes = Loader::LoadModel(objFile, minBoundPosition, maxBoundPosition);
     this->transform = Transform(vec3_zero, (*this));
     this->collider = Collider(this->transform, minBoundPosition, maxBoundPosition, !collide);
-    GameBehaviour::AddObject((*this));
+    // GameBehaviour::AddObject((*this));
     if (render)
         RenderPipeline::AddObject((*this));
     else

@@ -19,6 +19,9 @@ Chunk::Chunk(){}
 Chunk::Chunk(PathGenerator & generator, const Object& rhs, bool render, bool collide) : Object(rhs, render, collide){
     this->_generator = &generator;
     this->isSelfTurning = false;
+    this->_obstacleTypeA = new Obstacle((*this->shader), "Models/Colliders/small_collider.obj", false, false);
+    this->_obstacleTypeA->SetTag("Obstacle");
+
 }
 
 Chunk::Chunk(PathGenerator & generator, Shader & shader, const char *objFile, bool render, bool collide) : Object(shader, objFile, render, collide){
@@ -67,7 +70,6 @@ void Chunk::Update(){
             Move();
         }
     }
-
 }
 
 void Chunk::SetPivot(){
@@ -111,22 +113,25 @@ void Chunk::Turn(){
 
 void Chunk::GenerateObstacles(unsigned int min, unsigned int max){
 
-    int obstaclesCount = rand() % (max - min + 1) + min;
+    int obstaclesCount = Transform::RandomBetween((int)min, (int)max);
 
     for (int i = 0; i < obstaclesCount; i++) {
-
-        Obstacle *obs = new Obstacle((*this->shader), "Models/Colliders/small_collider.obj", true, true);
-        obs->SetTag("Obstacle");
+        
+        //select random obstacle type
+        Obstacle *obs = new Obstacle((*this->_obstacleTypeA));
         obs->transform.AddParent(this->transform, false);
 
         float halfBoundSize = this->transform.gameObject->collider.bound.halfSize.z;
-        float zPos = -halfBoundSize + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX / (halfBoundSize - -halfBoundSize)));
+        float zPos = Transform::RandomBetween(-halfBoundSize, halfBoundSize);
         float yPos = halfBoundSize - 1.0f;
         obs->transform.position = vec3(0, yPos, zPos);
         obs->transform.RotateAround(vec3_zero, vec3_forward, rand() % 360);
-        // obs->transform.Scale(vec3_one * 5.0f);
-        //random size ?
-
+        vec3 randSize = vec3_one;
+        randSize.x = Transform::RandomBetween(5.0f, 15.0f);
+        randSize.y = Transform::RandomBetween(5.0f, 11.0f);
+        randSize.z = Transform::RandomBetween(5.0f, 8.0f);
+        obs->transform.SetScale(randSize);
+        obs->collider.bound.UpdateBoundValues(obs->transform);
         this->obstacles.push_back(obs);
     }
 }
@@ -135,6 +140,6 @@ void Chunk::ClearObstacles(){
 
     for (list<Obstacle *>::iterator it = this->obstacles.begin(); it != this->obstacles.end(); it++){
         delete (*it);
-        // this->chunks.erase(this->chunks.begin());
-    }   
+    }
+    this->obstacles.clear();
 }

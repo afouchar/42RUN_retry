@@ -3,9 +3,9 @@ CC				=	g++ -std=c++11
 CFLAGS			=	-MMD#-Wall -Wextra -Werror -MMD
 
 #SCHOOL
-#BREW_DPD_DIR	=	/Users/afouchar/.brew/opt
+BREW_DPD_DIR	=	/Users/afouchar/.brew/opt
 #HOME
-BREW_DPD_DIR	=	/usr/local/opt
+#BREW_DPD_DIR	=	/usr/local/opt
 
 GLFW_DIR		=	$(BREW_DPD_DIR)/glfw
 GLEW_DIR		=	$(BREW_DPD_DIR)/glew

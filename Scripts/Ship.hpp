@@ -3,6 +3,9 @@
 
 #include "Object.hpp"
 
+#define MAX_HEALTH 30
+#define MAX_AMMO 100
+
 class Ship : public Object{
 
 private:
@@ -14,6 +17,9 @@ public:
     Ship();
     Ship(const Object& rhs, bool render = true, bool collide = true);
     Ship(Shader & shader, const char *objFile, bool render = true, bool collide = true);
+
+    int         healthPoint;
+    int         ammunitions;
 
     //derived virtual methods
     virtual void    OnColliderEnter(Collider & collider);

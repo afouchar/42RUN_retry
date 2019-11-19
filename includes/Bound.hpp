@@ -26,6 +26,7 @@ struct Bound {
     vec3            forward;
     vec3            back;
 
+    vec3            scale;
     vec3            size;
     vec3            halfSize;
     vec3            min;
@@ -41,6 +42,8 @@ struct Bound {
     Bound(const Bound & rhs);
 
     void            SetBound(vec3 min, vec3 max);
+    void            UpdateBoundValues(Transform & transform);
+    void            UpdateBoundValues();
 };
 
 #endif

@@ -18,6 +18,8 @@ private:
     static float        _totalRotation;
     static bool         _allowSwap;
 
+    Obstacle            *_obstacleTypeA;
+
     void                SetPivot();
 
 public:

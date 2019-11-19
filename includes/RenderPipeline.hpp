@@ -19,10 +19,10 @@ class RenderPipeline {
 
 private:
 
-    static list<Object *>   _gameObjects;
-    static Camera           *_mainCamera;
-    static Light            *_mainLight;
-    static unsigned int     _IDCount;
+    static list<Object *>       _gameObjects;
+    static Camera               *_mainCamera;
+    static Light                *_mainLight;
+    static unsigned int         _IDCount;
 
 
 public:

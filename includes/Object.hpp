@@ -19,7 +19,6 @@ class Object : public ScriptableBehaviour {
 
 private:
 
-
 public:
     Object();
     Object(Shader & shader, const char *objFile, bool render = true, bool collide = true);

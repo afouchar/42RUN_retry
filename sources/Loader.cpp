@@ -28,6 +28,7 @@ vector<Mesh> Loader::LoadModel(string path, vec3 & minBoundPosition, vec3 & maxB
 		minBoundPosition = MinVec3(meshesNode[i].minVertexPosition, minBoundPosition);
 		maxBoundPosition = MaxVec3(meshesNode[i].maxVertexPosition, maxBoundPosition);
 	}
+
 	return meshesNode;
 }
 

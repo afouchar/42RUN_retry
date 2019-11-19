@@ -30,7 +30,6 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     this->_pathTurn = new Chunk((*this), (*this->_shader), "Models/tubecube/tubecube_turn.obj", false, false);
     this->_pathTurn->SetTag("Turn");
 
-
     this->_chunkLength = this->_pathForward->collider.GetSize().z;
 
     srand(time(0));
@@ -42,7 +41,7 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
         else
             this->chunks.push_back(RandomChunkFromLast());
     }
-    
+
     //parenting
     for (list<Chunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); it++){
         if (it == this->chunks.begin())

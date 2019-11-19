@@ -76,6 +76,7 @@ public:
     void                Translate(const vec3 &axis);
     void                Rotate(vec3 axis, float angleDegrees);
     void                Scale(vec3 axis);
+    void                SetScale(vec3 axis);
     void                RotateAround(vec3 pivot, vec3 axis, float angleDegrees);
     static vec3         RotatePointAround(vec3 pivot, vec3 point, vec3 axis, float angleDegrees);
     void                SetRotation(quat newRotation);
@@ -103,6 +104,9 @@ public:
     void                SetTag(string newTag);
     Transform           *GetRoot();
     quat                GetQuaternion();
+
+    static float        RandomBetween(float min, float max);
+    static int          RandomBetween(int min, int max);
 
     bool                operator == (const Transform & rhs) const {
         return &rhs == &(*this);

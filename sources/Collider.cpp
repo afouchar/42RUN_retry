@@ -12,16 +12,24 @@ Collider::~Collider(){
 
 Collider::Collider(const Collider & rhs, bool isTrigger){
     this->position = rhs.position;
-    this->bound = Bound(rhs.bound);
     this->transform = rhs.transform;
+
+    this->bound = Bound(rhs.bound);
+    this->bound.transform = this->transform;
+    this->bound.UpdateBoundValues();
+
     this->isTrigger = isTrigger;
     GameBehaviour::AddCollider((*this));
 }
 
 Collider::Collider(const Collider & rhs, Transform & transform, bool isTrigger){
     this->position = rhs.position;
-    this->bound = Bound(rhs.bound);    
     this->transform = &transform;
+
+    this->bound = Bound(rhs.bound);    
+    this->bound.transform = this->transform;
+    this->bound.UpdateBoundValues();
+    
     this->isTrigger = isTrigger;
     GameBehaviour::AddCollider((*this));
 }
@@ -39,7 +47,7 @@ Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues, bool i
     this->position = vec3_zero;
     this->transform = &transform;
     this->isTrigger = isTrigger;
-    this->bound = Bound(minValues, maxValues, (*this->transform));
+    this->bound = Bound(minValues, maxValues, transform);
     GameBehaviour::AddCollider((*this));
 }
 
@@ -48,7 +56,7 @@ Collider::Collider(Transform & transform, vec3 minValues, vec3 maxValues, vec3 o
     this->position = offset;
     this->transform = &transform;
     this->isTrigger = isTrigger;
-    this->bound = Bound(minValues, maxValues, (*this->transform));
+    this->bound = Bound(minValues, maxValues, transform);
     GameBehaviour::AddCollider((*this));
 }
 
@@ -59,7 +67,7 @@ bool Collider::CheckCollision(Collider & collider){
 
     vec3 bound1Pos = this->GetOffsetWorldPosition();
     vec3 bound2Pos = collider.GetOffsetWorldPosition();
-    float boundsMagnitude = glm::abs(glm::length(bound1.size)) + glm::abs(glm::length(bound2.size));
+    float boundsMagnitude = glm::abs(glm::length(bound1.size * bound1.scale)) + glm::abs(glm::length(bound2.size * bound2.scale));
 
     if (glm::distance(bound2Pos, bound1Pos) > boundsMagnitude)
         return false;
@@ -70,12 +78,12 @@ bool Collider::CheckCollision(Collider & collider){
 
 bool Collider::GetSeparatingPlane(const vec3 & RPos, const vec3 plane, const Bound & bound1, const Bound &bound2){
 
-    return glm::abs(glm::dot(RPos, plane)) > (glm::abs(glm::dot((bound1.right * bound1.halfSize.x), plane))
-                                            + glm::abs(glm::dot((bound1.up * bound1.halfSize.y), plane))
-                                            + glm::abs(glm::dot((bound1.back * bound1.halfSize.z), plane))
-                                            + glm::abs(glm::dot((bound2.right * bound2.halfSize.x), plane))
-                                            + glm::abs(glm::dot((bound2.up * bound2.halfSize.y), plane))
-                                            + glm::abs(glm::dot((bound2.back * bound2.halfSize.z), plane)));
+    return glm::abs(glm::dot(RPos, plane)) > (glm::abs(glm::dot((bound1.right * (bound1.halfSize.x * bound1.scale.x)), plane))
+                                            + glm::abs(glm::dot((bound1.up * (bound1.halfSize.y * bound1.scale.y)), plane))
+                                            + glm::abs(glm::dot((bound1.back * (bound1.halfSize.z * bound1.scale.z)), plane))
+                                            + glm::abs(glm::dot((bound2.right * (bound2.halfSize.x * bound2.scale.x)), plane))
+                                            + glm::abs(glm::dot((bound2.up * (bound2.halfSize.y * bound2.scale.y)), plane))
+                                            + glm::abs(glm::dot((bound2.back * (bound2.halfSize.z * bound2.scale.z)), plane)));
 }
 
 bool Collider::GetCollision(const Bound & bound1, const Bound & bound2, const vec3 & RPos){
@@ -134,11 +142,16 @@ vec3 Collider::GetSize(){
 
 Bound Collider::BoundToWorld(Bound & bound){
     
-    if (bound.transform == nullptr)
+    if (bound.transform == nullptr){
+        // std::cerr << "BOUND TRANSFORM NULL" << std::endl;
         return bound;
+    }
+        // std::cerr << "BOUND SCALE : " << bound.scale.x << " | " << bound.scale.y << " | " << bound.scale.z << std::endl;
 
     Bound tempBound = Bound(bound);
     Collider *colPtr = &bound.transform->gameObject->collider;
+
+    tempBound.UpdateBoundValues();
 
     // vec3 worldPosition = colPtr->GetOffsetWorldPosition();
 
