@@ -15,6 +15,7 @@ Camera::Camera(float FOVdegrees, float aspectRatio, float nearPlane, float farPl
     this->_farPlane = farPlane;
     this->_projection = perspective(radians(this->_FOV), this->_aspectRatio, this->_nearPlane, this->_farPlane);
     this->_view = this->transform.LookAt(vec3_zero, vec3_up);
+    this->target = nullptr;
     RenderPipeline::AddCamera((*this));
 }
 

@@ -10,7 +10,7 @@ Object::~Object(){
     // std::cerr << "Destroy OBJ [" << this->ID << "]" << std::endl;
     this->transform.ClearParenting();
     RenderPipeline::RemoveObject((*this), false);
-    // GameBehaviour::RemoveObject((*this));
+    // GameBehaviour::RemoveObject((*this));    
 }
 
 Object::Object(){

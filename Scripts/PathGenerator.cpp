@@ -21,6 +21,7 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     this->_shader = &shader;
     this->_chunksSwapped = 0;
     this->chunksBeforeSwap = 2;
+    this->_lastTurnAngle = 0.0f;
 
     this->_colliderCenter = new Object((*this->_shader), "Models/Colliders/small_collider.obj", false, true);
     this->_colliderCenter->SetTag("Cursor");
@@ -30,14 +31,24 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
     this->_pathTurn = new Chunk((*this), (*this->_shader), "Models/tubecube/tubecube_turn.obj", false, false);
     this->_pathTurn->SetTag("Turn");
 
+    this->_obstacleType = new Obstacle((*this->_shader), "Models/Colliders/crate_obstacle.obj", false, false);
+    this->_obstacleType->SetTag("Obstacle");
+    this->_healType = new Obstacle((*this->_shader), "Models/Colliders/crate_heal.obj", false, false);
+    this->_healType->SetTag("Heal");
+    this->_ammoType = new Obstacle((*this->_shader), "Models/Colliders/crate_ammo.obj", false, false);
+    this->_ammoType->SetTag("Ammo");
+
     this->_chunkLength = this->_pathForward->collider.GetSize().z;
 
     srand(time(0));
 
     for (int i = 0; i < this->_chunksAmount; i++){
 
-        if (i < 2)
-            this->chunks.push_back(new Chunk((*this), (*this->_pathForward)));
+        if (i < 2){
+            Chunk *pf = new Chunk((*this), (*this->_pathForward));
+            pf->SetObstacleType((*this->_obstacleType), (*this->_healType), (*this->_ammoType));
+            this->chunks.push_back(pf);
+        }
         else
             this->chunks.push_back(RandomChunkFromLast());
     }
@@ -79,14 +90,16 @@ void PathGenerator::SwapFirstToLast(){
     delete (*this->chunks.begin());
     this->chunks.erase(this->chunks.begin());
 
-    this->chunks.push_back(RandomChunkFromLast());
+    // for (int i = this->chunks.size(); i <= this->_chunksAmount; i++){
+        this->chunks.push_back(RandomChunkFromLast());
 
-    list<Chunk *>::iterator firstChunk = this->chunks.begin();
-    list<Chunk *>::iterator endChunk = next(this->chunks.end(), -1);
-    list<Chunk *>::iterator beforeEndChunk = next(this->chunks.end(), -2);
+        list<Chunk *>::iterator firstChunk = this->chunks.begin();
+        list<Chunk *>::iterator endChunk = next(this->chunks.end(), -1);
+        list<Chunk *>::iterator beforeEndChunk = next(this->chunks.end(), -2);
 
-    (*endChunk)->transform.AddParent((*beforeEndChunk)->transform, true);
-    SetPositionFromParent((**endChunk));
+        (*endChunk)->transform.AddParent((*beforeEndChunk)->transform, true);
+        SetPositionFromParent((**endChunk));
+    // }
 
     // int i = 0;
     // for (list<Chunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); it++){
@@ -118,7 +131,8 @@ void PathGenerator::SetPositionFromParent(Chunk & chunk){
         chunk.transform.RotateAround(vec3_zero, vec3_up, -90.0f);
     }
     if (chunk.transform.GetTag() == "Turn"){
-        chunk.transform.Rotate(vec3_forward, rand() % 360);
+        this->_lastTurnAngle = GetAngleOutOfRange(this->_lastTurnAngle, 75.0f);
+        chunk.transform.Rotate(vec3_forward, this->_lastTurnAngle);
     }
     if (chunk.transform.GetTag() == "Forward" && chunk.transform.parent->GetTag() == "Forward"){
         chunk.GenerateObstacles(1, 3);
@@ -134,8 +148,28 @@ Chunk *PathGenerator::RandomChunkFromLast(){
 
 Chunk *PathGenerator::RandomChunk(Chunk & previousChunk){
 
-    if (previousChunk.GetTag() == "Forward" && rand() % 100 < 15)
-        return new Chunk((*this), (*this->_pathTurn));
-    else
-        return new Chunk((*this), (*this->_pathForward));
+    if (previousChunk.GetTag() == "Forward" && rand() % 100 < 15){
+        Chunk *pt = new Chunk((*this), (*this->_pathTurn));
+        pt->SetObstacleType((*this->_obstacleType), (*this->_healType), (*this->_ammoType));
+        return pt;
+    }
+    else {
+        Chunk *pf = new Chunk((*this), (*this->_pathForward));
+        pf->SetObstacleType((*this->_obstacleType), (*this->_healType), (*this->_ammoType));
+        return pf;
+    }
+}
+
+float PathGenerator::GetAngleOutOfRange(float baseAngle, float range){
+
+    float angle = rand() % 360;
+    float maxAngle = (int)(baseAngle + range) % 360;
+    float minAngle = (int)(baseAngle - range);
+
+    minAngle = minAngle < 0 ? (360.0f + minAngle) : minAngle;
+
+    if (angle < maxAngle && angle > minAngle)
+        angle = (int)(baseAngle + range) % 360;
+
+    return angle;
 }

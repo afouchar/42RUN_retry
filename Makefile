@@ -49,6 +49,7 @@ SRC_FILE		=	ScriptableBehaviour.cpp \
 SCRIPT_FILE		=	PathGenerator.cpp \
 					Chunk.cpp \
 					Obstacle.cpp \
+					Bullet.cpp \
 					Ship.cpp
 
 SRC_DIR			=	Sources

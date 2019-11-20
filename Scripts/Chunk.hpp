@@ -18,7 +18,9 @@ private:
     static float        _totalRotation;
     static bool         _allowSwap;
 
-    Obstacle            *_obstacleTypeA;
+    Obstacle            *_obstacleType;
+    Obstacle            *_ammoType;
+    Obstacle            *_healType;
 
     void                SetPivot();
 
@@ -37,7 +39,10 @@ public:
     void                Move();
     void                Turn();
     void                GenerateObstacles(unsigned int min, unsigned int max);
+    Obstacle            *RandomObstacle(unsigned int healChance, unsigned int ammoChance);
     void                ClearObstacles();
+    void                SetObstacleType(Obstacle & obstacle, Obstacle & heal, Obstacle & ammo);
+
 
     //derived virtual methods
     virtual void        OnColliderEnter(Collider & collider);

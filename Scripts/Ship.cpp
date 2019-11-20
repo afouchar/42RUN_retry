@@ -11,14 +11,16 @@ Ship::Ship(const Object& rhs, bool render, bool collide) : Object(rhs, render, c
     this->_speed = 50.0f;
     this->healthPoint = MAX_HEALTH;
     this->ammunitions = MAX_AMMO;
-    // this->collider.position = this->transform.Up() * 20.0f;
+    this->_bullet = new Bullet((*this->shader), "Models/Colliders/rocket.obj", false, false);
+    this->_bullet->transform.SetTag("Bullet");
 }
 
 Ship::Ship(Shader & shader, const char *objFile, bool render, bool collide) : Object(shader, objFile, render, collide){
     this->_speed = 50.0f;
     this->healthPoint = MAX_HEALTH;
     this->ammunitions = MAX_AMMO;
-    // this->collider.position = this->transform.Up() * 20.0f;
+    this->_bullet = new Bullet((*this->shader), "Models/Colliders/rocket.obj", false, false);
+    this->_bullet->transform.SetTag("Bullet");
 }
 
 void Ship::OnColliderEnter(Collider & collider){
@@ -31,6 +33,16 @@ void Ship::OnColliderEnter(Collider & collider){
         }
         else
             std::cerr << "YOU ARE DEAD (" << this->healthPoint << "/" << MAX_HEALTH << ")" << std::endl;
+    }
+    else if (collider.transform->GetTag() == "Heal"){
+        this->healthPoint += 10;
+        this->healthPoint = this->healthPoint > MAX_HEALTH ? MAX_HEALTH : this->healthPoint;
+            std::cerr << "HEAL ! (" << this->healthPoint << "/" << MAX_HEALTH << ")" << std::endl;
+    }
+    else if (collider.transform->GetTag() == "Ammo"){
+        this->ammunitions += 20;
+        this->ammunitions = this->ammunitions > MAX_AMMO ? MAX_AMMO : this->ammunitions;
+            std::cerr << "RELOAD ! (" << this->ammunitions << "/" << MAX_AMMO << ")" << std::endl;
     }
 }
 
@@ -50,6 +62,9 @@ void Ship::Update(){
         if (this->ammunitions > 0){
             this->ammunitions--;
             std::cerr << "PIOU ! (" << this->ammunitions << "/" << MAX_AMMO << ")" << std::endl;
+            Bullet *shoot = new Bullet((*this->_bullet));
+            shoot->transform.position = (this->transform.position + (vec3_forward * 2.0f));
+            shoot->Launch();
         }
         else
             std::cerr << "YOU NEED TO RELOAD ! (" << this->ammunitions << "/" << MAX_AMMO << ")" << std::endl;

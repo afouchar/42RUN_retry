@@ -4,6 +4,7 @@
 #include "ScriptableBehaviour.hpp"
 #include "Chunk.hpp"
 #include "Object.hpp"
+#include "Obstacle.hpp"
 
 #include <time.h>
 
@@ -19,18 +20,22 @@ private:
     unsigned int        _chunksAmount;
     float               _chunkLength;
     Shader              *_shader;
-    Chunk               *_pathForward;
-    Chunk               *_pathTurn;
     Object              *_colliderCenter;
     int                 _chunksSwapped;
+    float               _lastTurnAngle;
 
-    //temp variables
-    // float               pathAngle;
-    // bool                firstTimeIn;
+    Chunk               *_pathForward;
+    Chunk               *_pathTurn;
+
+    Obstacle            *_obstacleType;
+    Obstacle            *_ammoType;
+    Obstacle            *_healType;
 
     void                SetPositionFromParent(Chunk & chunk);
-    Chunk              *RandomChunkFromLast();
-    Chunk              *RandomChunk(Chunk & previousChunk);
+    Chunk               *RandomChunkFromLast();
+    Chunk               *RandomChunk(Chunk & previousChunk);
+    float               GetAngleOutOfRange(float baseAngle, float range);
+    void                ClearChildrenOf(Chunk & chunk, int fromChildIndex);
 
 public:
     PathGenerator(Shader & shader, unsigned int chunksAmount, float speed);

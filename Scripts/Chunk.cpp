@@ -19,9 +19,6 @@ Chunk::Chunk(){}
 Chunk::Chunk(PathGenerator & generator, const Object& rhs, bool render, bool collide) : Object(rhs, render, collide){
     this->_generator = &generator;
     this->isSelfTurning = false;
-    this->_obstacleTypeA = new Obstacle((*this->shader), "Models/Colliders/small_collider.obj", false, false);
-    this->_obstacleTypeA->SetTag("Obstacle");
-
 }
 
 Chunk::Chunk(PathGenerator & generator, Shader & shader, const char *objFile, bool render, bool collide) : Object(shader, objFile, render, collide){
@@ -29,6 +26,17 @@ Chunk::Chunk(PathGenerator & generator, Shader & shader, const char *objFile, bo
     this->isSelfTurning = false;
     this->cleanPosition = vec3_zero;
 }
+
+void Chunk::SetObstacleType(Obstacle & obstacle, Obstacle & heal, Obstacle & ammo){
+
+    this->_obstacleType = &obstacle;
+    // this->_obstacleType->SetTag("Obstacle");
+    this->_healType = &heal;
+    // this->_healType->SetTag("Heal");
+    this->_ammoType = &ammo;
+    // this->_ammoType->SetTag("Ammo");
+}
+
 
 void Chunk::OnColliderEnter(Collider & collider){
 
@@ -49,22 +57,20 @@ void Chunk::OnColliderStay(Collider & collider){
 
 void Chunk::OnColliderExit(Collider & collider){
 
-    if (collider.transform->GetTag() == "Cursor"){
+    if (collider.transform->GetTag() == "Cursor")
         Chunk::_allowSwap = true;
-    }
 }
 
 void Chunk::Update(){
 
-    if (Chunk::isMoving && Chunk::_allowSwap){
+    // if (Chunk::isMoving && Chunk::_allowSwap){
+    if (Chunk::_allowSwap){
         this->_generator->SwapFirstToLast();
         Chunk::_allowSwap = false;
     }
-
     if (this->isSelfTurning && Chunk::isTurning){
         Turn();
     }
-
     if ((*this->transform.GetRoot()) == this->transform){
         if (Chunk::isMoving){
             Move();
@@ -117,24 +123,44 @@ void Chunk::GenerateObstacles(unsigned int min, unsigned int max){
 
     for (int i = 0; i < obstaclesCount; i++) {
         
-        //select random obstacle type
-        Obstacle *obs = new Obstacle((*this->_obstacleTypeA));
+        Obstacle *obs = RandomObstacle(15, 15);
         obs->transform.AddParent(this->transform, false);
 
         float halfBoundSize = this->transform.gameObject->collider.bound.halfSize.z;
         float zPos = Transform::RandomBetween(-halfBoundSize, halfBoundSize);
         float yPos = halfBoundSize - 1.0f;
-        obs->transform.position = vec3(0, yPos, zPos);
-        obs->transform.RotateAround(vec3_zero, vec3_forward, rand() % 360);
-        vec3 randSize = vec3_one;
-        randSize.x = Transform::RandomBetween(5.0f, 15.0f);
-        randSize.y = Transform::RandomBetween(5.0f, 11.0f);
-        randSize.z = Transform::RandomBetween(5.0f, 8.0f);
-        obs->transform.SetScale(randSize);
-        obs->collider.bound.UpdateBoundValues(obs->transform);
+        if (obs->GetTag() == "Obstacle"){
+            obs->transform.position = vec3(0, yPos, zPos);
+            obs->transform.RotateAround(vec3_zero, vec3_forward, rand() % 360);
+            vec3 randSize = vec3_one;
+            randSize.x = 18.0f;
+            randSize.y = Transform::RandomBetween(5.0f, 11.0f);
+            randSize.z = Transform::RandomBetween(5.0f, 8.0f);
+            obs->transform.SetScale(randSize);
+            obs->collider.bound.UpdateBoundValues(obs->transform);
+        }
+        else{
+            obs->transform.position = vec3(0, yPos - 1.0f, zPos);
+            obs->transform.RotateAround(vec3_zero, vec3_forward, rand() % 360);
+            obs->transform.SetScale(vec3_one * 2.0f);
+            obs->collider.bound.UpdateBoundValues(obs->transform);
+        }
         this->obstacles.push_back(obs);
     }
 }
+
+Obstacle *Chunk::RandomObstacle(unsigned int healChance, unsigned int ammoChance){
+
+    int val = rand() % 100;
+
+    if (val <= healChance)
+        return new Obstacle((*this->_healType));
+    else if (val <= (healChance + ammoChance))
+        return new Obstacle((*this->_ammoType));
+
+    return new Obstacle((*this->_obstacleType));
+}
+
 
 void Chunk::ClearObstacles(){
 

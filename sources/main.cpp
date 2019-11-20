@@ -38,6 +38,7 @@ int main(int argc, char **argv) {
 
 	PathGenerator pathGenerator = PathGenerator((*shader), 16, 8.0f);
 
+	// camera->transform.position = vec3(150, 150, 0);
 	camera->transform.position = vec3(0, 0, 15);
 	camera->LookAt(ship->transform.position, vec3_up);
 	camera->SetTarget(ship->transform);
@@ -54,8 +55,8 @@ int main(int argc, char **argv) {
 		RenderPipeline::Draw();
 
 		// float fps = (1.0 / GameBehaviour::DeltaTime());
-		// ostringstream buff;
-		// buff << fps;
+		// if (fps < 200.0f)
+		// 	std::cerr << "FPS : " << fps << std::endl;
 
 		// textFPS->Draw(string("FPS : " + buff.str()).c_str());
 

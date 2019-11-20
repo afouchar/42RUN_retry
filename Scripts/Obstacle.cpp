@@ -15,6 +15,9 @@ void Obstacle::OnColliderEnter(Collider & collider){
 
     // if (collider.transform->GetTag() == "Player")
     //     std::cerr << "Obstacle Collide with Player [" << collider.transform->gameObject->ID << "]" << std::endl;
+    // if (collider.transform->GetTag() == "Bullet"){
+    //     delete(this);
+    // }
 }
 
 void Obstacle::OnColliderStay(Collider & collider){}

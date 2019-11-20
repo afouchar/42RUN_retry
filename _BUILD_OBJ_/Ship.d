@@ -1,5 +1,5 @@
-_BUILD_OBJ_/Ship.o: Scripts/Ship.cpp Scripts/Ship.hpp Includes/Object.hpp \
-  Includes/Loader.hpp Includes/Mesh.hpp \
+_BUILD_OBJ_/Ship.o: Scripts/Ship.cpp Scripts/Ship.hpp Scripts/Bullet.hpp \
+  Includes/Object.hpp Includes/Loader.hpp Includes/Mesh.hpp \
   /Users/afouchar/.brew/opt/glew/include/GL/glew.h \
   /Users/afouchar/.brew/opt/glm/include/glm/glm.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/detail/_fixes.hpp \

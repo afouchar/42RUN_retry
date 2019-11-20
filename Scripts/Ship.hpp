@@ -1,7 +1,8 @@
 #ifndef SHIP_HPP
 #define SHIP_HPP
 
-#include "Object.hpp"
+// #include "Object.hpp"
+#include "Bullet.hpp"
 
 #define MAX_HEALTH 30
 #define MAX_AMMO 100
@@ -11,11 +12,12 @@ class Ship : public Object{
 private:
 
     float       _speed;
+    Bullet      *_bullet;
 
 public:
     ~Ship();
     Ship();
-    Ship(const Object& rhs, bool render = true, bool collide = true);
+    Ship(const Object & rhs, bool render = true, bool collide = true);
     Ship(Shader & shader, const char *objFile, bool render = true, bool collide = true);
 
     int         healthPoint;
