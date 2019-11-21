@@ -3,7 +3,7 @@
 
 #include "Object.hpp"
 
-#define MAX_DISTANCE 120
+#define MAX_DISTANCE 80
 
 class Bullet : public Object {
 

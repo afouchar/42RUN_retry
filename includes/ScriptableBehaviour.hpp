@@ -11,7 +11,7 @@ private:
 
 public:
     ScriptableBehaviour();
-    ~ScriptableBehaviour();
+    virtual ~ScriptableBehaviour();
 
     //virtual methods
     virtual void        OnColliderEnter(Collider & collider){};

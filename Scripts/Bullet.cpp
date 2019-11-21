@@ -1,5 +1,8 @@
 #include "Bullet.hpp"
 #include "GameBehaviour.hpp"
+#include "RenderPipeline.hpp"
+#include "Ship.hpp"
+
 
 Bullet::~Bullet(){
 }
@@ -22,8 +25,23 @@ Bullet::Bullet(Shader & shader, const char *objFile, bool render, bool collide) 
 void Bullet::OnColliderEnter(Collider & collider){
 
     if (collider.transform->GetTag() == "Obstacle"){
-        std::cerr << "bullet collision -> DESTROY !" << std::endl;
-        // delete(collider.transform->gameObject);
+        collider.isTrigger = true;
+        RenderPipeline::RemoveObject((*collider.transform->gameObject), false);
+        this->_delete = true;
+    }
+    else if (collider.transform->GetTag() == "Heal"){
+        collider.isTrigger = true;
+        RenderPipeline::RemoveObject((*collider.transform->gameObject), false);
+        Ship::instance->Heal();
+        this->_delete = true;
+    }
+    else if (collider.transform->GetTag() == "Ammo"){
+        collider.isTrigger = true;
+        RenderPipeline::RemoveObject((*collider.transform->gameObject), false);
+        Ship::instance->ReloadAmmunitions();
+        this->_delete = true;
+    }
+    else if (collider.transform->GetTag() == "Turn"){
         this->_delete = true;
     }
 }
@@ -33,7 +51,7 @@ void Bullet::OnColliderStay(Collider & collider){}
 void Bullet::OnColliderExit(Collider & collider){}
 
 void Bullet::Update(){
-    if (this->_launch){
+    if (this->_launch && !this->_delete){
         float move = this->_speed * GameBehaviour::DeltaTime();
         this->_distance += move;
         this->transform.Translate(vec3_forward * move);
@@ -48,7 +66,6 @@ void Bullet::LateUpdate(){
 
     if (this->_delete){
         delete this;
-        std::cerr << "END BULLET" << std::endl;
     }
 }
 

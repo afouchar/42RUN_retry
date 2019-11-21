@@ -8,6 +8,8 @@
 
 #include <time.h>
 
+#define MAX_MOVE_SPEED 120.0f
+
 
 using namespace std;
 using namespace glm;
@@ -23,6 +25,8 @@ private:
     Object              *_colliderCenter;
     int                 _chunksSwapped;
     float               _lastTurnAngle;
+    float               _oldSpeed;
+    bool                _pauseMove;
 
     Chunk               *_pathForward;
     Chunk               *_pathTurn;
@@ -41,6 +45,10 @@ public:
     PathGenerator(Shader & shader, unsigned int chunksAmount, float speed);
     ~PathGenerator();
 
+    void                PauseMove();
+    void                StopMove();
+    void                ResumeMove();
+    void                AddMoveSpeed(float addSpeed);
     void                SwapFirstToLast();
     float               GetChunkLength();
     float               GetHalfChunkLength();

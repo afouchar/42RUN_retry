@@ -23,6 +23,7 @@ public:
 
     void        PollEvents();
     bool        GetKeyPressed(int key);
+    bool        GetKeyReleased(int key);
     vec2        GetMousePosition();
     vec2        GetMouseDirection();
     void        ResetMousePosition();

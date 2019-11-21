@@ -20,6 +20,10 @@ bool Input::GetKeyPressed(int key){
     return glfwGetKey(this->_window, key ) == GLFW_PRESS ? true : false;
 }
 
+bool Input::GetKeyReleased(int key){
+    return glfwGetKey(this->_window, key ) == GLFW_RELEASE ? true : false;
+}
+
 vec2 Input::GetMousePosition(){
 
     double xpos, ypos;

@@ -269,4 +269,5 @@ _BUILD_OBJ_/Bullet.o: Scripts/Bullet.cpp Scripts/Bullet.hpp \
   /Users/afouchar/.brew/opt/glm/include/glm/gtx/quaternion.inl \
   Includes/ScriptableBehaviour.hpp Includes/GameBehaviour.hpp \
   Includes/Input.hpp /Users/afouchar/.brew/opt/glfw/include/GLFW/glfw3.h \
-  Includes/Window.hpp
+  Includes/Window.hpp Includes/RenderPipeline.hpp Includes/Light.hpp \
+  Includes/Camera.hpp Scripts/Ship.hpp

@@ -2,7 +2,6 @@
 #include "RenderPipeline.hpp"
 #include "GameBehaviour.hpp"
 
-// float PathGenerator::speed = 0.0f;
 
 PathGenerator::~PathGenerator(){
     delete _pathForward;
@@ -18,6 +17,8 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
 
     this->_chunksAmount = chunksAmount;
     this->speed = speed;
+    this->_oldSpeed = this->speed;
+    this->_pauseMove = false;
     this->_shader = &shader;
     this->_chunksSwapped = 0;
     this->chunksBeforeSwap = 2;
@@ -77,6 +78,45 @@ void PathGenerator::Update(){
     if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_DOWN)){
         this->speed -= 10.0f * GameBehaviour::DeltaTime();
     }
+    if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_P)){
+        StopMove();
+    }
+    if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_R)){
+        ResumeMove();
+    }
+    if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_O)){
+        PauseMove();
+    }
+}
+
+void PathGenerator::PauseMove(){
+
+    if (!this->_pauseMove)
+        StopMove();
+    else if (this->_pauseMove)
+        ResumeMove();
+
+}
+
+void PathGenerator::StopMove(){
+    if (!this->_pauseMove){
+        this->_pauseMove = true;
+        this->_oldSpeed = this->speed;
+        this->speed = 0;
+    }
+}
+
+void PathGenerator::ResumeMove(){
+    if (this->_pauseMove){
+        this->_pauseMove = false;
+        this->speed = this->_oldSpeed;
+    }
+}
+
+void PathGenerator::AddMoveSpeed(float addSpeed){
+    this->speed += addSpeed;
+    this->speed = this->speed > MAX_MOVE_SPEED ? MAX_MOVE_SPEED : this->speed;
+    // std::cerr << "Speed _________________________ : " << this->speed << std::endl;
 }
 
 void PathGenerator::SwapFirstToLast(){
@@ -90,26 +130,21 @@ void PathGenerator::SwapFirstToLast(){
     delete (*this->chunks.begin());
     this->chunks.erase(this->chunks.begin());
 
-    // for (int i = this->chunks.size(); i <= this->_chunksAmount; i++){
-        this->chunks.push_back(RandomChunkFromLast());
+    this->chunks.push_back(RandomChunkFromLast());
 
-        list<Chunk *>::iterator firstChunk = this->chunks.begin();
-        list<Chunk *>::iterator endChunk = next(this->chunks.end(), -1);
-        list<Chunk *>::iterator beforeEndChunk = next(this->chunks.end(), -2);
+    list<Chunk *>::iterator firstChunk = this->chunks.begin();
+    list<Chunk *>::iterator endChunk = next(this->chunks.end(), -1);
+    list<Chunk *>::iterator beforeEndChunk = next(this->chunks.end(), -2);
 
-        (*endChunk)->transform.AddParent((*beforeEndChunk)->transform, true);
-        SetPositionFromParent((**endChunk));
-    // }
+    (*endChunk)->transform.AddParent((*beforeEndChunk)->transform, true);
+    SetPositionFromParent((**endChunk));
 
-    // int i = 0;
-    // for (list<Chunk *>::iterator it = this->chunks.begin(); it != this->chunks.end(); it++){
-    //     if ((*it)->transform.parent != nullptr)
-    //         std::cout << "[" << (*it)->ID << "] " << (*it)->transform.GetTag() << " -> parent ["<< (*it)->transform.parent->gameObject->ID << "]" << std::endl;
-    //     else
-    //         std::cout << "[" << (*it)->ID << "] " << (*it)->transform.GetTag() << " -> parent [NULL]" << std::endl;
-    //     i++;
-    // }
-    // std::cout << "==========================" << std::endl << std::endl;
+    if (this->speed < 40.0f)
+        AddMoveSpeed(2.0f);
+    else if (this->speed < 70.0f)
+        AddMoveSpeed(1.0f);
+    else
+        AddMoveSpeed(0.5f);
 }
 
 float PathGenerator::GetChunkLength(){

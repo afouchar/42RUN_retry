@@ -70,6 +70,6 @@ void Camera::LateUpdate(){
         return;
 
     vec3 offsetTarget = (this->target->Up() * 8.0f) + (this->target->Forward() * 50.0f);
-    SmoothFollow((*this->target), this->target->Up() * 6.0f, GameBehaviour::DeltaTime() * 3.0f);
+    SmoothFollow((*this->target), this->target->Up() * 6.0f, GameBehaviour::DeltaTime() * 2.0f);
     LookAt(this->target->position + offsetTarget, this->target->Up());
 }

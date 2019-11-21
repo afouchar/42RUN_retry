@@ -23,7 +23,7 @@ public:
     Object();
     Object(Shader & shader, const char *objFile, bool render = true, bool collide = true);
     Object(const Object & rhs, bool render = true, bool collide = true);
-    ~Object();
+    virtual ~Object();
 
     Shader              *shader;
     Transform           transform;
