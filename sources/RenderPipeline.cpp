@@ -165,9 +165,10 @@ void RenderPipeline::AddObject(Object & gameObject){
 
 void RenderPipeline::RemoveObject(Object & gameObject, bool clearTextures){
 
-    RenderPipeline::ClearBuffers(gameObject, clearTextures);
+    // RenderPipeline::ClearBuffers(gameObject, clearTextures);
     std::list<Object *>::iterator it = std::find(RenderPipeline::_gameObjects.begin(), RenderPipeline::_gameObjects.end(), &gameObject);
     if (it != RenderPipeline::_gameObjects.end()){
+        ClearBuffers((**it), clearTextures);
         RenderPipeline::_gameObjects.erase(it);
     }
 }

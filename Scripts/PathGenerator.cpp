@@ -73,10 +73,10 @@ PathGenerator::PathGenerator(Shader & shader, unsigned int chunksAmount, float s
 void PathGenerator::Update(){
 
     if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_UP)){
-        this->speed += 10.0f * GameBehaviour::DeltaTime();
+        AddMoveSpeed(10.0f * GameBehaviour::DeltaTime());
     }
     if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_DOWN)){
-        this->speed -= 10.0f * GameBehaviour::DeltaTime();
+        AddMoveSpeed(-10.0f * GameBehaviour::DeltaTime());
     }
     if (GameBehaviour::input->GetKeyPressed(GLFW_KEY_P)){
         StopMove();
@@ -116,7 +116,7 @@ void PathGenerator::ResumeMove(){
 void PathGenerator::AddMoveSpeed(float addSpeed){
     this->speed += addSpeed;
     this->speed = this->speed > MAX_MOVE_SPEED ? MAX_MOVE_SPEED : this->speed;
-    // std::cerr << "Speed _________________________ : " << this->speed << std::endl;
+    std::cerr << "Speed _________________________ : " << this->speed << std::endl;
 }
 
 void PathGenerator::SwapFirstToLast(){

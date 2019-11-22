@@ -152,7 +152,6 @@ void Ship::Shoot(){
 void Ship::Score(float addValue){
 
     this->_totalScore += addValue;
-    // this->score = Math.RoundToInt(this->_totalScore);
     this->score = floor(this->_totalScore);
     // std::cerr << "Score : " << this->_totalScore << " -> " << this->score << std::endl;
 }

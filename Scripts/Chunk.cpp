@@ -41,8 +41,10 @@ void Chunk::SetObstacleType(Obstacle & obstacle, Obstacle & heal, Obstacle & amm
 void Chunk::OnColliderEnter(Collider & collider){
 
     if (collider.transform->GetTag() == "Cursor"){
-        if (this->transform.parent != nullptr && this->transform.parent->GetTag() != "Turn")
-            this->transform.SetParentAsChild();
+        if (this->transform.parent != nullptr && this->transform.parent->GetTag() != "Turn"){
+            Transform *oldParent = this->transform.SetParentAsChild();
+            oldParent->position = vec3_back * this->_generator->GetChunkLength();
+        }
         if (this->GetTag() == "Turn"){
             SetPivot();
             this->isSelfTurning = true;
@@ -80,7 +82,7 @@ void Chunk::Update(){
 
 void Chunk::SetPivot(){
     float halfChunkLength = this->collider.bound.halfSize.z;
-    Chunk::_pivot = this->transform.WorldPosition()  + (this->transform.Right() * halfChunkLength) + (this->transform.Back() * halfChunkLength);
+    Chunk::_pivot = this->transform.WorldPosition() + (this->transform.Right() * halfChunkLength) + (this->transform.Back() * halfChunkLength);
     Chunk::_upAxis = this->transform.Up();
     Chunk::_leftAxis = this->transform.Left();
     Chunk::_endPosition = this->transform.WorldPosition() + (this->transform.Back() * this->transform.gameObject->collider.bound.size.z);
@@ -105,9 +107,10 @@ void Chunk::Turn(){
         this->transform.LookAtTarget(Chunk::_endPosition + (Chunk::_leftAxis * 100.0f), Chunk::_upAxis);
         this->transform.UpdateMatrix();
 
-        if (this->transform.child.size() > 0)
-            (*this->transform.child.begin())->SetParentAsChild();
-
+        if (this->transform.child.size() > 0){
+            Transform *oldParent = (*this->transform.child.begin())->SetParentAsChild();
+            oldParent->position = vec3_back * this->_generator->GetChunkLength();
+        }
         Chunk::isMoving = true;
         Chunk::isTurning = false;
         this->isSelfTurning = false;

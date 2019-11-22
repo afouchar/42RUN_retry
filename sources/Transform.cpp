@@ -149,6 +149,7 @@ void Transform::RemoveChild(Transform & child){
     this->child.erase(it);
     child.parent = nullptr;
     child.LocalToWorld();
+    child.UpdateMatrix();
 }
 
 void Transform::AddParent(Transform & parent, bool setCoordinates){
@@ -163,15 +164,16 @@ void Transform::RemoveParent(){
     }
 }
 
-void Transform::SetParentAsChild(){
+Transform *Transform::SetParentAsChild(){
 
     if (this->parent == nullptr)
-        return;
+        return nullptr;
     Transform *oldParent = this->parent;  
     oldParent->RemoveParent();
     oldParent->RemoveChild((*this));
     AddChild((*oldParent));
     UpdateMatrix();
+    return oldParent;
 }
 
 void Transform::ClearParenting(){

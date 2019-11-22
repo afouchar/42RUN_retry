@@ -8,7 +8,7 @@
 
 #include <time.h>
 
-#define MAX_MOVE_SPEED 120.0f
+#define MAX_MOVE_SPEED 80.0f
 
 
 using namespace std;
