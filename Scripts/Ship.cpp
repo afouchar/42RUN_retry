@@ -136,9 +136,10 @@ void Ship::Shoot(){
         this->_shootTimer = 0;
 
         if (this->ammunitions > 0){
-            this->ammunitions--;
+            // this->ammunitions--;
             Bullet *shoot = new Bullet((*this->_bullet));
             shoot->transform.position = (this->transform.position + (vec3_forward * 2.0f));
+            shoot->transform.scale = vec3_one * 3.0f;
             shoot->Launch();
 
             std::cerr << "PIOU ! (" << this->ammunitions << "/" << MAX_AMMO << ")" << std::endl;

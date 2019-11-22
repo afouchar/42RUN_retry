@@ -51,10 +51,12 @@ void Bullet::OnColliderStay(Collider & collider){}
 void Bullet::OnColliderExit(Collider & collider){}
 
 void Bullet::Update(){
+
     if (this->_launch && !this->_delete){
         float move = this->_speed * GameBehaviour::DeltaTime();
         this->_distance += move;
         this->transform.Translate(vec3_forward * move);
+        this->transform.Rotate(vec3_forward, move * 5.0f);
         if (this->_distance >= MAX_DISTANCE){
             this->_launch = false;
             this->_delete = true;

@@ -90,6 +90,11 @@ void RenderPipeline::Draw(){
         if ((*it)->transform.parent == nullptr)
             (*it)->transform.UpdateMatrix();
 
+        // if ((*it)->GetTag() == "Bullet"){
+        //     if ((*it)->transform.scale.x != 1.0f || (*it)->transform.scale.y != 1.0f || (*it)->transform.scale.z != 1.0f)
+        //         std::cerr << "[" << (*it)->ID << "] Bullet size : " << (*it)->transform.scale.x << " | " << (*it)->transform.scale.y << " | " << (*it)->transform.scale.z << " | " << std::endl;
+        // }
+
         RenderPipeline::UseProgram((*(*it)->shader));
         RenderPipeline::BindBuffers((**it), (*RenderPipeline::_mainCamera), (*RenderPipeline::_mainLight));
         RenderPipeline::DrawObject((**it));
