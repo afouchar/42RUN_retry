@@ -12,13 +12,11 @@ Bullet::Bullet(){
 
 Bullet::Bullet(const Object& rhs, bool render, bool collide) : Object(rhs, render, collide){
     this->_speed = 35.0f;
-    this->_launch = false;
     this->_delete = false;
 }
 
 Bullet::Bullet(Shader & shader, const char *objFile, bool render, bool collide) : Object(shader, objFile, render, collide){
     this->_speed = 35.0f;
-    this->_launch = false;
     this->_delete = false;
 }
 
@@ -52,16 +50,9 @@ void Bullet::OnColliderExit(Collider & collider){}
 
 void Bullet::Update(){
 
-    if (this->_launch && !this->_delete){
-        float move = this->_speed * GameBehaviour::DeltaTime();
-        this->_distance += move;
-        this->transform.Translate(vec3_forward * move);
-        this->transform.Rotate(vec3_forward, move * 5.0f);
-        if (this->_distance >= MAX_DISTANCE){
-            this->_launch = false;
-            this->_delete = true;
-        }
-    }
+    float move = this->_speed * GameBehaviour::DeltaTime();
+    this->transform.Translate(vec3_forward * move);
+    this->transform.Rotate(vec3_forward, move * 5.0f);
 }
 
 void Bullet::LateUpdate(){
@@ -69,9 +60,4 @@ void Bullet::LateUpdate(){
     if (this->_delete){
         delete this;
     }
-}
-
-void Bullet::Launch(){
-    this->_launch = true;
-    this->_distance = 0;
 }

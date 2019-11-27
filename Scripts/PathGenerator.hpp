@@ -8,7 +8,7 @@
 
 #include <time.h>
 
-#define MAX_MOVE_SPEED 80.0f
+#define MAX_MOVE_SPEED 160.0f
 
 
 using namespace std;
@@ -38,6 +38,7 @@ private:
     void                SetPositionFromParent(Chunk & chunk);
     Chunk               *RandomChunkFromLast();
     Chunk               *RandomChunk(Chunk & previousChunk);
+    bool                CheckLoop(Chunk & fromChunk);
     float               GetAngleOutOfRange(float baseAngle, float range);
     void                ClearChildrenOf(Chunk & chunk, int fromChildIndex);
 

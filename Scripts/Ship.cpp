@@ -130,6 +130,13 @@ void Ship::ReloadAmmunitions(){
 
 void Ship::Shoot(){
     
+
+    // Object *rayObject = GameBehaviour::Raycast(this->transform.WorldPosition(), this->transform.Forward(), 100.0f, "Obstacle");
+    // if (rayObject != nullptr)
+    //     std::cerr << "RAYCAST OBJECT ----------> [" << rayObject->ID << "] " << rayObject->GetTag() << std::endl;
+    // else
+    //     std::cerr << "NO RAYCAST !!!" << std::endl;
+
     this->_shootTimer += GameBehaviour::DeltaTime();
 
     if (this->_shootTimer >= SHOOT_COOLDOWN){
@@ -140,7 +147,6 @@ void Ship::Shoot(){
             Bullet *shoot = new Bullet((*this->_bullet));
             shoot->transform.position = (this->transform.position + (vec3_forward * 2.0f));
             shoot->transform.scale = vec3_one * 3.0f;
-            shoot->Launch();
 
             std::cerr << "PIOU ! (" << this->ammunitions << "/" << MAX_AMMO << ")" << std::endl;
         }

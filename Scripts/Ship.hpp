@@ -7,7 +7,7 @@
 
 #define MAX_HEALTH 30
 #define MAX_AMMO 100
-#define SHOOT_COOLDOWN 0.15f
+#define SHOOT_COOLDOWN 0.20f
 
 class Ship : public Object{
 

@@ -67,7 +67,7 @@ public:
     void                RemoveChild(Transform & child);
     void                AddParent(Transform & parent, bool setCoordinates = true);
     void                RemoveParent();
-    Transform                *SetParentAsChild();
+    Transform           *SetParentAsChild();
     void                ClearParenting();
     void                ClearParenting(Transform & newParent);
     void                ClearParentingRecursively(Transform & newParent);

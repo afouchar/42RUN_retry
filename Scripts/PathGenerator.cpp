@@ -166,7 +166,7 @@ void PathGenerator::SetPositionFromParent(Chunk & chunk){
         chunk.transform.RotateAround(vec3_zero, vec3_up, -90.0f);
     }
     if (chunk.transform.GetTag() == "Turn"){
-        this->_lastTurnAngle = GetAngleOutOfRange(this->_lastTurnAngle, 75.0f);
+        this->_lastTurnAngle = GetAngleOutOfRange(this->_lastTurnAngle, 90.0f);
         chunk.transform.Rotate(vec3_forward, this->_lastTurnAngle);
     }
     if (chunk.transform.GetTag() == "Forward" && chunk.transform.parent->GetTag() == "Forward"){
@@ -183,17 +183,38 @@ Chunk *PathGenerator::RandomChunkFromLast(){
 
 Chunk *PathGenerator::RandomChunk(Chunk & previousChunk){
 
-    if (previousChunk.GetTag() == "Forward" && rand() % 100 < 15){
+    if (CheckLoop(previousChunk)){
         Chunk *pt = new Chunk((*this), (*this->_pathTurn));
         pt->SetObstacleType((*this->_obstacleType), (*this->_healType), (*this->_ammoType));
         return pt;
     }
-    else {
-        Chunk *pf = new Chunk((*this), (*this->_pathForward));
-        pf->SetObstacleType((*this->_obstacleType), (*this->_healType), (*this->_ammoType));
-        return pf;
+    else{
+        if (previousChunk.GetTag() == "Forward" && rand() % 100 < 15){
+            Chunk *pt = new Chunk((*this), (*this->_pathTurn));
+            pt->SetObstacleType((*this->_obstacleType), (*this->_healType), (*this->_ammoType));
+            return pt;
+        }
+        else {
+            Chunk *pf = new Chunk((*this), (*this->_pathForward));
+            pf->SetObstacleType((*this->_obstacleType), (*this->_healType), (*this->_ammoType));
+            return pf;
+        }
     }
 }
+
+bool PathGenerator::CheckLoop(Chunk & fromChunk){
+
+    vec3 direction = fromChunk.transform.Forward();
+    if (fromChunk.GetTag() == "Turn")
+        direction = fromChunk.transform.Right();
+
+    vec3 originPos = fromChunk.transform.WorldPosition() + (direction * (this->_chunkLength * 0.51f));
+
+    if (GameBehaviour::Raycast(originPos, direction, this->_chunkLength * 3.0f, "Forward", "Turn") != nullptr){
+        return true;
+    }
+    return false;
+} 
 
 float PathGenerator::GetAngleOutOfRange(float baseAngle, float range){
 
@@ -202,6 +223,9 @@ float PathGenerator::GetAngleOutOfRange(float baseAngle, float range){
     float minAngle = (int)(baseAngle - range);
 
     minAngle = minAngle < 0 ? (360.0f + minAngle) : minAngle;
+
+    if (minAngle > maxAngle)
+        std::swap(minAngle, maxAngle);
 
     if (angle < maxAngle && angle > minAngle)
         angle = (int)(baseAngle + range) % 360;

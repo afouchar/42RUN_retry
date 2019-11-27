@@ -143,6 +143,118 @@ void GameBehaviour::RemoveCollider(Collider & collider){
     }
 }
 
+Object *GameBehaviour::Raycast(vec3 origin, vec3 direction, float maxDistance){
+
+    for (int pos_a = 0; pos_a < GameBehaviour::_collisionMap.size(); pos_a++){
+
+            list<Collider *>::iterator col_a = next(GameBehaviour::_sceneColliders.begin(), pos_a);
+
+            float distance = glm::distance((*col_a)->transform->WorldPosition(), origin);
+
+            if ((*col_a)->isTrigger || distance > maxDistance)
+                continue;
+
+            if (OBBRayIntersection(origin, direction, maxDistance, (**col_a)))
+                return (*col_a)->transform->gameObject;
+    }
+    return nullptr;
+}
+
+Object *GameBehaviour::Raycast(vec3 origin, vec3 direction, float maxDistance, string byTag) {
+
+    for (int pos_a = 0; pos_a < GameBehaviour::_collisionMap.size(); pos_a++){
+
+            list<Collider *>::iterator col_a = next(GameBehaviour::_sceneColliders.begin(), pos_a);
+
+            float distance = glm::distance((*col_a)->transform->WorldPosition(), origin);
+
+            if ((*col_a)->isTrigger || distance > maxDistance || (*col_a)->transform->GetTag() != byTag){
+                continue;
+            }
+
+            if (OBBRayIntersection(origin, direction, maxDistance, (**col_a)))
+                return (*col_a)->transform->gameObject;
+    }
+    return nullptr;
+}
+
+Object *GameBehaviour::Raycast(vec3 origin, vec3 direction, float maxDistance, string byTag, string byTagAlt) {
+
+    for (int pos_a = 0; pos_a < GameBehaviour::_collisionMap.size(); pos_a++){
+
+            list<Collider *>::iterator col_a = next(GameBehaviour::_sceneColliders.begin(), pos_a);
+
+            float distance = glm::distance((*col_a)->transform->WorldPosition(), origin);
+
+            if ((*col_a)->isTrigger || distance > maxDistance){
+                continue;
+            }
+            if ((*col_a)->transform->GetTag() == byTag || (*col_a)->transform->GetTag() == byTagAlt){
+                if (OBBRayIntersection(origin, direction, maxDistance, (**col_a)))
+                    return (*col_a)->transform->gameObject;
+            }
+    }
+    return nullptr;
+}
+
+bool GameBehaviour::OBBRayIntersection(vec3 origin, vec3 direction, float maxDistance, Collider & collider) {
+
+    float tMin = 0.0f;
+    float tMax = maxDistance;
+
+    collider.UpdateCollider();
+    collider.bound.UpdateBoundValues((*collider.transform));
+
+    vec3 OBBposition_worldspace = collider.GetOffsetWorldPosition();
+    mat4 modelMatrix = collider.transform->modelMatrix;
+    vec3 delta = OBBposition_worldspace - origin;
+
+    vec3 xAxis(modelMatrix[0].x, modelMatrix[0].y, modelMatrix[0].z);
+    vec3 yAxis(modelMatrix[1].x, modelMatrix[1].y, modelMatrix[1].z);
+    vec3 zAxis(modelMatrix[2].x, modelMatrix[2].y, modelMatrix[2].z);
+
+    vec3 boundMin = (collider.bound.min * collider.bound.scale) * collider.bound.scale;
+    vec3 boundMax = (collider.bound.max * collider.bound.scale) * collider.bound.scale;
+
+    if (!OBBRayIntersectPlane(boundMin.x, boundMax.x, tMin, tMax, direction, xAxis, delta))
+        return false;
+    if (!OBBRayIntersectPlane(boundMin.y, boundMax.y, tMin, tMax, direction, yAxis, delta))
+        return false;
+    if (!OBBRayIntersectPlane(boundMin.z, boundMax.z, tMin, tMax, direction, zAxis, delta))
+        return false;
+
+    return true;
+}
+
+bool GameBehaviour::OBBRayIntersectPlane(float boundMin, float boundMax, float distMin, float distMax, vec3 direction, vec3 planeAxis, vec3 delta){
+
+    float e = glm::dot(planeAxis, delta);
+    float f = glm::dot(direction, planeAxis);
+
+    if (fabs(f) > 0.001f){
+
+        float t1 = (e + boundMin) / f;
+        float t2 = (e + boundMax) / f;
+
+        if (t1 > t2){
+            std::swap(t1, t2);
+        }
+
+        if (t2 < distMax)
+            distMax = t2;
+        if (t1 > distMin)
+            distMin = t1;
+
+        if (distMax < distMin)
+            return false;
+    }
+    else {
+        if(-e + boundMin > 0.0f || -e + boundMax < 0.0f)
+            return false;
+    }
+    return true;
+}
+
 void GameBehaviour::Clock(){
     GameBehaviour::ComputeDeltaTime();
     GameBehaviour::ComputeFPS();

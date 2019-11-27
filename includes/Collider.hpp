@@ -27,9 +27,8 @@ public:
     Bound       bound;
 
     bool        CheckCollision(Collider & collider);
-    bool        CheckCollision(vec3 point); //??
-    void        UpdateCollider(); //??
-    vec3        GetSize(); //??
+    void        UpdateCollider();
+    vec3        GetSize();
     vec3        GetOffsetLocalPosition(vec3 point);
     vec3        GetOffsetWorldPosition();
     Bound       BoundToWorld();

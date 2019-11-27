@@ -108,23 +108,6 @@ bool Collider::GetCollision(const Bound & bound1, const Bound & bound2, const ve
     return true;
 }
 
-
-bool Collider::CheckCollision(vec3 point){
-
-    //change to new collision/intersection detection ?!
-
-    UpdateCollider();
-    vec3 worldPosition = GetOffsetWorldPosition();
-    vec3 rotMax = this->transform->GetQuaternion() * this->bound.max;
-    vec3 rotMin = this->transform->GetQuaternion() * this->bound.min;
-
-    bool collisionX = point.x < worldPosition.x + rotMax.x && point.x > worldPosition.x + rotMin.x;
-    bool collisionY = point.y < worldPosition.y + rotMax.y && point.y > worldPosition.y + rotMin.y;
-    bool collisionZ = point.z < worldPosition.z + rotMax.z && point.z > worldPosition.z + rotMin.z;
-
-    return collisionX && collisionY && collisionZ;
-}
-
 void Collider::UpdateCollider(){
 
     this->bound.size.x = glm::distance(this->bound.max.x, this->bound.min.x);

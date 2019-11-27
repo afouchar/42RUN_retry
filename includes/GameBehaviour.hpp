@@ -22,6 +22,8 @@ private:
     static float _deltaTime;
     static float _FPS;
 
+    static bool     OBBRayIntersection(vec3 origin, vec3 direction, float maxDistance, Collider & collider);
+    static bool     OBBRayIntersectPlane(float min, float max, float distMin, float distMax, vec3 direction, vec3 planeAxis, vec3 delta); 
     static void     ComputeDeltaTime();
     static void     ComputeFPS();
 
@@ -52,6 +54,11 @@ public:
     static void     UpdateCollisions();
     static void     AddCollider(Collider & collider);
     static void     RemoveCollider(Collider & collider);
+
+    static Object   *Raycast(vec3 origin, vec3 direction, float maxDistance);
+    static Object   *Raycast(vec3 origin, vec3 direction, float maxDistance, string byTag);
+    static Object   *Raycast(vec3 origin, vec3 direction, float maxDistance, string byTag, string byTagAlt);
+
     static void     Clock();
     static float    DeltaTime();
 

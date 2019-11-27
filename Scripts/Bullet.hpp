@@ -3,15 +3,13 @@
 
 #include "Object.hpp"
 
-#define MAX_DISTANCE 80
+// #define MAX_DISTANCE 80
 
 class Bullet : public Object {
 
 private:
 
     float       _speed;
-    float       _distance;
-    bool        _launch;
     bool        _delete;
 
 public:
@@ -20,7 +18,6 @@ public:
     Bullet(const Object& rhs, bool render = true, bool collide = true);
     Bullet(Shader & shader, const char *objFile, bool render = true, bool collide = true);
 
-    void            Launch();
 
     //derived virtual methods
     virtual void    OnColliderEnter(Collider & collider);
